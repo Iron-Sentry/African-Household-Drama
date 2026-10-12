@@ -1,0 +1,29 @@
+{
+  "name": "african-household-drama",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "npm run story:validate && vitest run",
+    "story:validate": "node scripts/story-check.mjs 3000",
+    "story:check": "node scripts/story-check.mjs",
+    "test:e2e": "node scripts/e2e.mjs"
+  },
+  "devDependencies": {
+    "@types/three": "^0.186.0",
+    "playwright-core": "^1.64.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/fraunces": "^5.3.0",
+    "@fontsource/space-mono": "^5.3.0",
+    "inkjs": "^2.4.0",
+    "three": "^0.186.1"
+  }
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#241b21" />
+  <meta name="description" content="African Household Drama — a nostalgic, choice-driven Ghanaian childhood survival game." />
+  <title>African Household Drama · A Childhood Survival Story</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="#" aria-label="African Household Drama home" id="brand-home">
+        <span class="brand-mark" aria-hidden="true"><span>A</span><span>H</span><span>D</span></span>
+        <span class="brand-copy"><strong>AFRICAN<br/>HOUSEHOLD</strong><small>DRAMA <span class="brand-star">✳</span></small></span>
+      </a>
+      <div class="header-center"><span class="header-line"></span><span>THE GHANAIAN CHILDHOOD EXPERIENCE</span><span class="header-line"></span></div>
+      <div class="header-actions"><span class="era-label">ACCRA, 1998 <span class="era-dot">●</span></span><button id="sound-toggle" class="sound-btn" aria-label="Toggle game sound" title="Toggle game sound"><span id="sound-icon">♪</span><span id="sound-text">SOUND OFF</span></button></div>
+    </header>
+
+    <main class="game-main">
+      <div class="top-rail">
+        <div class="breadcrumbs"><span class="mini-diamond">◆</span><span>INTERACTIVE STORY</span><span class="slash">/</span><span id="chapter-small">CHAPTER 01</span></div>
+        <div class="progress-area"><span id="progress-caption">YOUR STORY STARTS HERE</span><div class="progress-tracks"><span id="progress-track"></span></div><span id="progress-num">00%</span></div>
+      </div>
+
+      <section class="experience" aria-label="Interactive story game">
+        <div class="world-panel" id="world-panel">
+          <div class="scene-watermark" aria-hidden="true">GHANA<br/>THEN.</div>
+          <div class="scene-heading" id="scene-heading"><span id="scene-location">THE FAMILY HALL • 7:42 PM</span><strong id="scene-title">THE KISSING SCENE</strong></div>
+          <div class="room-window" id="room-window">
+            <div id="fallback-scene" class="fallback-scene" aria-hidden="true"></div>
+            <canvas id="three-canvas" aria-label="Interactive three-dimensional Ghanaian household setting"></canvas>
+            <div class="retro-overlay" aria-hidden="true"></div>
+            <div class="tv-bug" id="tv-bug"><span class="blink-red">●</span> LIVE FROM THE HALL</div>
+          </div>
+          <div class="sprite-stage" id="sprite-stage" aria-hidden="true">
+            <div class="sprite sprite-mum"><img id="mum-sprite" src="../public/assets/mum.svg" alt="" /></div>
+            <div class="sprite sprite-child"><img src="../public/assets/child.svg" alt="" /></div>
+            <div class="sprite sprite-dad"><img id="dad-sprite" src="../public/assets/dad.svg" alt="" /></div>
+            <div class="sprite sprite-auntie"><img src="../public/assets/auntie.svg" alt="" /></div>
+          </div>
+          <div class="world-caption"><span><span class="red-record">●</span> MOMENTS FROM HOME</span><span>CHOOSE WISELY, SMALL CHILD.</span></div>
+          <div class="scene-number">01<span>/</span>02</div>
+        </div>
+
+        <aside class="story-panel" id="story-panel" aria-live="polite">
+          <div class="panel-decoration"><span>✳</span><span>YOUR STORY, YOUR TROUBLE.</span><span>✳</span></div>
+          <div class="stats-head"><span>HOUSEHOLD STATUS</span><span>◉ <span id="mood-status">ALL EYES ON YOU</span></span></div>
+          <div class="stats-grid" aria-label="Player statistics">
+            <div class="stat-box"><span>♥</span><div><small>APPROVAL</small><strong id="stat-approval">50</strong></div></div>
+            <div class="stat-box"><span>✦</span><div><small>STREET SMARTS</small><strong id="stat-smarts">20</strong></div></div>
+            <div class="stat-box"><span>!</span><div><small>TROUBLE</small><strong id="stat-trouble">00</strong></div></div>
+          </div>
+          <div class="dialogue-area" id="dialogue-area">
+            <div class="dialogue-meta"><div class="speaker-avatar" id="speaker-avatar">✳</div><div><span class="section-eyebrow">NOW SPEAKING</span><h2 id="speaker-name">THE NARRATOR</h2></div><span class="quote-mark">“</span></div>
+            <p class="dialogue-text" id="dialogue-text">Welcome to the family hall. You know the rules… or do you?</p>
+            <p class="dialogue-extra" id="dialogue-extra">Every look means something. Every choice has consequences.</p>
+          </div>
+          <div id="feedback" class="feedback" hidden></div>
+          <div class="choices-section">
+            <div class="choices-title"><span id="choices-heading">WHAT WILL YOU DO?</span><span id="choices-hint">PICK YOUR MOVE ↓</span></div>
+            <div id="choices" class="choices"></div>
+            <button id="continue-btn" class="continue-btn"><span id="continue-text">CONTINUE</span><span class="btn-arrow">↗</span></button>
+          </div>
+          <div class="panel-footer"><span>✳</span><span>MADE WITH NOSTALGIA. AND A LITTLE FEAR.</span><span>© AHD</span></div>
+        </aside>
+      </section>
+
+      <footer class="app-footer"><span>AN INTERACTIVE GHANAIAN STORY <span class="footer-spark">✴</span></span><span>BACK WHEN ONE LOOK FROM MUMMY WAS ENOUGH.</span><span>PRESS <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> TO CHOOSE</span></footer>
+    </main>
+
+    <div class="intro-overlay" id="intro-overlay" role="dialog" aria-labelledby="intro-title" aria-modal="true">
+      <div class="intro-card">
+        <span class="intro-flower">✳</span><div class="intro-kicker">A NOSTALGIC GHANAIAN STORY GAME <span>•</span> VOL. 01</div>
+        <h1 id="intro-title">African<br/><em>Household</em><br/>Drama<span class="intro-period">.</span></h1>
+        <p>Before smartphones and streaming, there was one television, two parents, and a thousand ways to enter trouble.</p>
+        <div class="intro-divider"><span>✦</span><span>ACCRA, GHANA · 1998</span><span>✦</span></div>
+        <button id="start-btn" class="start-btn"><span>ENTER THE HOUSEHOLD</span><span>↗</span></button>
+        <small>TWO SHORT EPISODES · DIFFERENT CHOICES, DIFFERENT CONSEQUENCES</small>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script src="./game.js" defer></script>
+  <script type="module" src="./three-scene.js"></script>
+</body>
+</html>

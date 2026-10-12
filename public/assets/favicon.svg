@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#211b21"/>
+  <path d="M9 13h44v38H9z" fill="#eab565" transform="rotate(-5 32 32)"/>
+  <path d="M14 18h36v29H14z" fill="none" stroke="#a94f42" stroke-width="3"/>
+  <text x="32" y="39" text-anchor="middle" fill="#2b2226" font-family="Arial,sans-serif" font-size="24" font-weight="900">AHD</text>
+  <path d="M52 8l1.7 5.3L59 15l-5.3 1.7L52 22l-1.7-5.3L45 15l5.3-1.7z" fill="#f5eddf"/>
+</svg>
