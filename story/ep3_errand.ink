@@ -414,8 +414,8 @@ Daddy is at the television before anybody else can move. #anim:dad=bounce #expr:
     The screen is pure snow. Mummy reaches out, touches the antenna with one finger, and sits back down. #prop:tv=film #anim:mum=lean
     Mummy: Hmm. #expr:mum=smug
 }
-TV: Isabella... I have crossed seven oceans to find you. #amb:film #light:film #cam:tv
-GTV is repeating Sunday's film. #sfx:sting
+TV: Maria... I have crossed seven oceans to find you. #amb:film #light:film #cam:tv
+GTV is repeating Sunday's episode. #sfx:sting
 Everybody in the hall freezes. #cam:sofa #expr:mum=stare #expr:dad=stare #expr:child=stare
 Daddy looks at Mummy. Mummy looks at Daddy. Then they both look at you. #expr:mum=sideeye #expr:dad=sideeye #focus:none
 {trusted || approval >= 60:
@@ -454,7 +454,7 @@ Mummy: Very educational. #expr:mum=proud
 ~ score(6, 4, 0)
 You close your eyes. Calmly. Professionally. Like you have done this before. #expr:child=eyesclosed #cam:sofa
 {tv_reaction == "eyes":
-    Daddy: Again? You will miss the whole film again! #expr:dad=laugh
+    Daddy: Again? Somebody give this child a certificate. #expr:dad=laugh
 - else:
     Mummy: Hmm. Now you know. #expr:mum=proud
 }
@@ -465,7 +465,7 @@ You close your eyes. Calmly. Professionally. Like you have done this before. #ex
 ~ score(2, 0, 6)
 You laugh. You can't help it. #expr:child=laugh #anim:child=shake #cam:sofa
 {tv_reaction == "laugh" || tv_reaction == "comment":
-    On Sunday, this exact laugh cost you a whole evening. Tonight...
+    On Sunday, this exact laugh got you sent inside. Tonight...
 }
 Daddy laughs. He tries not to. He fails. #expr:dad=laugh #anim:dad=shake
 Mummy: Akola bone... #expr:mum=laugh
@@ -481,7 +481,7 @@ The kiss dissolves into snow.
 Daddy: NANA! #expr:dad=shock #anim:dad=jump
 Mummy is holding her stomach. Mummy is laughing so hard that no sound is coming out. #expr:mum=laugh #anim:mum=shake
 {mummy_knows:
-    She knew on Sunday. She knows now. And now Daddy knows too.
+    She saw through your thirst on Sunday. She sees through this too. And now Daddy knows.
 }
 #moment:snowstorm/Snowstorm, On Purpose
 -> laughter

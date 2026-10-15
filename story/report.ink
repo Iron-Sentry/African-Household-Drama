@@ -37,17 +37,21 @@
 // ---- What the family will remember (shown as a list on the report card)
 {
 - tv_reaction == "laugh":
-    The laugh during Hearts of Fire. Homework has never sounded so loud. #remember
+    The laugh during Maria's big scene. Daddy sent you inside before the music finished. #remember
 - tv_reaction == "eyes":
-    You closed your eyes so well that you missed the entire film. #remember
+    You closed your eyes at exactly the right moment and earned the whole episode. #remember
 - tv_reaction == "comment":
-    The family still quotes your "Ei, Mummy! See what they are doing!" #remember
+    "Ei! See what they are doing!" Your head still remembers Mummy's knuckle. #remember
 - tv_reaction == "water":
     The most convenient thirst in the history of the household. #remember
-- tv_reaction == "antenna":
-    Your hand "slipped" off the antenna. Mummy has never said a word about it. #remember
 - tv_reaction == "froze":
     You watched the kissing scene like a documentary. Daddy changed the channel to the news. #remember
+}
+{
+- woke == "sleepy":
+    Your sleepy "Daddy... you called me?" Nobody suspects a thing. Yet. #remember
+- woke == "pretend":
+    The fake snore. Mummy heard it from the hall. #remember
 }
 {antenna == "foil":
     Mummy's Christmas foil is still on the antenna. Nobody is allowed to remove it. #remember
@@ -83,11 +87,11 @@
 }
 {
 - finale == "news":
-    When the film came back, you changed the channel to the news. Very educational. #remember
+    When Maria came back, you changed the channel to the news. Very educational. #remember
 - finale == "mummy":
     You gave the remote to Mummy. Daddy is still trying to work out how she did it. #remember
 - finale == "laugh":
-    When the film came back, everybody laughed. Even Mummy. Especially Mummy. #remember
+    When Maria came back, everybody laughed. Even Mummy. Especially Mummy. #remember
 - finale == "antenna":
     You sent the second kiss into the snow on purpose, and Mummy laughed until she cried. #remember
 }

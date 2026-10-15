@@ -22,23 +22,23 @@ function scripted(...wanted: string[]) {
 
 const paths: Record<string, string[]> = {
   strategist: [
-    'Hold it exactly', 'The calendar', 'The standing fan', 'Watch the film', 'Burst out laughing', 'Greet her in Twi',
+    'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Burst out laughing', 'Greet her in Twi',
     'Sit nicely and wait', "Check Mummy's expression", 'Take one and say "Thank you', 'rearrange the circle', 'Repeat the list',
     'Small packet of sugar', 'Toffees', "That's everything", 'Tell Sister Akos', 'Look at Kojo', "didn't buy any sugar", 'Close your eyes',
   ],
   akola: [
-    'Hold it exactly', 'The wedding photograph', 'The remote control', 'Watch the film', 'Let go of the antenna', 'Good afternoon',
+    'Pretend to be asleep', 'Do exactly what Daddy says', 'Announce that you are very thirsty', 'Good afternoon',
     'The telephone', 'Give the padlock', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', 'Take the biscuits immediately',
     'rearrange the circle', 'I know, Mummy', 'Box of matches', 'Small packet of sugar', 'Tin of milk', 'Toffees', "That's everything",
     'Spend it on bofrot', 'Look at Kojo', "didn't buy any sugar", 'Reach for the antenna',
   ],
   golden: [
-    'Hold it exactly', 'The wedding photograph', 'Watch the film', 'Let go of the antenna', 'Greet her in Twi', 'Sit nicely and wait',
+    'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Announce that you are very thirsty', 'Greet her in Twi', 'Sit nicely and wait',
     "Check Mummy's expression", 'Take one and say "Medaase', 'Slip one biscuit', 'Write it on the back', 'Loaf of tea bread',
     'Candles', 'Box of matches', 'Toffees', "That's everything", 'Say nothing. Take it home', 'Confess and hand over', 'Laugh',
   ],
   comedian: [
-    'Hold it exactly', 'The standing fan', 'The wedding photograph', 'Watch the film', 'Burst out laughing', 'Greet her in Twi',
+    'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Burst out laughing', 'Greet her in Twi',
     'The telephone', 'Give the padlock', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', "Check Mummy's expression",
     'Take three biscuits', 'Sit on your hands', 'I know, Mummy', 'Small packet of sugar', 'Loaf of tea bread', 'Box of matches',
     'Candles', 'Tin of milk', 'Toffees', "That's everything", 'Tell Sister Akos', 'ask Mummy first', 'Laugh',

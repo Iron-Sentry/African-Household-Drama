@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { byText, compileInk, playthrough } from '../scripts/ink.mjs';
 
 const { json } = compileInk();
-const common = ['Hold it exactly', 'Watch the film', 'Sit nicely and wait', "That's everything"];
+const common = ['Answer in a sleepy voice', 'Do exactly what Daddy says', 'Sit nicely and wait', "That's everything"];
 const run = (...choices: string[]) => playthrough(json, byText(...choices, ...common));
 
 describe('cross-episode callbacks', () => {
   it('changes Auntie Efua’s Episode 2 gossip based on the Episode 1 reaction', () => {
     const laugh = run('Burst out laughing');
     const eyes = run('Immediately close your eyes');
-    expect(laugh.lines).toContain('Auntie Efua: And I hear somebody was laughing at the Sunday film! Hihihi!');
+    expect(laugh.lines).toContain('Auntie Efua: And I hear somebody was laughing at the kissing scene! Hihihi!');
     expect(eyes.lines).toContain('Auntie Efua: Your mummy says you closed your eyes like a pastor praying. Good child!');
     expect(laugh.lines).not.toContain('Auntie Efua: Your mummy says you closed your eyes like a pastor praying. Good child!');
   });

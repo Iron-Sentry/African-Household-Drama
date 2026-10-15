@@ -639,6 +639,25 @@ dialog:focus-visible {
   animation: impact 850ms ease-out forwards;
 }
 
+.fx-keyhole {
+  position: absolute;
+  inset: 0;
+  animation: keyhole-in 900ms ease-out both;
+}
+
+.fx-keyhole.instant {
+  animation: none;
+}
+
+.fx-keyhole svg {
+  width: 100%;
+  height: 100%;
+  fill: #120d10;
+  filter: drop-shadow(0 0 18px #000);
+  transform-origin: 50% 50%;
+  animation: keyhole-breathe 5s ease-in-out infinite;
+}
+
 .world-panel.fx-shake {
   animation: world-shake 420ms ease;
 }
@@ -1771,6 +1790,15 @@ dialog.report[data-rank="comedian"] .report-stamp {
 
 @keyframes hotspot-pulse {
   50% { box-shadow: 0 0 0 13px #fff3dd0b, 0 4px 14px #1b101a9c; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+@keyframes keyhole-in {
+  from { opacity: 0; transform: scale(3); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes keyhole-breathe {
+  50% { transform: scale(1.04) translate(0.6%, -0.4%); }
 }
 
 @keyframes flash {

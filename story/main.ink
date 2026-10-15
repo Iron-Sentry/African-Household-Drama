@@ -18,10 +18,10 @@ VAR smarts = 20
 VAR trouble = 0
 
 // ---- Episode 1: The Kissing Scene
+VAR woke = "none"           // pretend | rush | sleepy
 VAR antenna = "none"        // held | foil | slap
-VAR tv_reaction = "none"    // laugh | eyes | comment | water | antenna | froze
-VAR mummy_knows = false     // Mummy saw through your antenna trick
-VAR seen_calendar = false
+VAR tv_reaction = "none"    // comment | laugh | eyes | water | froze
+VAR mummy_knows = false     // Mummy saw through your convenient thirst
 
 // ---- Episode 2: The Neighbour's Biscuit
 VAR greeted = "none"        // proper | twi | forgot

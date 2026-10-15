@@ -125,6 +125,25 @@ export class Audio {
     [131, 196, 131, 175].forEach((f, i) => this.pluck(f, i * 0.54, gain * 0.9, dest));
   }
 
+  /** An original, telenovela-style opening: strummed minor chords under a sweeping melody. */
+  private theme() {
+    const c = this.ctx!;
+    const room = c.createBiquadFilter(); // small TV speaker
+    room.type = 'bandpass';
+    room.frequency.value = 1500;
+    room.Q.value = 0.5;
+    const g = c.createGain();
+    g.gain.value = 0.9;
+    room.connect(g).connect(this.master);
+    const chords = [[220, 262, 330], [175, 220, 262], [196, 247, 294], [165, 208, 247]];
+    chords.forEach((ch, bar) => ch.forEach((f, i) => {
+      this.pluck(f, bar * 1.1 + i * 0.03, 0.14, room);
+      this.pluck(f, bar * 1.1 + 0.55 + i * 0.03, 0.09, room);
+    }));
+    const melody: [number, number, number][] = [[659, 0, 0.5], [587, 0.5, 0.3], [523, 0.8, 0.3], [587, 1.1, 0.9], [523, 2.2, 0.5], [494, 2.7, 0.3], [440, 3.0, 0.3], [415, 3.3, 1.2]];
+    melody.forEach(([f, at, dur]) => this.tone(f, at, dur, 0.035, 'sawtooth', f * 1.004, room));
+  }
+
   // ---- one-shot effects --------------------------------------------------
   sfx(name: string) {
     if (!this.enabled) return;
@@ -154,6 +173,12 @@ export class Audio {
         case 'radiooff': T(300, 0, 0.05, 0.04, 'square'); break;
         case 'cheer': H(0, 1.4, 0.07, 1200, 0.4); H(0.1, 1.2, 0.05, 2200, 0.6); break;
         case 'title': this.highlife(0.16); break;
+        case 'theme': this.theme(); break;
+        case 'door': T(70, 0, 0.45, 0.2, 'sine', 38); H(0, 0.14, 0.12, 700, 0.6, 'lowpass'); H(0.02, 0.3, 0.04, 2400, 1.5); break;
+        case 'throat': H(0, 0.16, 0.07, 420, 2.5); H(0.24, 0.22, 0.08, 360, 2.5); T(140, 0.24, 0.2, 0.03, 'sawtooth', 110); break;
+        case 'heartbeat': for (let i = 0; i < 4; i++) { T(62, i * 0.8, 0.14, 0.2, 'sine', 40); T(58, i * 0.8 + 0.2, 0.12, 0.14, 'sine', 40); } break;
+        case 'snore': H(0, 1.0, 0.05, 220, 4, 'bandpass', 380); H(1.3, 0.8, 0.03, 900, 3, 'bandpass', 500); break;
+        case 'yawn': T(520, 0, 1.1, 0.035, 'triangle', 260); H(0.05, 1.0, 0.025, 1200, 2, 'bandpass', 600); break;
       }
     } catch {
       /* sound never blocks the game */
