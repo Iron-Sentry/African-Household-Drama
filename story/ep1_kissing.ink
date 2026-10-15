@@ -1,251 +1,173 @@
 // =====================================================================
 //  EPISODE ONE — THE KISSING SCENE
-//  Sunday evening, the family hall. One television. One sofa.
-//  One remote control, still wrapped in its plastic.
+//  Sunday night, near bedtime. One television. One antenna.
+//  One child behind the bedroom door, watching through the keyhole.
+//  This is the free episode: keep it short, visual, and nostalgic.
 // =====================================================================
 
 === ep1 ===
-#episode:1 #scene:hall #light:snow #cast:none #cam:tv_close #prop:tv=snow #amb:static
-#card:Episode One/The Kissing Scene/Accra, Ghana · Sunday · 7:42 PM
-Accra, 1998. In this house there is one television, one sofa, and one remote control.
-You are allowed to sit on the sofa.
-Daddy: Nana! Nana, come. Come and hold this antenna for me. #cam:wide #cast:mum,child,dad #expr:dad=strain #anim:dad=lean #light:evening
-The Sunday film starts in two minutes, and the television is showing nothing but snow. #expr:child=worried
-Mummy: Leave the antenna. Every Sunday, it's the same palaver. #expr:mum=flat
-Daddy: The film will not watch itself, my dear. Nana! Today! #expr:dad=strain #anim:dad=shake
+#episode:1 #scene:hall #light:evening #cast:mum,dad #cam:tv #prop:tv=snow #prop:keyhole=on #amb:static
+#card:Episode One/The Kissing Scene/Accra, Ghana · Sunday · 8:25 PM
+Bedtime. But your eye is pressed to the keyhole. #expr:dad=strain #anim:dad=lean #expr:mum=flat
+Daddy: Ah! This antenna! #anim:dad=shake #sfx:static
+Mummy: Maria starts in five minutes, oo.
+Daddy: NANA! #fx:impact #expr:dad=strain #sfx:sting #cam:wide
+Your name. Your chance. But you are supposed to be asleep.
+* [Pretend to be asleep #flavour:His voice will pass.]
+    -> pretend
+* [Run out with excitement #flavour:"Yes, Daddy!"]
+    -> rush
+* [Answer in a sleepy voice #flavour:"Daddy... you called me?"]
+    -> sleepy
+
+= pretend
+~ woke = "pretend"
+~ score(-8, 0, 4)
+You dive into bed and squeeze your eyes shut. #prop:keyhole=off #cast:none #light:blackout #amb:night #sfx:whoosh
+Daddy: Nana! #auto:1200
+You snore a little. For realism. #sfx:snore #auto:1600
+BAM. The door flies open. #sfx:door #fx:impact #light:evening #cast:mum #expr:mum=angry #focus:mum #anim:mum=bounce
+Mummy: Akola bone! Your father is calling you and you are lying there? #emote:mum=anger
+Mummy: Get up! Go and fix the antenna! #fx:shake
+#note:Mummy knows a fake snore.
+-> fix_antenna
+
+= rush
+~ woke = "rush"
+~ score(-6, 0, 3)
+Nana: YES, DADDY! #prop:keyhole=off #cast:mum,child,dad #cam:wide #anim:child=bounce #expr:child=delight #sfx:whoosh
+Both parents turn. Slowly. #expr:mum=sideeye #expr:dad=sideeye #sfx:sting
+Mummy: Weren't you supposed to be sleeping? #focus:mum
+Nana: I... was sleeping fast. #expr:child=worried #emote:child=sweat #focus:child
+#note:Too awake for a sleeping child.
+Mummy: Fix the antenna. We will talk. #expr:mum=flat #focus:none
+-> fix_antenna
+
+= sleepy
+~ woke = "sleepy"
+~ score(10, 6, 0)
+Nana: Daddy...? You called me? #sfx:yawn #prop:keyhole=off #cast:mum,child,dad #cam:wide #expr:child=eyesclosed #anim:child=slump
+#note:Award-winning performance.
+#moment:sleepy_voice/Best Actor, Sleeping Category
+Daddy: Oh, you were sleeping. Sorry, my dear. #expr:dad=smile #focus:dad
+Daddy: Kindly help me with the antenna. #focus:none #expr:mum=smile
 -> fix_antenna
 
 = fix_antenna
-The antenna is two metal rods on top of the television, bent like an old man's knees. #cam:tv #expr:dad=neutral #expr:child=neutral
-Daddy: Hold it there. No, move it back. The first spot. #expr:dad=strain #emote:dad=sweat
-* [Hold it exactly where Daddy says #flavour:Become one with the television.]
+Daddy: Hold it. Turn it left. Small. Small! #cast:mum,child,dad #cam:tv #expr:dad=strain #expr:child=neutral #anim:child=lean #sfx:static
+Daddy: Now up... and STOP! #emote:dad=sweat #expr:mum=flat
+* [Do exactly what Daddy says #flavour:Left. Small. Up. Stop.]
     ~ antenna = "held"
-    ~ score(4, 0, 0)
-    You grab the antenna. #anim:child=jump #prop:tv=film #sfx:tvclear
-    The snow clears. A woman in an enormous pink dress appears on the screen. #cam:tv
-    Daddy: Don't move. Don't breathe. From today, you are part of this television. #expr:dad=delight
-    Mummy: The child can't stand there for the whole film. #expr:mum=flat
-    Daddy: Why not? It's a good film. #expr:dad=smug
+    ~ score(6, 0, 0)
+    Left. Small. Up. Stop. #anim:child=lean
+    The snow melts into colour. #prop:tv=film #sfx:tvclear #expr:child=delight
+    Daddy: You see? When you listen, things work! #expr:dad=delight #emote:dad=sparkle
     #moment:human_antenna/The Human Antenna
-    You are now a piece of household electronics. #expr:child=stare
-* [Fetch Mummy's aluminium foil from the kitchen #flavour:Science. Kitchen science.]
+* [Wrap Mummy's foil around it #flavour:Kitchen science.]
     ~ antenna = "foil"
     ~ score(-2, 12, 0)
-    You run to the kitchen and come back with Mummy's roll of aluminium foil. #anim:child=bounce #sfx:whoosh
-    Two careful twists around each rod. A small silver crown for the television. #prop:foil=on #prop:tv=film #sfx:tvclear
-    The picture comes in, sharp as a new cutlass.
-    Daddy: Ei! Engineer! You see this child? Engineer! #expr:dad=delight #emote:dad=sparkle
+    You dash to the kitchen and back with Mummy's foil. #anim:child=bounce #sfx:whoosh
+    Two twists. A silver crown. #prop:foil=on #prop:tv=film #sfx:tvclear
+    Daddy: Ei! Engineer! #expr:dad=delight #emote:dad=sparkle
+    Mummy: Is that my Christmas foil? #expr:mum=sideeye #emote:mum=anger
     #moment:foil_engineer/The Aluminium Engineer
-    Mummy: Is that my foil? I was keeping that foil for Christmas. #expr:mum=sideeye #emote:mum=anger
-* [Give the television one firm slap on the side #flavour:It always works for Uncle Fiifi.]
+* [Give the television one slap #flavour:It works for Uncle Fiifi.]
     ~ antenna = "slap"
-    ~ score(-3, 0, 5)
-    You walk up to the television and give it one firm slap. #fx:shake #sfx:thump #anim:child=lean
-    The picture flickers... appears... #prop:tv=film
-    ...and disappears completely. #prop:tv=snow #sfx:static #expr:child=worried
+    ~ score(-4, 0, 3)
+    One firm slap. #fx:shake #sfx:thump #anim:child=lean
+    The picture vanishes completely. #prop:tv=snow #sfx:static #expr:child=worried
     Daddy: Who taught you to beat my television? It is not a goat! #expr:dad=shock #emote:dad=shock
-    Mummy sighs, stands up, and touches the antenna with one finger. #anim:mum=lean #expr:mum=flat
-    The picture comes back perfectly. #prop:tv=film #sfx:tvclear
+    Mummy touches the antenna with one finger. Perfect picture. #anim:mum=lean #prop:tv=film #sfx:tvclear #expr:mum=smug
     #moment:tv_discipline/Television Discipline
-    Mummy: Sit down. Both of you. #expr:mum=smug
-- -> settle
+- -> theme
 
-= settle
-{antenna == "held":
-    You stay beside the television, holding the antenna. From here you can see the whole hall. And the whole hall can see you. #cam:wide
-- else:
-    You sit on the sofa between Mummy and Daddy. The best seat in the house. Also the most dangerous. #cam:sofa
+= theme
+The theme song. Just in time. #sfx:theme #amb:film #light:film #prop:tv=film #cam:sofa #expr:child=delight #expr:mum=neutral #expr:dad=focused
+You squeeze onto the sofa, between Mummy and Daddy. #anim:child=bounce
+{woke == "pretend" || woke == "rush":
+    Mummy: Watch quietly. Then bed. #expr:mum=flat #focus:mum
 }
-The adverts are still running. You have a moment to look around. #expr:child=neutral #expr:dad=neutral #expr:mum=neutral
-- (look)
-* [The remote control #hotspot:remote]
-    The remote control sits on the arm of Daddy's chair, still wrapped in the clear plastic it came with. #cam:remote
-    It has been "new" for six years. It will be new forever.
-    Daddy: Don't touch. You'll spoil it. #expr:dad=flat
-    -> look
-* [The calendar #hotspot:calendar]
-    ~ seen_calendar = true
-    A calendar from Daddy's office. This month's picture is the Akosombo Dam. #cam:calendar
-    Daddy says the lake behind the dam is very low this year. That is why the lights keep going off.
-    Mummy: Don't remind me. My fridge has become a cupboard. #expr:mum=flat
-    -> look
-* [The wedding photograph #hotspot:photo]
-    Mummy and Daddy on their wedding day. Mummy looks exactly the same. #cam:photo
-    Daddy had hair. Nobody in this house discusses Daddy's hair. #expr:dad=flat #emote:dad=dots
-    -> look
-* [The standing fan #hotspot:fan]
-    The standing fan turns its head slowly from side to side, like a headmaster at assembly. #cam:fan
-    When it faces you, life is sweet. When it faces Daddy, it somehow stays there. #emote:child=sweat
-    -> look
-+ [Watch the film #flavour:The adverts are finishing.]
-    -> film
-
-= film
-Daddy: Shhh. The film is starting. Who has the remote? #cam:sofa #amb:film #light:film #expr:dad=focused
-Mummy: It's in your hand. #expr:mum=flat
-Daddy: ...I know. #expr:dad=flat #emote:dad=dots #auto:1600
-Mummy: Nana, sit properly. And don't let me hear any unnecessary noise. #expr:mum=flat #focus:mum
-She says this without even looking away from the television. #focus:none
-Tonight's film is a foreign romance called Hearts of Fire. The hero has a very serious moustache. #cam:tv #prop:tv=film
-TV: Isabella... I have crossed seven oceans to find you.
-TV: Ricardo... there are only five oceans. #auto:1800
-TV: For you, I found two more. #sfx:romance
-Daddy: Hmm. This man is serious. #expr:dad=focused #cam:sofa
-The music swells. Isabella leans closer. Ricardo leans closer. #cam:push #light:tension #expr:child=worried
-Something is happening on the television. Something terrible. #cam:push
-Daddy clears his throat. Twice. #emote:dad=sweat #expr:dad=worried
-Mummy's eyes move. Not her head. Only her eyes. Slowly... towards you. #focus:mum #expr:mum=sideeye #sfx:sting
-{antenna == "held":
-    EI! The people on the television have started KISSING. And you are standing right beside it, in front of everybody. #fx:impact #sfx:kiss #focus:none #prop:tv=kiss #expr:child=shock #timer:8
-- else:
-    EI! The people on the television have started KISSING. Your parents are right beside you. #fx:impact #sfx:kiss #focus:none #prop:tv=kiss #expr:child=shock #timer:8
-}
-* [Burst out laughing #flavour:You just cannot hold it in.]
-    -> laugh
-* [Immediately close your eyes #flavour:You saw absolutely nothing.]
-    -> eyes
-* [Comment on the scene #flavour:"Ei, Mummy! See what they are doing!"]
+TV: Maria, please. Forgive me. #cam:tv #focus:none
+TV: You lied to me, Ricardo! #auto:1600
+Daddy: Hmm. This thing is getting serious. Just forgive him! #cam:sofa #expr:dad=focused #focus:dad
+Mummy: Yes, Maria! He is apologising. He is remorseful! #expr:mum=focused #focus:mum
+TV: ...I forgive you. #cam:tv #focus:none #sfx:romance #light:tension
+Ricardo touches her face. They look. And look. #cam:push #expr:child=worried
+Everybody knows what comes next.
+Daddy clears his throat. #sfx:throat #cam:sofa #emote:dad=sweat #expr:dad=worried
+So does Mummy. #sfx:throat #expr:mum=sideeye #focus:mum
+Two side-eyes. One child. Cold sweat. #sfx:heartbeat #prop:tv=kiss #focus:none #expr:child=shock #emote:child=sweat #timer:12
+* [Comment on the scene #flavour:"Ei! See what they are doing!"]
     -> comment
-* [Announce that you are very, very thirsty #flavour:A strategic retreat to the kitchen.]
+* [Burst out laughing #flavour:It's coming out.]
+    -> laugh
+* [Immediately close your eyes #flavour:You saw nothing.]
+    -> eyes
+* [Announce that you are very thirsty #flavour:A strategic retreat.]
     -> water
-* {antenna == "held"} [Let go of the antenna #flavour:Accidentally. Of course.]
-    -> letgo
-* [Freeze #timeout #flavour:Say nothing. Become furniture.]
+* [Freeze #timeout #flavour:Become furniture.]
     -> froze
+
+= comment
+~ tv_reaction = "comment"
+~ score(-18, 0, 20)
+Nana: Ei! See what they are doing! #anim:child=jump #expr:child=shock #sfx:bad
+Silence. Even the fan stops. #expr:mum=stare #expr:dad=stare #auto:1500
+KPO! Mummy's knuckle lands on your head. #sfx:thump #fx:impact #anim:mum=lean #expr:child=hurt #emote:child=shock
+Mummy: Who asked you for commentary? Bed! #expr:mum=angry #emote:mum=anger #focus:mum
+#moment:film_critic/The Film Critic
+Through the wall, Maria's story continues without you. #cast:mum,dad #focus:none #light:tension
+-> ending
 
 = laugh
 ~ tv_reaction = "laugh"
-~ score(-15, 0, 18)
-A laugh escapes. Not a small one. A big, round one that bounces off every wall. #expr:child=laugh #anim:child=shake #sfx:bad
-#note:Mummy heard that laugh.
-Mummy: AKOLA BONE! What exactly is making you laugh? Do you have a problem? #expr:mum=angry #anim:mum=bounce #fx:shake #focus:mum #emote:mum=anger
-Daddy slowly turns his head. The film has become the least of your worries. #focus:dad #expr:dad=flat #expr:child=worried
-Nana: N-nothing, Mummy.
-Daddy: If you have so much energy, go and bring your schoolbooks. #expr:dad=flat #focus:none
-#moment:homework/Homework Instead of Romance
-Your Sunday film has officially become a homework session at the dining table. #cam:table #expr:child=sad
-From the table you can hear Ricardo singing. You will never know why he is singing.
--> lights_off
+~ score(-12, 0, 14)
+A laugh escapes. A big one. #expr:child=laugh #anim:child=shake #sfx:bad
+Daddy: What is funny? #expr:dad=angry #focus:dad #fx:shake
+Daddy: Akola bone. Go inside. Now. #expr:dad=flat
+#moment:sent_inside/Sent Inside
+Through the wall, Maria's story continues without you. #cast:mum,dad #focus:none #light:tension
+-> ending
 
 = eyes
 ~ tv_reaction = "eyes"
 ~ score(22, 15, 0)
-You shut your eyes so fast and so tight that you see small stars. #expr:child=eyesclosed #sfx:good
-#note:Excellent survival instincts!
-Mummy: Hmm. Good child. You know when to close your eyes. #expr:mum=proud #emote:mum=sparkle #focus:mum
-A soft, approving nod. The ancestors are smiling. #focus:none
-You keep your eyes closed. Just to be safe. #light:film #prop:tv=film
-You hear music. Then a door slams. Then a car chase. Then what sounds like a wedding. #auto:2600
-Daddy: Nana. Open your eyes. They finished long ago. #expr:dad=happy
-You open them. Ricardo is now married, has two children, and is somehow in prison. #expr:child=shock #emote:child=question
+You shut your eyes so tight you see stars. #expr:child=eyesclosed #sfx:good
+Mummy: Good child. #expr:mum=proud #emote:mum=sparkle #focus:mum
+Daddy pats your knee. #expr:dad=proud #focus:none
 #moment:professional_blinker/The Professional Eye-Closer
-You have missed the entire plot.
--> lights_off
-
-= comment
-~ tv_reaction = "comment"
-~ score(-22, 0, 26)
-Nana: Ei, Mummy! See what they are doing! #expr:child=shock #anim:child=jump #sfx:bad
-#note:You said that OUT LOUD.
-The hall goes completely silent. Even the fan seems to stop and look at you. #auto:1800 #expr:mum=stare #expr:dad=stare
-Mummy: AKOLA BONE! Who asked you to do commentary? Go to your room! #expr:mum=angry #fx:shake #focus:mum #emote:mum=anger
-Daddy: Go. #focus:dad #expr:dad=flat
-You have managed to offend both parents, interrupt the film, and end your own evening. #focus:none #expr:child=sad #anim:child=slump
-#moment:film_critic/The Film Critic
-The bedroom door closes. Through the wall, you hear the film continue without you. Pain. #cast:mum,dad #light:tension
--> lights_off
+Daddy: You can open now. #auto:1800 #prop:tv=film #light:film #sfx:romance
+You watch the rest of the episode. All of it. Between Mummy and Daddy. #expr:child=delight #cam:wide
+-> ending
 
 = water
 ~ tv_reaction = "water"
+~ mummy_knows = true
 ~ score(4, 15, 0)
 Nana: Mummy... I'm very thirsty. #expr:child=worried
 Mummy: ...Go. #expr:mum=sideeye #focus:mum
-#note:A strategic retreat.
 You walk to the kitchen like a soldier leaving a battlefield. #cast:mum,dad #sfx:whoosh #focus:none
-Behind you, Daddy coughs for nine seconds straight. #emote:dad=sweat
-Mummy: And bring me water too!
-You take your time. You drink very slowly. You count the floor tiles. When the music changes, you come back. #cast:mum,child,dad #prop:tv=film
-The kiss is over. Ricardo is riding a horse now.
+When the music changes, you come back. #cast:mum,child,dad #prop:tv=film
 Mummy: That thirst came at a very convenient time. #expr:mum=sideeye #focus:mum
-Nana: God's time is the best, Mummy. #expr:child=smug #focus:child
-Daddy laughs before he can stop himself. Mummy does not. #expr:dad=laugh #expr:mum=flat #focus:none
 #moment:convenient_thirst/The Convenient Thirst
-Mummy writes something down in the notebook inside her head. #expr:mum=sideeye
--> lights_off
-
-= letgo
-~ tv_reaction = "antenna"
-~ mummy_knows = true
-~ score(8, 18, 2)
-Your hand slips. Completely by accident. #anim:child=lean
-The kiss dissolves into snow. #prop:tv=snow #sfx:static #light:snow
-Daddy: Nana! Hold it well! #expr:dad=shock #anim:dad=jump
-Nana: Sorry, Daddy. My hand is tired. #expr:child=worried
-You fight bravely with the antenna for a long, long time. Somehow, it only works again when the music changes. #prop:tv=film #light:film #sfx:tvclear
-Daddy: Finally! #expr:dad=happy
-Mummy looks at you for a long moment. Then, very slightly, the corner of her mouth moves. #focus:mum #expr:mum=smile
-#note:Mummy noticed. Mummy approves.
-#moment:strategic_interference/Strategic Interference
-She knows. You know she knows. Nobody will ever say anything. #focus:none
--> lights_off
+She knows. You know she knows. #focus:none
+-> ending
 
 = froze
 ~ tv_reaction = "froze"
 ~ score(-5, 0, 8)
-You do not laugh. You do not close your eyes. You just... watch. Like a scientist. #expr:child=stare #auto:2000
-Daddy reaches for the remote. He presses the button. Nothing happens. #emote:dad=sweat #cam:remote
-He presses it again, harder, through the plastic.
-The channel changes to the news. The newsreader is talking about the water level at Akosombo. #prop:tv=news #cam:tv #light:film
-Daddy: Hmm. Very educational. #expr:dad=flat #cam:sofa
-Mummy: Nana, why were you watching like that? #expr:mum=sideeye #focus:mum
+You don't move. You just... watch. #expr:child=stare #auto:1600
+Daddy grabs the remote and changes to the news. #cam:remote #sfx:click #prop:tv=news
+Mummy: Nana, why were you watching like that? #expr:mum=sideeye #cam:sofa #focus:mum
 #moment:documentary/The Documentary Watcher
-There is no correct answer to this question. You have learned this too late. #focus:none
--> lights_off
+There is no correct answer. #focus:none
+-> ending
 
-= lights_off
-Then, click. #sfx:powercut #light:blackout #prop:tv=off #amb:night #cast:mum,child,dad #cam:wide #focus:none
-The fan stops. The television dies. The whole street goes dark at the same time. #expr:child=shock #expr:mum=flat #expr:dad=shock
-Neighbour: EI! They have taken the light!
-{seen_calendar:
-    Akosombo. You think about the calendar. The lake must be very, very low.
+= ending
+The closing theme plays. #sfx:theme #cam:wide #light:evening #amb:night
+{tv_reaction == "eyes":
+    Mummy: Now, bed. #expr:mum=smile
 }
-Mummy finds the kerosene lamp without even looking. She has done this many times this year. #prop:lamp=on #light:lamp #cam:lamp
-{
-- tv_reaction == "laugh":
-    Daddy: God has seen your laughing, Nana. #expr:dad=smug
-    Nana: But Daddy, the light went off for everybody.
-    Daddy: God has seen everybody's laughing. #expr:dad=flat
-- tv_reaction == "comment":
-    Daddy calls towards the bedroom door: Is the film critic sleeping? #expr:dad=smug
-    Mummy: If not, the film critic should be sleeping. #expr:mum=flat
-- tv_reaction == "eyes":
-    Daddy: At least one person in this house has discipline. #expr:dad=proud
-- tv_reaction == "water":
-    Mummy: Nana. Since you know the way to the kitchen so well, bring the matches. #expr:mum=sideeye
-- tv_reaction == "antenna":
-    Daddy: This antenna. If Nana had held it properly... #expr:dad=flat
-    Mummy: Leave the child. #expr:mum=smile
-    Daddy looks from Mummy to you and back again, and decides not to investigate. #emote:dad=question
-- tv_reaction == "froze":
-    Daddy: Nana, the news was very interesting, eh? #expr:dad=smug
-    You nod in the dark. You have never been so happy to see darkness.
-}
-Mummy: Tomorrow afternoon, I am visiting Auntie Efua. Nana, you are coming with me. #expr:mum=flat #focus:mum
-{
-- tv_reaction == "eyes":
-    Mummy: A well-behaved child should be seen. #expr:mum=proud
-    Nana: But Mummy...
-    Mummy: Seen. Not heard. #expr:mum=flat
-    #note:Good behaviour has its price.
-    Being the good child, it turns out, comes with responsibilities. #expr:child=sad
-- tv_reaction == "water":
-    Mummy: Bring your thirst. Auntie Efua has plenty of water. #expr:mum=sideeye
-- tv_reaction == "antenna":
-    Mummy: Daddy needs to fix his antenna in peace. #expr:mum=smile
-- else:
-    Mummy: After tonight, I am not leaving you alone in this house with that television. #expr:mum=flat
-}
-In the lamplight, the house goes quiet. #focus:none #cam:lamp
-But in a Ghanaian household, nothing stays quiet for long. #sfx:sting
-By tomorrow afternoon, somebody else will know exactly what happened tonight.
+Mummy: Tomorrow, we are visiting Auntie Efua. #expr:mum=flat #focus:mum
+By tomorrow afternoon, somebody else will know exactly what happened tonight. #focus:none #sfx:sting
 -> ep2

@@ -5,7 +5,7 @@ import { SCENES, LIGHTS, ALL_SHOTS, ALL_HOTSPOTS } from './scenes.ts';
 export const EMOTES = ['sweat', 'shock', 'question', 'anger', 'sparkle', 'heart', 'dots'];
 export const ANIMS = ['bounce', 'shake', 'jump', 'lean', 'slump'];
 export const FX = ['shake', 'impact', 'flash'];
-export const SFX = ['good', 'bad', 'click', 'sting', 'kiss', 'romance', 'tvclear', 'static', 'thump', 'whoosh', 'powercut', 'powerup', 'knock', 'crinkle', 'crunch', 'coin', 'pop', 'radio', 'radiooff', 'cheer', 'title'];
+export const SFX = ['good', 'bad', 'click', 'sting', 'kiss', 'romance', 'tvclear', 'static', 'thump', 'whoosh', 'powercut', 'powerup', 'knock', 'crinkle', 'crunch', 'coin', 'pop', 'radio', 'radiooff', 'cheer', 'title', 'theme', 'door', 'throat', 'heartbeat', 'snore', 'yawn'];
 export const AMBIENCE = ['static', 'film', 'night', 'hall', 'auntie', 'clock', 'compound'];
 export const PROPS: Record<string, RegExp> = {
   tv: /^(snow|film|kiss|news|off)$/,
@@ -14,6 +14,7 @@ export const PROPS: Record<string, RegExp> = {
   tray: /^(on|off)$/,
   biscuits: /^-?\d+$/,
   auntie_tv: /^(snow|fixed)$/,
+  keyhole: /^(on|off)$/,
 };
 
 const onStage = Object.values(CHARACTERS).filter((c) => c.body).map((c) => c.id);

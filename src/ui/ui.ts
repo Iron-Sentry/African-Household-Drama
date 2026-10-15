@@ -327,6 +327,17 @@ export class UI {
     this.world.classList.add('fx-shake');
   }
 
+  /** The child's view through the bedroom keyhole: a mask over the whole stage. */
+  keyhole(on: boolean, instant = false) {
+    const layer = $('fx');
+    layer.querySelector('.fx-keyhole')?.remove();
+    if (!on) return;
+    const k = document.createElement('div');
+    k.className = instant ? 'fx-keyhole instant' : 'fx-keyhole';
+    k.innerHTML = '<svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><path fill-rule="evenodd" d="M-200-200H360V300H-200Z M80 22a13 13 0 0 1 7 24l7 34H66l7-34a13 13 0 0 1 7-24Z"/></svg>';
+    layer.append(k);
+  }
+
   toast(text: string) {
     this.toastEl.textContent = text;
     this.toastEl.classList.add('show');

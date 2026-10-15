@@ -36,7 +36,7 @@ All accepted values are enforced by `src/content/validate.ts`.
 | `#fx:name` | Play `shake`, `impact`, or `flash`. |
 | `#sfx:name` | Trigger a registered synthesized sound. Audio remains optional. |
 | `#amb:name` | Set `static`, `film`, `night`, `hall`, `auntie`, `clock`, or `compound` ambience. |
-| `#prop:name=value` | Change a registered scene prop: `tv`, `foil`, `lamp`, `tray`, `biscuits`, or `auntie_tv`. |
+| `#prop:name=value` | Change a registered scene prop: `tv`, `foil`, `lamp`, `tray`, `biscuits`, `auntie_tv`, or `keyhole` (`on` frames the stage as the view through the bedroom keyhole). |
 | `#timer:seconds` | Time the next choices when timed choices are enabled. |
 | `#timeout` | Mark the choice automatically taken when that timer expires. |
 | `#auto:milliseconds` | Advance the tagged line after a delay. |

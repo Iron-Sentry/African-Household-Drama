@@ -18,8 +18,6 @@ Mummy: Listen to me. Greet properly. Sit nicely. And do not embarrass me. #focus
     The pressure of being the good child sits on your shoulders like a school bag full of stones. #expr:child=worried
 - tv_reaction == "water":
     Mummy: And today, nobody is going to any kitchen. You will sit where I can see you. #expr:mum=sideeye
-- tv_reaction == "antenna":
-    Mummy: And don't touch Auntie Efua's television. #expr:mum=smile #emote:mum=sparkle
 }
 Mummy: Agoo! #sfx:knock #focus:none
 Auntie Efua: Amee! Come in, come in!
@@ -56,7 +54,7 @@ Mummy squeezes your hand. This is the moment. #expr:mum=flat
 Auntie Efua: Ah! Look how big you've grown! #cam:wide #expr:auntie=happy
 {
 - tv_reaction == "laugh":
-    Auntie Efua: And I hear somebody was laughing at the Sunday film! Hihihi! #expr:auntie=laugh
+    Auntie Efua: And I hear somebody was laughing at the kissing scene! Hihihi! #expr:auntie=laugh
     Mummy: Efua! #expr:mum=shock
 - tv_reaction == "comment":
     Auntie Efua: So you are the famous film critic! Your mummy told me everything. #expr:auntie=laugh
@@ -66,9 +64,6 @@ Auntie Efua: Ah! Look how big you've grown! #cam:wide #expr:auntie=happy
     Mummy pretends to look modest. She is not modest. #expr:mum=smug
 - tv_reaction == "water":
     Auntie Efua: Your mummy says you get very thirsty at very convenient times. #expr:auntie=smug
-- tv_reaction == "antenna":
-    Auntie Efua: Your daddy was complaining this morning. He says you have weak hands. #expr:auntie=smug
-    Mummy coughs into her hand. It sounds a lot like a laugh. #expr:mum=smile
 - tv_reaction == "froze":
     Auntie Efua: I hear you watched the news like a professor. Very serious child! #expr:auntie=happy
 }

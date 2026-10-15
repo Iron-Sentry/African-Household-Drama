@@ -22,7 +22,7 @@ import type { Stage3D } from './scene/stage3d.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const params = new URLSearchParams(location.search);
-const EPISODE_LINES = [0, 62, 70, 95]; // rough first-play line counts, for the progress bar
+const EPISODE_LINES = [0, 36, 70, 95]; // rough first-play line counts, for the progress bar
 const EPISODE_TITLES = ['', 'The Kissing Scene', "The Neighbour's Biscuit", 'The Errand'];
 
 const ui = new UI();
@@ -42,7 +42,7 @@ let episodeLines = 0;
 let checkpoint: Checkpoint = { episode: 1, vars: {} };
 let pendingTimer = 0;
 
-const freshStage = (): StageState => ({ scene: 'hall', light: 'evening', cam: 'wide', amb: '', cast: [], expr: {}, props: { tv: 'off', foil: 'off', lamp: 'off', tray: 'off' } });
+const freshStage = (): StageState => ({ scene: 'hall', light: 'evening', cam: 'wide', amb: '', cast: [], expr: {}, props: { tv: 'off', foil: 'off', lamp: 'off', tray: 'off', keyhole: 'off' } });
 let stage = freshStage();
 
 // ---------------------------------------------------------------------------
@@ -87,6 +87,7 @@ function applyStage(s: StageState) {
     v.setLight(stage.light);
     for (const [k, val] of Object.entries(stage.props)) v.setProp(k, val);
   });
+  ui.keyhole(stage.props.keyhole === 'on', true);
   actors.setCast(stage.cast, stage.expr);
   audio.ambience(stage.amb);
 }
@@ -105,6 +106,7 @@ function applyCue(c: Cue) {
       const [name, value] = c.value.split('=');
       if (name === 'biscuits' && value.startsWith('-')) stage.props.biscuits = String(Number(stage.props.biscuits || 12) + Number(value));
       else stage.props[name] = value;
+      if (name === 'keyhole') return ui.keyhole(value === 'on', reduced());
       return views().forEach((v) => v.setProp(name, value));
     }
     case 'cast':
