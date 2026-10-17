@@ -64,6 +64,6 @@ export function validateTag(tag: string): string | null {
 export function validateTags(tags: { tag: string; file: string; line: number }[]): string[] {
   return tags.flatMap(({ tag, file, line }) => {
     const p = validateTag(tag);
-    return p ? [`${file}:${line} #${tag} — ${p}`] : [];
+    return p ? [`${file}:${line} #${tag}: ${p}`] : [];
   });
 }

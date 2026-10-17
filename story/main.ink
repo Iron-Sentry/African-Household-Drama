@@ -1,5 +1,5 @@
 // =====================================================================
-//  AFRICAN HOUSEHOLD DRAMA — Volume One
+//  AFRICAN HOUSEHOLD DRAMA: Volume One
 //  "In a Ghanaian household, even the smallest decision can become
 //   everybody's business."
 //

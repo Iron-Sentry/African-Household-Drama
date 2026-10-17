@@ -1,5 +1,5 @@
 // =====================================================================
-//  EPISODE ONE — THE KISSING SCENE
+//  EPISODE ONE: THE KISSING SCENE
 //  Sunday night, near bedtime. One television. One antenna.
 //  One child behind the bedroom door, watching through the keyhole.
 //  This is the free episode: keep it short, visual, and nostalgic.

@@ -1,5 +1,5 @@
 // =====================================================================
-//  EPISODE TWO — THE NEIGHBOUR'S BISCUIT
+//  EPISODE TWO: THE NEIGHBOUR'S BISCUIT
 //  Monday afternoon. Auntie Efua's front room: a clock that stopped in
 //  1994, a glass showcase nobody eats from, and one very important tray.
 // =====================================================================

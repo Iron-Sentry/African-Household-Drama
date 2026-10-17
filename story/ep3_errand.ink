@@ -1,5 +1,5 @@
 // =====================================================================
-//  EPISODE THREE — THE ERRAND
+//  EPISODE THREE: THE ERRAND
 //  Tuesday after school. Five thousand cedis, a list of four things,
 //  Auntie Efua's provisions cupboard, the friend from next door, and a
 //  neighbour who sells milk, sugar, bread, matches... and news.

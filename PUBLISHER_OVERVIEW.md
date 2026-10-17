@@ -1,4 +1,4 @@
-# African Household Drama — publisher overview
+# African Household Drama: publisher overview
 
 ## Elevator pitch
 
@@ -91,14 +91,14 @@ Additional volumes, localisation, selected voice performance, richer shareable r
 
 ## Pitch-video shot list
 
-1. **Cold open — 5 seconds:** title card, Accra 1998, and the tagline over the warm household palette.
-2. **The room — 8 seconds:** the view through the keyhole: Daddy fighting the antenna, CRT snow, Mummy's off-stage bubble.
-3. **The impossible choice — 12 seconds:** Daddy adjusting the antenna, the kissing scene approaching, three choices appearing, and Nana's reaction.
-4. **Consequences travel — 12 seconds:** Auntie Efua's biscuit tray, READ THE ROOM on Mummy's side-eye, a callback to Episode One, then the friend next door repeating compound gossip in Episode Three.
-5. **The errand — 15 seconds:** Auntie Efua's provisions cupboard, the gossip trap ("You know nothing"), the extra-change dilemma, and rapidly moving score feedback.
-6. **Expression reel — 8 seconds:** Mummy's side-eye, Daddy's focus, Auntie's laugh, Kojo's delight, and emote/impact beats.
-7. **Play anywhere — 8 seconds:** desktop, phone portrait (camera follows the speaker), phone landscape, reduced motion, larger text.
-8. **Payoff — 10 seconds:** the household report card, remembered choices, discovered moments, and all four rank names.
-9. **Forward tease — 5 seconds:** “Next time: The Visitor From Abroad” clearly labelled as proposed content.
+1. **Cold open, 5 seconds:** title card, Accra 1998, and the tagline over the warm household palette.
+2. **The room, 8 seconds:** the view through the keyhole: Daddy fighting the antenna, CRT snow, Mummy's off-stage bubble.
+3. **The impossible choice, 12 seconds:** Daddy adjusting the antenna, the kissing scene approaching, three choices appearing, and Nana's reaction.
+4. **Consequences travel, 12 seconds:** Auntie Efua's biscuit tray, READ THE ROOM on Mummy's side-eye, a callback to Episode One, then the friend next door repeating compound gossip in Episode Three.
+5. **The errand, 15 seconds:** Auntie Efua's provisions cupboard, the gossip trap ("You know nothing"), the extra-change dilemma, and rapidly moving score feedback.
+6. **Expression reel, 8 seconds:** Mummy's side-eye, Daddy's focus, Auntie's laugh, Kojo's delight, and emote/impact beats.
+7. **Play anywhere, 8 seconds:** desktop, phone portrait (camera follows the speaker), phone landscape, reduced motion, larger text.
+8. **Payoff, 10 seconds:** the household report card, remembered choices, discovered moments, and all four rank names.
+9. **Forward tease, 5 seconds:** “Next time: The Visitor From Abroad” clearly labelled as proposed content.
 
 Use only captured game footage for demonstrated features. Treat proposed-content frames as concept cards, not playable footage.

@@ -1,5 +1,5 @@
-// The director: pulls beats from the ink story and stages them — scene, light,
-// camera, cast, poses, sound — then hangs each line off whoever is speaking.
+// The director: pulls beats from the ink story and stages them (scene, light,
+// camera, cast, poses, sound), then hangs each line off whoever is speaking.
 import '@fontsource/dm-sans/400.css';
 import '@fontsource/dm-sans/700.css';
 import '@fontsource/dm-sans/800.css';
