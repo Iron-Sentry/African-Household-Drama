@@ -38,6 +38,7 @@ export interface Settings {
   textSpeed: 'normal' | 'fast' | 'instant';
   motion: 'system' | 'reduced' | 'full';
   bigText: boolean;
+  music: boolean;
 }
 
 export interface Profile {
@@ -47,9 +48,10 @@ export interface Profile {
   checkpoints: Record<number, Checkpoint>;
   settings: Settings;
   player: 'boy' | 'girl';
+  soundUpgraded?: boolean; // v2 turned real audio on by default, once, for existing players
 }
 
-export const DEFAULT_SETTINGS: Settings = { sound: false, timedChoices: true, textSpeed: 'normal', motion: 'system', bigText: false };
+export const DEFAULT_SETTINGS: Settings = { sound: true, timedChoices: true, textSpeed: 'normal', motion: 'system', bigText: false, music: true };
 
 type Store = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
@@ -137,8 +139,9 @@ export function loadProfile(store = safeStore()): Profile {
     moments: Array.isArray(p?.moments) ? p!.moments.filter((m) => typeof m === 'string') : [],
     endings: Array.isArray(p?.endings) ? p!.endings.filter((m) => typeof m === 'string') : [],
     checkpoints: p?.checkpoints && typeof p.checkpoints === 'object' ? p.checkpoints : {},
-    settings: { ...DEFAULT_SETTINGS, ...(p?.settings || {}) },
+    settings: { ...DEFAULT_SETTINGS, ...(p?.settings || {}), ...(p?.soundUpgraded ? {} : { sound: true }) },
     player: p?.player === 'girl' ? 'girl' : 'boy',
+    soundUpgraded: true,
   };
 }
 

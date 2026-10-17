@@ -43,7 +43,7 @@ async function waitForServer() {
   throw new Error(`Vite preview did not start.\n${previewLog}`);
 }
 
-const defaults = { sound: false, timedChoices: false, textSpeed: 'instant', motion: 'full', bigText: false };
+const defaults = { sound: false, timedChoices: false, textSpeed: 'instant', motion: 'full', bigText: false, music: false };
 const allErrors = [];
 const missing = [];
 
@@ -70,6 +70,7 @@ async function makePage(browser, scenario, viewport, settings = defaults, player
       checkpoints: {},
       settings: savedSettings,
       player: savedPlayer,
+      soundUpgraded: true,
     }));
   }, [settings, player]);
   const page = await context.newPage();
@@ -188,7 +189,8 @@ try {
   const layoutResults = {};
   let performanceResult = null;
   for (const [name, viewport] of layouts) {
-    const item = await makePage(browser, name, viewport);
+    // desktop plays with sound + music on, so a missing audio file shows up as a 404
+    const item = await makePage(browser, name, viewport, name === 'desktop' ? { ...defaults, sound: true, music: true } : defaults);
     await keyboardStart(item.page, `${origin}/?test`);
     await item.page.keyboard.press('Enter'); // past the episode card
     for (let i = 0; i < 2; i++) await item.page.keyboard.press('Enter');

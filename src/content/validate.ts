@@ -8,7 +8,7 @@ export const FX = ['shake', 'impact', 'flash'];
 export const STICKERS = ['akola_bone', 'ei', 'good_child', 'hmmm', 'trouble', 'chale', 'shh', 'oops'];
 export const INSERTS = ['tv_remote', 'biscuit_tray', 'malt_bottle', 'boombox', 'wall_clock', 'framed_family_photo', 'rotary_phone_padlock'];
 export const SFX = ['good', 'bad', 'click', 'sting', 'kiss', 'romance', 'tvclear', 'static', 'thump', 'whoosh', 'powercut', 'powerup', 'knock', 'crinkle', 'crunch', 'coin', 'pop', 'radio', 'radiooff', 'cheer', 'title', 'theme', 'door', 'throat', 'heartbeat', 'snore', 'yawn'];
-export const AMBIENCE = ['static', 'film', 'night', 'hall', 'auntie', 'clock', 'compound'];
+export const AMBIENCE = ['static', 'film', 'night', 'hall', 'auntie', 'clock', 'compound', 'street'];
 export const PROPS: Record<string, RegExp> = {
   tv: /^(snow|film|kiss|news|off)$/,
   auntie_tv: /^(snow|fixed|off)$/,

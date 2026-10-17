@@ -47,6 +47,7 @@
 
     <header class="hud" id="hud">
       <button type="button" class="hud-btn" id="menu-btn" aria-label="Pause menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg></button>
+      <button type="button" class="hud-btn" id="mute-btn" aria-label="Mute sound" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z" /><path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" /><path class="cross" d="M16 9l6 6M22 9l-6 6" /></svg></button>
       <button type="button" class="hud-btn" id="log-btn" aria-label="Story so far"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 10h14M5 15h9M5 20h6" /></svg></button>
       <div class="ep-chip" id="ep-chip"></div>
       <ul class="stats" aria-label="Household status">
@@ -99,7 +100,8 @@
   <dialog class="sheet" id="settings-dialog" aria-labelledby="settings-title">
     <form method="dialog" class="sheet-card">
       <h2 id="settings-title">Settings</h2>
-      <label class="toggle"><input type="checkbox" name="sound" /><span>Sound <small>Synthesised ambience and stingers. Nothing in the story needs sound.</small></span></label>
+      <label class="toggle"><input type="checkbox" name="sound" /><span>Sound <small>Room tones, effects and reactions. Nothing in the story needs sound.</small></span></label>
+      <label class="toggle"><input type="checkbox" name="music" /><span>Music <small>A soft kalimba under daytime scenes and a guitar tune on the title screen.</small></span></label>
       <label class="toggle"><input type="checkbox" name="timedChoices" /><span>Timed choices <small>A few panicky moments give you a few seconds. Turn them off to take your time.</small></span></label>
       <label class="toggle"><input type="checkbox" name="bigText" /><span>Larger text <small>Bigger speech bubbles and choices.</small></span></label>
       <fieldset><legend>Text speed</legend>
@@ -112,6 +114,7 @@
         <label><input type="radio" name="motion" value="reduced" /> Reduced</label>
         <label><input type="radio" name="motion" value="full" /> Full</label>
       </fieldset>
+      <details class="credits"><summary>Sound credits</summary><p>Recordings from <a href="https://freesound.org" target="_blank" rel="noopener">Freesound</a>. CC0 except where noted. CC BY: "African Rhythmic Guitar Loop" by oibeats3 (CC BY 4.0); "Success Jingle" by JustInvoke (CC BY 4.0); "Moolah! Counting Out Bills" by Coral_Island_Studios (CC BY 4.0); "MaleSnore_Raw_bip" by passAirmangrace (CC BY 3.0). Full list in docs/AUDIO_CREDITS.md.</p></details>
       <div class="sheet-actions">
         <button class="btn ghost" id="title-btn" type="button">Title screen</button>
         <button class="btn ghost" id="restart-btn" type="button">Restart story</button>

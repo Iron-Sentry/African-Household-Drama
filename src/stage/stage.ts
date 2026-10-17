@@ -12,6 +12,9 @@ const BODY = { adult: { h: 92, b: -14, face: 0.13 }, child: { h: 67, b: -6, face
 
 // Comic marks, inked like the speech bubbles. Each kind has its own motion in styles.css.
 const INK = 'stroke="#1d1420" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"';
+// Shots about people (not props): on a phone these follow the speaker's face.
+const PEOPLE_SHOTS = new Set(['wide', 'door', 'sofa', 'gate', 'bed']);
+
 const EMOTE_ART: Record<string, string> = {
   sweat: `<svg viewBox="0 0 48 60"><path d="M6 10l8 6M4 22l9 3" ${INK} fill="none"/><path class="drop" d="M30 6C24 20 19 27 19 35a11 11 0 0 0 22 0c0-8-5-15-11-29z" fill="#a9dcf5" ${INK}/><path d="M25 36a5 5 0 0 0 4 5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
   shock: `<svg viewBox="0 0 60 60"><path d="M10 18l8 8M50 18l-8 8M30 4v10" ${INK} fill="none"/><path d="M25 18h10l-2 24h-6z" fill="#ff5a3c" ${INK}/><circle cx="30" cy="51" r="5" fill="#ff5a3c" ${INK}/></svg>`,
@@ -94,7 +97,8 @@ export class Stage {
   private pushed = false;
   private focused = 'none';
   private readRoom = false;
-  private followX: number | null = null;
+  private followId: string | null = null; // who the phone camera is keeping in frame
+  private choosing = false; // choice stack covers the lower ~60% of a phone screen
   private zoom = 1; // extra push used for the establishing settle after a scene change
   private W = 0;
   private H = 0;
@@ -137,7 +141,7 @@ export class Stage {
     this.shot = 'wide';
     this.pushed = false;
     this.focused = 'none';
-    this.followX = null;
+    this.followId = null;
     this.clearHotspots();
     this.renderTv();
     this.frame(true);
@@ -225,7 +229,7 @@ export class Stage {
       a.x = x;
       a.el.style.left = `${x}%`;
     });
-    if (this.followX !== null && !this.order.some((id) => this.actors.get(id)!.x === this.followX)) this.followX = null;
+    if (this.followId && !this.actors.has(this.followId)) this.followId = null;
     if (!this.actors.has(this.focused)) this.focused = 'none';
     this.frame();
   }
@@ -303,7 +307,7 @@ export class Stage {
   speaking(id: string | null) {
     for (const [aid, a] of this.actors) a.el.classList.toggle('talking', aid === id);
     if (id && this.actors.has(id)) {
-      this.followX = this.actors.get(id)!.x;
+      this.followId = id;
       this.frame();
     }
   }
@@ -359,6 +363,13 @@ export class Stage {
     this.frame();
   }
 
+  /** While choices are up on a phone, frame faces higher so the answers never cover them. */
+  setChoosing(on: boolean) {
+    if (this.choosing === on) return;
+    this.choosing = on;
+    if (this.portrait) this.frame();
+  }
+
   /** READ THE ROOM: a tighter push on the focused face with a vignette. */
   setReadRoom(on: boolean) {
     this.readRoom = on;
@@ -391,22 +402,32 @@ export class Stage {
     const vw = this.root.clientWidth;
     const vh = this.root.clientHeight;
     const focus = this.actors.get(this.focused);
+    const portrait = this.portrait;
     let [s, x, y] = this.scene.shots[this.shot] || this.scene.shots.wide;
-    s *= this.zoom;
+    // On phones, text lives in the lower half; whoever matters keeps their face up here.
+    let face: Actor | undefined;
     if (focus) {
-      s = this.readRoom ? (this.portrait ? 1.35 : 1.75) : this.portrait ? 1.12 : 1.32;
+      s = this.readRoom ? (portrait ? 1.55 : 1.75) : portrait ? 1.35 : 1.32;
       x = focus.x;
       y = this.faceY(focus) + (this.readRoom ? 4 : 12);
+      face = focus;
     } else {
       if (this.pushed) s *= 1.12;
-      if (this.shot === 'wide' && this.portrait) {
+      if (portrait && PEOPLE_SHOTS.has(this.shot)) {
         const xs = this.order.map((id) => this.actors.get(id)!.x);
-        x = this.followX ?? (xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : x);
+        face = (this.followId && this.actors.get(this.followId)) || undefined;
+        x = face?.x ?? (xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : x);
+        s = Math.max(s, 1.25); // closer, so faces are big enough to read
       }
     }
+    const faceAt = this.choosing ? 0.2 : 0.3; // fraction of the screen height where the face sits
+    // a low face (a child) can only rise that far if we're zoomed in enough to have floor below it
+    if (portrait && face) s = Math.min(2.4, Math.max(s, ((1 - faceAt) * vh) / ((1 - this.faceY(face) / 100) * this.H)));
+    s *= this.zoom;
     const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
     const tx = clamp(vw / 2 - (s * x * this.W) / 100, vw - s * this.W, 0);
-    const ty = clamp(vh / 2 - (s * y * this.H) / 100, vh - s * this.H, 0);
+    const wantY = portrait && face ? vh * faceAt - (s * this.faceY(face) * this.H) / 100 : vh / 2 - (s * y * this.H) / 100;
+    const ty = clamp(wantY, vh - s * this.H, 0);
     this.cam = { s, tx, ty };
     this.world.classList.toggle('instant', instant || this.reduced);
     this.world.classList.toggle('slow', slow);

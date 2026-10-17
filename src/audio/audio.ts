@@ -1,299 +1,275 @@
-// Lightweight, fully synthesized sound design (no audio files, nothing licensed).
-// Off by default; the context is only created after the player turns sound on.
-// Nothing in the story depends on hearing these sounds.
+// Sound: real recordings (CC0 / CC-BY from Freesound, see docs/AUDIO_CREDITS.md),
+// fetched on first use. Three buses: effects, ambience and music; anything that
+// comes out of the TV or radio goes through a small-speaker filter first.
+// The context only starts after a tap or key press (browser autoplay rules),
+// and nothing in the story depends on hearing it.
 
-type Amb = { stop: () => void };
+type Shot = { f: string; g: number; tv?: boolean; at?: number; dur?: number; duck?: boolean };
+type Bed = { layers: [file: string, gain: number, lowpass?: number][]; tv?: [string, number]; music?: boolean };
+
+const SFX: Record<string, Shot> = {
+  good: { f: 'good', g: 0.5, duck: true },
+  bad: { f: 'bad', g: 0.45, duck: true },
+  sting: { f: 'sting', g: 0.65, duck: true },
+  click: { f: 'click', g: 0.35 },
+  pop: { f: 'pop', g: 0.45 },
+  whoosh: { f: 'whoosh', g: 0.4 },
+  kiss: { f: 'kiss', g: 0.5, tv: true },
+  thump: { f: 'thump', g: 0.8 },
+  knock: { f: 'knock', g: 0.8 },
+  door: { f: 'door', g: 0.75 },
+  crinkle: { f: 'crinkle', g: 0.45 },
+  crunch: { f: 'crunch', g: 0.85 },
+  coin: { f: 'cash', g: 0.6 },
+  throat: { f: 'throat', g: 0.75 },
+  heartbeat: { f: 'heartbeat', g: 0.8, duck: true },
+  snore: { f: 'snore', g: 0.8 },
+  yawn: { f: 'yawn', g: 0.7 },
+  cheer: { f: 'cheer', g: 0.6 },
+  powerup: { f: 'fan_on', g: 0.6 },
+  radio: { f: 'radio', g: 0.5, tv: true },
+  radiooff: { f: 'tv_switch', g: 0.6 },
+  static: { f: 'tv_static', g: 0.45, tv: true, dur: 0.9 },
+  tvclear: { f: 'tv_blips', g: 0.4, tv: true },
+  romance: { f: 'tv_film', g: 0.55, tv: true, dur: 6 },
+  theme: { f: 'tv_film', g: 0.55, tv: true, at: 8, dur: 6 },
+  title: { f: 'music_guitar', g: 0.6, dur: 7, duck: true },
+};
+
+// Room tones per #amb. A lowpass on a layer pushes it "outside" or "through a wall".
+const BEDS: Record<string, Bed> = {
+  hall: { layers: [['amb_fan', 0.4], ['amb_kids', 0.1, 900]], music: true },
+  compound: { layers: [['amb_birds', 0.4], ['amb_kids', 0.28], ['amb_backyard', 0.35]], music: true },
+  street: { layers: [['amb_street', 0.5], ['amb_birds', 0.12]], music: true },
+  auntie: { layers: [['amb_clock', 0.22], ['amb_birds', 0.12, 1200]], music: true },
+  clock: { layers: [['amb_clock', 0.5]] },
+  night: { layers: [['amb_night', 0.55]] },
+  static: { layers: [['amb_fan', 0.2]], tv: ['tv_static', 0.25] },
+  film: { layers: [['amb_fan', 0.2]], tv: ['tv_film', 0.3] },
+};
+
+const url = (f: string) => `${import.meta.env.BASE_URL}assets/audio/${f}.mp3`;
 
 export class Audio {
-  private ctx: AudioContext | null = null;
-  private master!: GainNode;
-  private noise!: AudioBuffer;
-  private plucks = new Map<number, AudioBuffer>();
-  private amb: Amb | null = null;
-  private ambName = '';
   enabled = false;
+  musicOn = true;
+  private ctx: AudioContext | null = null;
+  private sfxBus!: GainNode;
+  private ambBus!: GainNode;
+  private musicBus!: GainNode;
+  private tvIn!: AudioNode;
+  private cache = new Map<string, Promise<AudioBuffer | null>>();
+  private bed: { stop: () => void } | null = null;
+  private bedName = '';
+  private song: { stop: () => void } | null = null;
+  private songName = '';
+  private titleScreen = false;
 
   setEnabled(on: boolean) {
     this.enabled = on;
-    if (on) {
-      try {
-        this.ensure();
-        this.ctx!.resume();
-        const want = this.ambName;
-        this.ambName = '';
-        this.ambience(want);
-      } catch {
-        this.enabled = false;
-      }
-    } else {
-      this.amb?.stop();
-      this.amb = null;
+    if (!on) {
+      this.bed?.stop();
+      this.song?.stop();
+      this.bed = this.song = null;
       this.ctx?.suspend();
+    } else if (this.ctx) this.unlock();
+  }
+
+  setMusic(on: boolean) {
+    this.musicOn = on;
+    this.refreshMusic();
+  }
+
+  /** Browsers only allow sound after a gesture: call this from tap/key handlers. */
+  unlock() {
+    if (!this.enabled) return;
+    try {
+      this.ensure();
+      this.ctx!.resume();
+      if (!this.bed) this.startBed(this.bedName);
+      this.refreshMusic();
+    } catch {
+      this.enabled = false; // no Web Audio: play silently
     }
   }
 
-  /** Pause/resume everything without forgetting the current ambience. */
   setPaused(paused: boolean) {
     if (!this.ctx || !this.enabled) return;
     if (paused) this.ctx.suspend();
     else this.ctx.resume();
   }
 
+  /** The title screen gets its own tune; gameplay gets the household bed. */
+  setTitle(on: boolean) {
+    this.titleScreen = on;
+    this.refreshMusic();
+  }
+
   private ensure() {
     if (this.ctx) return;
     const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    this.ctx = new Ctx();
-    this.master = this.ctx.createGain();
-    this.master.gain.value = 0.8;
-    this.master.connect(this.ctx.destination);
-    const len = this.ctx.sampleRate * 2;
-    this.noise = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
-    const d = this.noise.getChannelData(0);
-    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const c = (this.ctx = new Ctx());
+    const master = c.createGain();
+    master.gain.value = 0.9;
+    // a gentle limiter so stacked effects never clip
+    const comp = c.createDynamicsCompressor();
+    comp.threshold.value = -10;
+    comp.ratio.value = 6;
+    master.connect(comp).connect(c.destination);
+    this.sfxBus = c.createGain();
+    this.ambBus = c.createGain();
+    this.musicBus = c.createGain();
+    this.musicBus.gain.value = 0.22;
+    [this.sfxBus, this.ambBus, this.musicBus].forEach((b) => b.connect(master));
+    // small CRT/radio speaker: no lows, no highs, a honky middle
+    const hp = c.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 320;
+    const lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3600;
+    const mid = c.createBiquadFilter();
+    mid.type = 'peaking';
+    mid.frequency.value = 1500;
+    mid.gain.value = 5;
+    hp.connect(lp).connect(mid).connect(this.sfxBus);
+    this.tvIn = hp;
   }
 
-  // ---- building blocks -------------------------------------------------
-  private tone(freq: number, at: number, dur: number, gain = 0.06, type: OscillatorType = 'sine', to?: number, dest: AudioNode = this.master) {
+  private load(f: string) {
+    if (!this.cache.has(f)) {
+      this.cache.set(
+        f,
+        fetch(url(f))
+          .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+          .then((b) => this.ctx!.decodeAudioData(b))
+          .catch(() => null), // a missing file just stays silent
+      );
+    }
+    return this.cache.get(f)!;
+  }
+
+  private voice(buf: AudioBuffer, dest: AudioNode, gain: number, o: { loop?: boolean; at?: number; dur?: number; fadeIn?: number } = {}) {
     const c = this.ctx!;
+    const src = c.createBufferSource();
+    src.buffer = buf;
+    src.loop = !!o.loop;
+    const g = c.createGain();
+    const t = c.currentTime;
+    g.gain.setValueAtTime(o.fadeIn ? 0 : gain, t);
+    if (o.fadeIn) g.gain.linearRampToValueAtTime(gain, t + o.fadeIn);
+    if (o.dur) {
+      g.gain.setValueAtTime(gain, t + Math.max(0, o.dur - 0.6));
+      g.gain.linearRampToValueAtTime(0, t + o.dur);
+    }
+    src.connect(g).connect(dest);
+    src.start(t, o.loop ? Math.random() * buf.duration : o.at || 0, o.loop ? undefined : o.dur);
+    const stop = (fade = 0.8) => {
+      const n = c.currentTime;
+      g.gain.cancelScheduledValues(n);
+      g.gain.setValueAtTime(g.gain.value, n);
+      g.gain.linearRampToValueAtTime(0, n + fade);
+      src.stop(n + fade + 0.05);
+    };
+    return { stop, g };
+  }
+
+  // ---- effects -------------------------------------------------------------
+  sfx(name: string) {
+    if (!this.enabled || !this.ctx) return;
+    if (name === 'powercut') return this.powercut();
+    const s = SFX[name];
+    if (!s) return;
+    if (s.duck) this.duck();
+    this.load(s.f).then((buf) => buf && this.voice(buf, s.tv ? this.tvIn : this.sfxBus, s.g, { at: s.at, dur: s.dur }));
+  }
+
+  /** Stingers push the music down for a moment so they land. */
+  private duck() {
+    const g = this.musicBus.gain;
+    const t = this.ctx!.currentTime;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(g.value, t);
+    g.linearRampToValueAtTime(0.06, t + 0.15);
+    g.linearRampToValueAtTime(0.22, t + 2.4);
+  }
+
+  /** The light goes: the fan's hum sags and dies, then silence. */
+  private powercut() {
+    const c = this.ctx!;
+    const t = c.currentTime;
     const o = c.createOscillator();
     const g = c.createGain();
-    const t = c.currentTime + at;
-    o.type = type;
-    o.frequency.setValueAtTime(freq, t);
-    if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(gain, t + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
-    o.connect(g).connect(dest);
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(120, t);
+    o.frequency.exponentialRampToValueAtTime(28, t + 1.1);
+    g.gain.setValueAtTime(0.05, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+    o.connect(g).connect(this.sfxBus);
     o.start(t);
-    o.stop(t + dur + 0.05);
+    o.stop(t + 1.25);
+    this.bed?.stop();
+    this.bed = null;
   }
 
-  private hiss(at: number, dur: number, gain: number, freq = 3000, q = 0.7, type: BiquadFilterType = 'bandpass', sweepTo?: number) {
-    const c = this.ctx!;
-    const s = c.createBufferSource();
-    s.buffer = this.noise;
-    const f = c.createBiquadFilter();
-    f.type = type;
-    f.frequency.value = freq;
-    f.Q.value = q;
-    const g = c.createGain();
-    const t = c.currentTime + at;
-    if (sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo, t + dur);
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(gain, t + Math.min(0.03, dur / 3));
-    g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
-    s.connect(f).connect(g).connect(this.master);
-    s.start(t, Math.random());
-    s.stop(t + dur + 0.05);
-  }
-
-  /** Karplus–Strong plucked string: a small highlife guitar for stingers. */
-  private pluck(freq: number, at: number, gain = 0.18, dest: AudioNode = this.master) {
-    const c = this.ctx!;
-    const key = Math.round(freq);
-    let buf = this.plucks.get(key);
-    if (!buf) {
-      const sr = c.sampleRate;
-      const n = Math.floor(sr * 1.1);
-      buf = c.createBuffer(1, n, sr);
-      const out = buf.getChannelData(0);
-      const period = Math.round(sr / freq);
-      const line = new Float32Array(period).map(() => Math.random() * 2 - 1);
-      for (let i = 0; i < n; i++) {
-        const j = i % period;
-        const v = line[j];
-        line[j] = 0.497 * (v + line[(j + 1) % period]);
-        out[i] = v;
-      }
-      this.plucks.set(key, buf);
-    }
-    const s = c.createBufferSource();
-    s.buffer = buf;
-    const g = c.createGain();
-    g.gain.value = gain;
-    s.connect(g).connect(dest);
-    s.start(c.currentTime + at);
-  }
-
-  private highlife(gain = 0.16, dest?: AudioNode) {
-    // A short, original two-bar highlife-style lick (C major, syncopated).
-    const notes: [number, number][] = [
-      [392, 0], [523, 0.18], [659, 0.36], [587, 0.63], [523, 0.81], [440, 0.99], [392, 1.26], [440, 1.44], [523, 1.62], [392, 1.98],
-    ];
-    notes.forEach(([f, t]) => this.pluck(f, t, gain, dest));
-    [131, 196, 131, 175].forEach((f, i) => this.pluck(f, i * 0.54, gain * 0.9, dest));
-  }
-
-  /** An original, telenovela-style opening: strummed minor chords under a sweeping melody. */
-  private theme() {
-    const c = this.ctx!;
-    const room = c.createBiquadFilter(); // small TV speaker
-    room.type = 'bandpass';
-    room.frequency.value = 1500;
-    room.Q.value = 0.5;
-    const g = c.createGain();
-    g.gain.value = 0.9;
-    room.connect(g).connect(this.master);
-    const chords = [[220, 262, 330], [175, 220, 262], [196, 247, 294], [165, 208, 247]];
-    chords.forEach((ch, bar) => ch.forEach((f, i) => {
-      this.pluck(f, bar * 1.1 + i * 0.03, 0.14, room);
-      this.pluck(f, bar * 1.1 + 0.55 + i * 0.03, 0.09, room);
-    }));
-    const melody: [number, number, number][] = [[659, 0, 0.5], [587, 0.5, 0.3], [523, 0.8, 0.3], [587, 1.1, 0.9], [523, 2.2, 0.5], [494, 2.7, 0.3], [440, 3.0, 0.3], [415, 3.3, 1.2]];
-    melody.forEach(([f, at, dur]) => this.tone(f, at, dur, 0.035, 'sawtooth', f * 1.004, room));
-  }
-
-  // ---- one-shot effects --------------------------------------------------
-  sfx(name: string) {
-    if (!this.enabled) return;
-    try {
-      this.ensure();
-      const T = this.tone.bind(this);
-      const H = this.hiss.bind(this);
-      switch (name) {
-        case 'good': T(523, 0, 0.18, 0.05); T(659, 0.1, 0.2, 0.05); T(784, 0.2, 0.32, 0.05); break;
-        case 'bad': T(233, 0, 0.24, 0.07, 'triangle'); T(175, 0.16, 0.36, 0.06, 'triangle'); break;
-        case 'click': T(380, 0, 0.06, 0.03, 'triangle'); break;
-        case 'sting': T(147, 0, 0.18, 0.07, 'sawtooth'); T(139, 0.22, 0.18, 0.07, 'sawtooth'); T(110, 0.46, 0.9, 0.08, 'sawtooth'); break;
-        case 'kiss': H(0, 0.12, 0.05, 2400); [784, 988, 1175, 1568].forEach((f, i) => T(f, 0.12 + i * 0.07, 0.5, 0.035, 'triangle')); break;
-        case 'romance': [262, 330, 392, 494].forEach((f) => T(f, 0, 2.6, 0.022, 'sawtooth', f * 1.003)); break;
-        case 'tvclear': H(0, 0.35, 0.06, 4000); T(1046, 0.3, 0.25, 0.03); break;
-        case 'static': H(0, 0.7, 0.08, 3500, 0.5); break;
-        case 'thump': T(110, 0, 0.25, 0.14, 'sine', 45); H(0, 0.08, 0.06, 900, 0.8, 'lowpass'); break;
-        case 'whoosh': H(0, 0.45, 0.07, 400, 1.2, 'bandpass', 3200); break;
-        case 'powercut': T(180, 0, 0.5, 0.08, 'sawtooth', 35); H(0, 0.05, 0.08, 2000); this.ambience(''); break;
-        case 'powerup': T(40, 0, 0.7, 0.05, 'sawtooth', 120); T(120, 0.6, 0.4, 0.02, 'sine'); break;
-        case 'knock': T(190, 0, 0.09, 0.14, 'triangle', 120); T(190, 0.18, 0.09, 0.14, 'triangle', 120); break;
-        case 'crinkle': for (let i = 0; i < 8; i++) H(i * 0.04 + Math.random() * 0.02, 0.04, 0.05, 5000, 2); break;
-        case 'crunch': for (let i = 0; i < 4; i++) H(i * 0.08, 0.07, 0.08, 1400, 0.8); break;
-        case 'coin': T(2637, 0, 0.18, 0.025); T(3520, 0.03, 0.22, 0.02); break;
-        case 'pop': T(620, 0, 0.08, 0.05, 'sine', 900); break;
-        case 'radio': this.highlife(0.07); break;
-        case 'radiooff': T(300, 0, 0.05, 0.04, 'square'); break;
-        case 'cheer': H(0, 1.4, 0.07, 1200, 0.4); H(0.1, 1.2, 0.05, 2200, 0.6); break;
-        case 'title': this.highlife(0.16); break;
-        case 'theme': this.theme(); break;
-        case 'door': T(70, 0, 0.45, 0.2, 'sine', 38); H(0, 0.14, 0.12, 700, 0.6, 'lowpass'); H(0.02, 0.3, 0.04, 2400, 1.5); break;
-        case 'throat': H(0, 0.16, 0.07, 420, 2.5); H(0.24, 0.22, 0.08, 360, 2.5); T(140, 0.24, 0.2, 0.03, 'sawtooth', 110); break;
-        case 'heartbeat': for (let i = 0; i < 4; i++) { T(62, i * 0.8, 0.14, 0.2, 'sine', 40); T(58, i * 0.8 + 0.2, 0.12, 0.14, 'sine', 40); } break;
-        case 'snore': H(0, 1.0, 0.05, 220, 4, 'bandpass', 380); H(1.3, 0.8, 0.03, 900, 3, 'bandpass', 500); break;
-        case 'yawn': T(520, 0, 1.1, 0.035, 'triangle', 260); H(0.05, 1.0, 0.025, 1200, 2, 'bandpass', 600); break;
-      }
-    } catch {
-      /* sound never blocks the game */
-    }
-  }
-
-  // ---- ambience beds -------------------------------------------------------
+  // ---- ambience ------------------------------------------------------------
   ambience(name: string) {
-    if (name === this.ambName && this.amb) return;
-    this.ambName = name;
-    this.amb?.stop();
-    this.amb = null;
-    if (!this.enabled || !name) return;
-    try {
-      this.ensure();
-      this.amb = this.buildAmb(name);
-    } catch {
-      this.amb = null;
-    }
+    if (name === this.bedName && (this.bed || !this.ctx)) return;
+    this.bedName = name;
+    if (this.enabled && this.ctx) this.startBed(name);
+    this.refreshMusic();
   }
 
-  private buildAmb(name: string): Amb | null {
+  private startBed(name: string) {
+    this.bed?.stop();
+    this.bed = null;
+    const def = BEDS[name];
+    if (!def) return;
     const c = this.ctx!;
-    const bus = c.createGain();
-    bus.gain.setValueAtTime(0, c.currentTime);
-    bus.gain.linearRampToValueAtTime(1, c.currentTime + 1.2);
-    bus.connect(this.master);
-    const nodes: AudioScheduledSourceNode[] = [];
-    const timers: number[] = [];
-    const noiseBed = (freq: number, type: BiquadFilterType, gain: number, q = 0.7) => {
-      const s = c.createBufferSource();
-      s.buffer = this.noise;
-      s.loop = true;
-      const f = c.createBiquadFilter();
-      f.type = type;
-      f.frequency.value = freq;
-      f.Q.value = q;
-      const g = c.createGain();
-      g.gain.value = gain;
-      s.connect(f).connect(g).connect(bus);
-      s.start();
-      nodes.push(s);
-    };
-    const every = (ms: number, fn: () => void, jitter = 0) => {
-      const loop = () => {
-        fn();
-        timers.push(window.setTimeout(loop, ms + Math.random() * jitter));
-      };
-      timers.push(window.setTimeout(loop, 300));
-    };
-    switch (name) {
-      case 'static':
-        noiseBed(3200, 'bandpass', 0.05, 0.5);
-        break;
-      case 'film': {
-        // muffled melodrama strings coming out of a small TV speaker
-        const f = c.createBiquadFilter();
-        f.type = 'lowpass';
-        f.frequency.value = 900;
-        const g = c.createGain();
-        g.gain.value = 0.018;
-        f.connect(g).connect(bus);
-        [196, 247, 294].forEach((hz) => {
-          const o = c.createOscillator();
-          o.type = 'sawtooth';
-          o.frequency.value = hz;
-          o.detune.value = Math.random() * 10 - 5;
-          o.connect(f);
-          o.start();
-          nodes.push(o);
-        });
-        noiseBed(2500, 'bandpass', 0.008);
-        break;
-      }
-      case 'hall':
-        noiseBed(260, 'lowpass', 0.05);
-        break;
-      case 'night':
-        noiseBed(180, 'lowpass', 0.03);
-        every(900, () => {
-          for (let i = 0; i < 3; i++) this.tone(4300, i * 0.06, 0.04, 0.008, 'sine');
-        }, 1400);
-        break;
-      case 'auntie':
-      case 'clock':
-        noiseBed(300, 'lowpass', name === 'clock' ? 0.015 : 0.03);
-        every(1000, () => this.hiss(0, 0.03, name === 'clock' ? 0.05 : 0.025, 3800, 3));
-        break;
-      case 'compound':
-        noiseBed(500, 'lowpass', 0.025);
-        every(2600, () => this.tone(2200 + Math.random() * 900, 0, 0.09, 0.012, 'sine', 3400), 3000);
-        every(9000, () => {
-          const radio = c.createBiquadFilter();
-          radio.type = 'bandpass';
-          radio.frequency.value = 1400;
-          radio.Q.value = 0.9;
-          const g = c.createGain();
-          g.gain.value = 0.35;
-          radio.connect(g).connect(bus);
-          this.highlife(0.05, radio);
-        }, 4000);
-        break;
-      default:
-        return null;
-    }
-    return {
+    const voices: { stop: (f?: number) => void }[] = [];
+    let live = true;
+    const add = (f: string, gain: number, dest: AudioNode, lowpass?: number) =>
+      this.load(f).then((buf) => {
+        if (!buf || !live) return;
+        let out: AudioNode = dest;
+        if (lowpass) {
+          const lp = c.createBiquadFilter();
+          lp.type = 'lowpass';
+          lp.frequency.value = lowpass;
+          lp.connect(dest);
+          out = lp;
+        }
+        voices.push(this.voice(buf, out, gain, { loop: true, fadeIn: 1.5 }));
+      });
+    def.layers.forEach(([f, g, lp]) => add(f, g, this.ambBus, lp));
+    if (def.tv) add(def.tv[0], def.tv[1], this.tvIn);
+    this.bed = {
       stop: () => {
-        timers.forEach(clearTimeout);
-        const t = c.currentTime;
-        bus.gain.cancelScheduledValues(t);
-        bus.gain.setValueAtTime(bus.gain.value, t);
-        bus.gain.linearRampToValueAtTime(0, t + 0.5);
-        nodes.forEach((n) => n.stop(t + 0.6));
-        setTimeout(() => bus.disconnect(), 800);
+        live = false;
+        voices.forEach((v) => v.stop(1.2));
       },
     };
+  }
+
+  // ---- music ---------------------------------------------------------------
+  private refreshMusic() {
+    if (!this.enabled || !this.ctx) return;
+    const want = !this.musicOn ? '' : this.titleScreen ? 'music_guitar' : BEDS[this.bedName]?.music ? 'music_kalimba' : '';
+    if (want === this.songName && (this.song || !want)) return;
+    this.songName = want;
+    this.song?.stop();
+    this.song = null;
+    if (!want) return;
+    let live = true;
+    let v: { stop: (f?: number) => void } | null = null;
+    this.song = {
+      stop: () => {
+        live = false;
+        v?.stop(1.5);
+      },
+    };
+    this.load(want).then((buf) => {
+      if (buf && live) v = this.voice(buf, this.musicBus, 1, { loop: true, fadeIn: 2 });
+    });
   }
 }

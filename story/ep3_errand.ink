@@ -271,7 +271,7 @@ Auntie Efua: You are counting like a bank manager! One day you will run my cupbo
 ~ change = "spent"
 ~ kojo_friend = true
 ~ score(-8, 2, 14)
-You and {friend} walk out through the gate like two businessmen with a plan. #scene:street #light:afternoon #amb:compound #cast:child,friend,bofrot #cam:wide #sfx:whoosh
+You and {friend} walk out through the gate like two businessmen with a plan. #scene:street #light:afternoon #amb:street #cast:child,friend,bofrot #cam:wide #sfx:whoosh
 Auntie Akua: Ah! My customers! How many? #expr:bofrot=offer
 Nana: Ten, please. #expr:child=proud
 Ten bofrot. Warm. Sugary. Glorious. #emote:friend=heart #expr:child=happy #expr:friend=delight #expr:bofrot=laugh

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  PROFILE_KEY,
   SAVE_KEY,
   clearSave,
+  loadProfile,
   loadSave,
   migrate,
   writeSave,
@@ -65,5 +67,13 @@ describe('save data', () => {
     store.setItem(SAVE_KEY, '{}');
     clearSave(store);
     expect(store.getItem(SAVE_KEY)).toBeNull();
+  });
+
+  it('turns sound on once for players from before v2, then respects their choice', () => {
+    const store = new MemoryStore();
+    store.setItem(PROFILE_KEY, JSON.stringify({ version: 1, settings: { sound: false } }));
+    expect(loadProfile(store).settings.sound).toBe(true);
+    store.setItem(PROFILE_KEY, JSON.stringify({ version: 1, soundUpgraded: true, settings: { sound: false } }));
+    expect(loadProfile(store).settings.sound).toBe(false);
   });
 });

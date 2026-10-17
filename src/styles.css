@@ -322,7 +322,12 @@ body.choosing .continue { display: none; }
 /* ------------------------------------------------------------ HUD */
 .hud { position: absolute; z-index: 10; inset: 0 0 auto 0; height: var(--hud); display: flex; align-items: center; gap: 8px; padding: 8px max(10px, env(safe-area-inset-right)) 0 max(10px, env(safe-area-inset-left)); background: linear-gradient(rgba(14, 6, 12, .72), transparent); }
 .hud-btn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: rgba(29, 20, 32, .82); border: 2px solid rgba(255, 247, 230, .75); padding: 0; }
-.hud-btn svg { width: 20px; height: 20px; fill: none; stroke: var(--cream); stroke-width: 2.6; stroke-linecap: round; }
+.hud-btn svg { width: 20px; height: 20px; fill: none; stroke: var(--cream); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+#mute-btn .cross, #mute-btn.off .waves { display: none; }
+#mute-btn.off .cross { display: inline; }
+.credits { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+.credits summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.credits p { margin: 6px 0 0; }
 .ep-chip { margin-left: 4px; font: 400 12px var(--mono); letter-spacing: .06em; color: var(--cream); text-shadow: 0 1px 3px #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .ep-chip b { color: var(--amber); }
 .stats { margin: 0 0 0 auto; padding: 0; list-style: none; display: flex; gap: 6px; }
@@ -437,13 +442,30 @@ legend { padding: 0 6px; font: 700 12px var(--mono); text-transform: uppercase; 
   /* narration sits at the bottom, under the faces, until it's choice time */
   .caption { top: auto; bottom: calc(20px + var(--safe-b)); transform: translateX(-50%) rotate(-.4deg); }
   .caption.pop { animation: captionUp .35s var(--pop); }
-  .notices { left: 50%; transform: translateX(-50%); align-items: center; text-align: center; }
-  .choices { bottom: calc(10px + var(--safe-b)); }
+  /* notices and stamps stay in a slim strip under the HUD, above the faces */
+  .notices { left: 50%; top: calc(var(--hud) + 24px); transform: translateX(-50%); align-items: center; text-align: center; gap: 4px; width: calc(100vw - 24px); }
+  .feedback { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0 8px; padding: 4px 12px; border-radius: 99px; }
+  .feedback strong { font-size: 13px; }
+  .feedback span { font-size: 11px; }
+  .toast { padding: 4px 12px; font-size: 12px; border-width: 2px; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .readroom-stamp { top: calc(var(--hud) + 6px); }
+  .readroom-stamp span { font-size: 20px; padding: 4px 12px; border-width: 3px; }
+  /* the top ~38% belongs to faces: the stack scrolls inside itself rather than climb over them */
+  /* the top ~30% belongs to faces: the stack scrolls inside itself rather than climb over them */
+  .choices { bottom: calc(10px + var(--safe-b)); max-height: calc(70% - var(--safe-b)); overflow-y: auto; overscroll-behavior: contain; padding: 4px 6px 6px 2px; gap: 6px; }
+  .choice-list { gap: 7px; }
+  .prompt { padding: 10px 14px; font-size: calc(var(--fs-line) - 1px); }
+  .hint { align-items: flex-end; }
+  #hint-btn { min-height: 40px; padding: 6px 14px; font-size: 13px; }
   .choice { min-height: 48px; padding: 8px 14px 8px 10px; border-radius: 16px; }
   .insert { right: 12px; width: 110px; }
   .title-card { padding: 7vh 22px 0; }
   .lineup { width: 100vw; height: 44vh; bottom: -3vh; }
   .tagline { font-size: 15px; max-width: 300px; }
+}
+@media (max-width: 760px) and (max-height: 760px) {
+  .choice .flavour { display: none; }
+  .choice { min-height: 46px; }
 }
 @keyframes captionUp { from { opacity: 0; transform: translateX(-50%) translateY(10px) rotate(-1.5deg); } }
 @media (max-height: 480px) and (orientation: landscape) {

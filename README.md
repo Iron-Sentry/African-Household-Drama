@@ -39,7 +39,7 @@ npx tsc --noEmit     # TypeScript only
 - `1`–`9` pick a visible choice. Choices are ordinary buttons, so Tab works too.
 - `Escape` or the ❚❚ button pauses (settings, title screen, restart). The ☰ button opens the story so far.
 - **What did I notice?** under a choice reveals the cue you were meant to read. Players with 50+ Street Smarts see it automatically.
-- Sound is opt-in. No story information depends on audio.
+- Sound is on by default (the 🔈 button mutes it) and starts on your first tap. Real recordings from Freesound, credited in [docs/AUDIO_CREDITS.md](docs/AUDIO_CREDITS.md). No story information depends on audio.
 
 Settings: sound, timed choices, larger text, three text speeds, and system/reduced/full motion.
 
@@ -52,7 +52,7 @@ Settings: sound, timed choices, larger text, three text speeds, and system/reduc
 - `src/stage/stage.ts` is the scene: one 16:9 world (painted room, cast, TV overlay, light) behind a CSS camera. Shots, reaction push-ins and *read the room* are camera framings; on narrow screens the camera follows whoever is speaking. It reports each speaker's on-screen face position so the UI can hang a bubble off it.
 - `src/ui/ui.ts` draws speech bubbles, captions, choices, hints, inserts, HUD, notices, the episode card and the dialogue log.
 - `src/content/` holds the character/pose registry, scene registry (all coordinates are % of the painting) and the tag validator.
-- `src/audio/audio.ts` synthesises optional ambience and effects with Web Audio.
+- `src/audio/audio.ts` plays recorded room tones, effects and music on separate buses; TV and radio sounds go through a small-speaker filter, and stingers duck the music.
 - `src/game/save.ts` owns versioned local saves, profile, settings and the player choice.
 - `public/assets/` holds five painted locations (family hall, Auntie Efua's lounge, compound, street, Nana's bedroom), 57 pose sprites for seven characters, painted TV stills, reaction stickers and prop inserts. All are WebP, compressed from the production kit and `art_incoming/` PNGs.
 

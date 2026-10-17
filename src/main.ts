@@ -59,6 +59,9 @@ function applySettings() {
   document.documentElement.dataset.text = settings.bigText ? 'big' : 'normal';
   stage.reduced = reduced();
   audio.setEnabled(settings.sound);
+  audio.setMusic(settings.music);
+  $('mute-btn').setAttribute('aria-pressed', String(!settings.sound));
+  $('mute-btn').classList.toggle('off', !settings.sound);
   profile.settings = settings;
   writeProfile(profile);
 }
@@ -159,6 +162,7 @@ async function play(id: number) {
       pendingTimer = 0;
       pendingHint = '';
       stage.speaking('child');
+      stage.setChoosing(true);
       const index = await ui.showChoices(beat.choices, {
         timer,
         hint,
@@ -167,6 +171,7 @@ async function play(id: number) {
       });
       if (id !== runId) return;
       audio.sfx('click');
+      stage.setChoosing(false);
       stage.setReadRoom(false);
       session.choose(index);
       continue;
@@ -337,14 +342,14 @@ function openTitle() {
   $('new-btn').classList.toggle('primary', !hasSave);
   const n = profile.moments.length;
   $('title-moments').textContent = n ? `${n} of ${meta.moments.length} moments discovered · ${profile.endings.length} of 4 endings` : 'Three episodes · about 20 minutes';
-  audio.setPaused(true);
+  audio.setTitle(true);
   if (!titleDlg.open) titleDlg.showModal();
   (hasSave ? $('continue-btn') : $('new-btn')).focus();
 }
 
 function closeTitle() {
   titleDlg.close();
-  audio.setPaused(false);
+  audio.setTitle(false);
 }
 
 titleDlg.addEventListener('cancel', (e) => {
@@ -396,7 +401,7 @@ function openEpisodes() {
 
 function openSettings() {
   const form = settingsDlg.querySelector('form')!;
-  for (const k of ['sound', 'timedChoices', 'bigText'] as const) (form.elements.namedItem(k) as HTMLInputElement).checked = settings[k];
+  for (const k of ['sound', 'music', 'timedChoices', 'bigText'] as const) (form.elements.namedItem(k) as HTMLInputElement).checked = settings[k];
   form.querySelectorAll<HTMLInputElement>('input[type=radio]').forEach((r) => (r.checked = settings[r.name as 'motion' | 'textSpeed'] === r.value));
   $('title-btn').hidden = titleDlg.open;
   audio.setPaused(true);
@@ -407,9 +412,12 @@ settingsDlg.addEventListener('change', (e) => {
   const t = e.target as HTMLInputElement;
   settings = { ...settings, [t.name]: t.type === 'checkbox' ? t.checked : t.value };
   applySettings();
-  if (t.name === 'sound' && t.checked) audio.sfx('good');
+  if (t.name === 'sound' && t.checked) {
+    audio.unlock();
+    audio.sfx('good');
+  }
 });
-settingsDlg.addEventListener('close', () => audio.setPaused(titleDlg.open));
+settingsDlg.addEventListener('close', () => audio.setPaused(false));
 $('restart-btn').addEventListener('click', () => {
   if (!confirm('Restart from the beginning of Episode One?')) return;
   settingsDlg.close();
@@ -422,6 +430,11 @@ $('title-btn').addEventListener('click', () => {
   openTitle();
 });
 $('menu-btn').addEventListener('click', openSettings);
+$('mute-btn').addEventListener('click', () => {
+  settings = { ...settings, sound: !settings.sound };
+  applySettings();
+  audio.unlock();
+});
 $('log-btn').addEventListener('click', () => {
   logDlg.showModal();
   ui.renderLog($('log'));
@@ -451,8 +464,11 @@ document.addEventListener('keydown', (e) => {
 addEventListener('pointerdown', () => (document.documentElement.dataset.input = 'pointer'), true);
 addEventListener('keydown', () => (document.documentElement.dataset.input = 'keys'), true);
 
+// Browsers only allow sound after a gesture; the first tap or key starts it.
+addEventListener('pointerdown', () => audio.unlock(), true);
+addEventListener('keydown', () => audio.unlock(), true);
 // Pause sound when the tab is hidden.
-document.addEventListener('visibilitychange', () => audio.setPaused(document.hidden || titleDlg.open));
+document.addEventListener('visibilitychange', () => audio.setPaused(document.hidden));
 
 // ---------------------------------------------------------------------------
 // Boot

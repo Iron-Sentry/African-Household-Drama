@@ -41,7 +41,7 @@ All accepted values are enforced by `src/content/validate.ts`.
 | `#hotspot:id` | On a choice: also mark it in the room (`phone`, `clock`, `showcase`, `portrait`, `auntie_tv`). |
 | `#prop:name=value` | `tv` (`snow film kiss news off`), `auntie_tv` (`snow fixed off`), `foil`, `lamp`, `keyhole` (`on`/`off`). |
 | `#fx:name` | `shake`, `impact`, `flash`. |
-| `#sfx:name` / `#amb:name` | Synthesised sound and ambience (lists in `validate.ts`). |
+| `#sfx:name` / `#amb:name` | Recorded effect / room tone (`hall`, `compound`, `street`, `auntie`, `clock`, `night`, `static`, `film`). The cue → file map is at the top of `src/audio/audio.ts`; files and credits are in `public/assets/audio/` and `docs/AUDIO_CREDITS.md`. |
 | `#timer:seconds` / `#timeout` | Time the next choices (when timed choices are on); the `#timeout` choice is taken when time runs out. |
 | `#auto:ms` | Advance the tagged line by itself. |
 | `#episode:n` | Start an episode and write its replay checkpoint. |
