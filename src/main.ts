@@ -11,6 +11,7 @@ import '@fontsource/fraunces/400-italic.css';
 import './styles.css';
 import { storyJson, meta } from 'virtual:story';
 import { CHARACTERS, poseUrl, type Player } from './content/characters.ts';
+import { SCENES } from './content/scenes.ts';
 import { Session, type Cue, type LineBeat, type Report } from './narrative/session.ts';
 import { clearSave, loadProfile, loadSave, writeProfile, writeSave, type Checkpoint, type Settings, type StageState } from './game/save.ts';
 import { UI } from './ui/ui.ts';
@@ -175,8 +176,21 @@ async function play(id: number) {
   }
 }
 
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function stageLine(beat: LineBeat, id: number) {
   const before = structuredClone(state);
+  // A new location (or an episode card) changes behind a curtain, never in a single frame.
+  const sceneCue = beat.cues.find((c) => c.key === 'scene' && c.value !== state.scene);
+  const hasCard = beat.cues.some((c) => c.key === 'card');
+  const kind = beat.cues.find((c) => c.key === 'transition')?.value || 'fade';
+  const covered = (!!sceneCue || hasCard) && kind !== 'cut';
+  const place = sceneCue && !hasCard ? SCENES[sceneCue.value] : null;
+  if (covered) {
+    if (kind === 'iris') audio.sfx('whoosh');
+    await ui.cover(kind, place && { title: place.title, location: place.location }, reduced());
+    if (id !== runId) return;
+  }
   let card: string[] | null = null;
   let note: string | undefined;
   let insert: string | undefined;
@@ -189,12 +203,22 @@ async function stageLine(beat: LineBeat, id: number) {
     else applyCue(c);
   }
   writeSave({ ink: beat.resumeState, stage: before, resume: checkpoint });
-  ui.setStats(session.stats, note);
+  if (covered) {
+    // hold long enough to read the place name, and until the new art can draw
+    await Promise.all([stage.ready(), wait(place && !reduced() ? 1000 : 150)]);
+    if (id !== runId) return;
+  }
   if (card) {
     if (episode === 1 && card[0] === 'Episode One') audio.sfx('title');
     await ui.card(card[0], card[1], card[2], reduced() ? 2400 : 3400);
     if (id !== runId) return;
   }
+  if (covered) {
+    stage.settle();
+    await ui.uncover(reduced());
+    if (id !== runId) return;
+  }
+  ui.setStats(session.stats, note);
   if (!beat.text) return;
   const who = beat.speaker?.id ?? null;
   stage.speaking(who && CHARACTERS[who].sprite ? who : null);
@@ -206,6 +230,7 @@ async function stageLine(beat: LineBeat, id: number) {
 
 function start(kind: 'new' | 'continue' | { episode: number }) {
   runId++;
+  ui.clearCurtain();
   session = new Session(storyJson);
   session.setPlayer(profile.player);
   state = freshState();
@@ -447,6 +472,7 @@ if (params.has('dev')) {
       session: () => session,
       jump: (knot: string, vars: Record<string, unknown>) => {
         runId++;
+        ui.clearCurtain();
         session = new Session(storyJson);
         session.jump(knot, vars);
         session.setPlayer(profile.player);

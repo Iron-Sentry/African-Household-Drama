@@ -8,6 +8,7 @@ import type { Anchor } from '../stage/stage.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const BASE = import.meta.env.BASE_URL;
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const STAT_NAMES: Record<keyof Stats, string> = { approval: 'Approval', smarts: 'Street Smarts', trouble: 'Trouble' };
 
 export interface LineOpts {
@@ -364,6 +365,46 @@ export class UI {
         resolve();
       };
     });
+  }
+
+  /**
+   * Cover the stage before a scene change. `fade` dips to black, `iris` closes
+   * like a cartoon, `cut` doesn't cover at all. With a location, its name shows
+   * while the stage is covered.
+   */
+  async cover(kind: string, loc: { title: string; location: string } | null, reduced: boolean) {
+    this.hideDialogue();
+    const c = $('curtain');
+    if (kind === 'cut') return;
+    const iris = kind === 'iris' && !reduced;
+    c.className = `curtain ${iris ? 'iris' : 'fade'}`;
+    const label = c.querySelector('.loc')!;
+    label.classList.toggle('on', !!loc);
+    if (loc) {
+      label.querySelector('strong')!.textContent = loc.title;
+      label.querySelector('small')!.textContent = loc.location;
+      this.announce(`${loc.title}. ${loc.location}.`);
+    }
+    c.hidden = false;
+    void c.offsetWidth;
+    c.classList.add('closed');
+    await wait(reduced ? 120 : iris ? 720 : 520);
+  }
+
+  /** Lift the curtain (fade out, or open the iris). Resolves as the scene is mostly visible. */
+  async uncover(reduced: boolean) {
+    const c = $('curtain');
+    if (c.hidden) return;
+    c.classList.remove('closed');
+    await wait(reduced ? 120 : 420);
+    setTimeout(() => !c.classList.contains('closed') && (c.hidden = true), 400);
+  }
+
+  /** Drop any curtain left over from an interrupted run. */
+  clearCurtain() {
+    const c = $('curtain');
+    c.hidden = true;
+    c.className = 'curtain';
   }
 
   readRoomStamp() {

@@ -95,6 +95,7 @@ export class Stage {
   private focused = 'none';
   private readRoom = false;
   private followX: number | null = null;
+  private zoom = 1; // extra push used for the establishing settle after a scene change
   private W = 0;
   private H = 0;
   private cam = { s: 1, tx: 0, ty: 0 };
@@ -142,6 +143,22 @@ export class Stage {
     this.frame(true);
   }
 
+  /** Resolves once the painting and every pose on stage can draw (or after `ms`). */
+  ready(ms = 1500): Promise<void> {
+    const imgs = [this.bg, ...[...this.actors.values()].map((a) => a.imgs[a.front])];
+    const all = Promise.all(imgs.map((i) => (i.src ? i.decode().catch(() => {}) : null)));
+    return Promise.race([all.then(() => {}), new Promise<void>((r) => setTimeout(r, ms))]);
+  }
+
+  /** Establishing shot: open a touch closer, then let the camera drift into the framing. */
+  settle() {
+    if (this.reduced) return;
+    this.zoom = 1.08;
+    this.frame(true);
+    this.zoom = 1;
+    requestAnimationFrame(() => requestAnimationFrame(() => this.frame(false, true)));
+  }
+
   setLight(id: string) {
     this.world.dataset.light = id;
   }
@@ -160,10 +177,11 @@ export class Stage {
     this.tv.dataset.state = state;
     this.world.classList.toggle('tv-on', state !== 'off');
     // a burst of static between channels, like a real set
-    if (was && was !== state && state !== 'off' && !this.reduced) {
+    if (was && was !== state && state !== 'off' && state !== 'snow' && !this.reduced) {
       this.tv.classList.remove('flick');
       void this.tv.offsetWidth;
       this.tv.classList.add('flick');
+      setTimeout(() => this.tv.classList.remove('flick'), 340); // its fade-out must not stick to the snow layer
     }
     cancelAnimationFrame(this.snowRaf);
     if (state === 'off') return;
@@ -191,6 +209,7 @@ export class Stage {
     for (const [id, a] of this.actors) {
       if (ids.includes(id)) continue;
       this.actors.delete(id);
+      a.el.style.setProperty('--enter', a.x < 50 ? '-45%' : '45%'); // walk off the nearer side
       a.el.classList.add('leaving');
       setTimeout(() => a.el.remove(), this.reduced ? 0 : 450);
     }
@@ -219,6 +238,7 @@ export class Stage {
     el.style.setProperty('--h', `${BODY[kind].h}%`);
     el.style.setProperty('--b', `${BODY[kind].b}%`);
     el.style.setProperty('--d', `${(Math.random() * -4).toFixed(2)}s`);
+    el.style.setProperty('--enter', x < 50 ? '-45%' : '45%'); // walk in from the nearer side
     el.style.left = `${x}%`;
     el.innerHTML = `<div class="body"><img alt="" draggable="false" class="on"><img alt="" draggable="false"></div><div class="emote"></div><img class="sticker" alt="">`;
     this.cast.append(el);
@@ -372,6 +392,7 @@ export class Stage {
     const vh = this.root.clientHeight;
     const focus = this.actors.get(this.focused);
     let [s, x, y] = this.scene.shots[this.shot] || this.scene.shots.wide;
+    s *= this.zoom;
     if (focus) {
       s = this.readRoom ? (this.portrait ? 1.35 : 1.75) : this.portrait ? 1.12 : 1.32;
       x = focus.x;

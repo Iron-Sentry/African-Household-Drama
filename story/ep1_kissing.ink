@@ -23,7 +23,7 @@ Your name. Your chance. But you are supposed to be asleep.
 = pretend
 ~ woke = "pretend"
 ~ score(-8, 0, 4)
-You dive into bed and squeeze your eyes shut. #prop:keyhole=off #scene:bedroom #light:moon #cast:none #cam:bed #amb:night #sfx:whoosh
+You dive into bed and squeeze your eyes shut. #transition:iris #prop:keyhole=off #scene:bedroom #light:moon #cast:none #cam:bed #amb:night #sfx:whoosh
 Daddy: Nana! #auto:1200
 You snore a little. For realism. #sfx:snore #auto:1600
 BAM. The door flies open. #sfx:door #fx:impact #cam:wide #cast:mum #expr:mum=angry #anim:mum=bounce

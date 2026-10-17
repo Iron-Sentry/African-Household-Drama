@@ -26,6 +26,7 @@ All accepted values are enforced by `src/content/validate.ts`.
 | Cue | Value and effect |
 | --- | --- |
 | `#scene:id` | Switch location: `hall`, `auntie`, `compound`, `street` or `bedroom`. Resets the camera to `wide`. |
+| `#transition:kind` | How a `#scene` change on the same line plays: `fade` (default; dips to black and names the new place), `iris` (cartoon iris shut, for comic exits) or `cut` (instant, for shocks). Episode `#card` lines always fade. |
 | `#light:id` | `day`, `afternoon`, `evening`, `dusk`, `moon`, `film`, `tension`, `snow`, `lamp`, `blackout`, `doorway` (a shaft of light from an opened door). |
 | `#cam:shot` | Frame a named shot from the scene (see `scenes.ts`). `push` is a slow dolly on the current shot. |
 | `#cast:id,id` | Who stands in the room, left to right (`mum`, `dad`, `child`, `friend`, `auntie`, `friendmum`, `bofrot`); `none` clears it. |

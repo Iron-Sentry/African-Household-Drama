@@ -240,10 +240,11 @@ try {
   const girl = await makePage(browser, 'girl-player', { width: 1280, height: 800 }, defaults, 'girl');
   await keyboardStart(girl.page, `${origin}/?test&knot=ep3.errand`);
   let friendTag = '';
-  for (let step = 0; step < 30 && !friendTag; step++) {
+  // scene changes now play a curtain, so give the lines time to arrive
+  for (let step = 0; step < 80 && !friendTag; step++) {
     friendTag = await girl.page.evaluate(() => (document.querySelector('#bubble:not([hidden]) .tag')?.textContent === 'Kojo' ? 'Kojo' : ''));
     if (!friendTag) await girl.page.keyboard.press('Enter');
-    await girl.page.waitForTimeout(40);
+    await girl.page.waitForTimeout(120);
   }
   const sprites = await girl.page.evaluate(() => [...document.querySelectorAll('.actor img.on')].map((img) => img.getAttribute('src')));
   if (friendTag !== 'Kojo') throw new Error('Girl player never heard from Kojo.');
@@ -265,8 +266,14 @@ try {
 
   const saving = await makePage(browser, 'save-reload', { width: 1280, height: 800 }, { ...defaults, motion: 'reduced' });
   await keyboardStart(saving.page, `${origin}/?test`);
-  for (let i = 0; i < 3; i++) await saving.page.keyboard.press('Enter');
-  await saving.page.waitForTimeout(80);
+  // advance past the opening curtain and card until a couple of lines have played
+  let shownLines = 0;
+  for (let i = 0; i < 40 && shownLines < 2; i++) {
+    if (await currentLine(saving.page)) shownLines++;
+    await saving.page.keyboard.press('Enter');
+    await saving.page.waitForTimeout(150);
+  }
+  await saving.page.waitForFunction(() => !!document.querySelector('#bubble:not([hidden]) .text, #caption:not([hidden]) .text')?.textContent);
   const savedLine = await currentLine(saving.page);
   const rawSave = await saving.page.evaluate(() => localStorage.getItem('ahd.save'));
   if (!rawSave || !savedLine) throw new Error('No save was written after advancing the story.');

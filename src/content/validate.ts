@@ -43,6 +43,7 @@ export function validateTag(tag: string): string | null {
     case 'anim': return pair(ANIMS.includes(what));
     case 'sticker': return pair(STICKERS.includes(what));
     case 'focus': return val === 'none' || ON_STAGE.includes(val) ? null : `unknown focus "${val}"`;
+    case 'transition': return /^(fade|iris|cut)$/.test(val) ? null : `unknown transition "${val}"`;
     case 'insert': return INSERTS.includes(val) ? null : `unknown insert "${val}"`;
     case 'fx': return FX.includes(val) ? null : `unknown fx "${val}"`;
     case 'sfx': return SFX.includes(val) ? null : `unknown sfx "${val}"`;
