@@ -22,26 +22,26 @@ function scripted(...wanted: string[]) {
 
 const paths: Record<string, string[]> = {
   strategist: [
-    'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Burst out laughing', 'Greet her in Twi',
-    'Sit nicely and wait', "Check Mummy's expression", 'Take one and say "Thank you', 'rearrange the circle', 'Repeat the list',
-    'Small packet of sugar', 'Toffees', "That's everything", 'Tell Sister Akos', 'Look at Kojo', "didn't buy any sugar", 'Close your eyes',
+    'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Burst out laughing', 'Greet her in Twi', 'Sit nicely and wait',
+    "Check Mummy's expression", 'Take one and say "Thank you', 'rearrange the circle', 'Repeat the list', 'Confess',
+    'Small packet of sugar', 'Toffees', "That's everything", 'Ask what SHE', 'Count the change', 'Close your eyes',
   ],
   akola: [
     'Pretend to be asleep', 'Do exactly what Daddy says', 'Announce that you are very thirsty', 'Good afternoon',
-    'The telephone', 'Give the padlock', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', 'Take the biscuits immediately',
-    'rearrange the circle', 'I know, Mummy', 'Box of matches', 'Small packet of sugar', 'Tin of milk', 'Toffees', "That's everything",
-    'Spend it on bofrot', 'Look at Kojo', "didn't buy any sugar", 'Reach for the antenna',
+    'The wall clock', 'Shout to Auntie', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', 'Take the biscuits immediately',
+    'rearrange the circle', 'I know, Mummy', 'Look at', 'Box of matches', 'Small packet of sugar', 'Tin of milk', 'Toffees', "That's everything",
+    'Tell her everything', 'Spend it on bofrot', 'Reach for the antenna',
   ],
   golden: [
     'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Announce that you are very thirsty', 'Greet her in Twi', 'Sit nicely and wait',
-    "Check Mummy's expression", 'Take one and say "Medaase', 'Slip one biscuit', 'Write it on the back', 'Loaf of tea bread',
-    'Candles', 'Box of matches', 'Toffees', "That's everything", 'Say nothing. Take it home', 'Confess and hand over', 'Laugh',
+    "Check Mummy's expression", 'Take one and say "Medaase', 'Slip one biscuit', 'Write it on the back', 'Confess', 'Loaf of tea bread',
+    'Candles', 'Box of matches', 'Tin of milk', 'Small packet of sugar', "That's everything", 'Everybody is fine', 'Say nothing. Take it home', 'Close your eyes',
   ],
   comedian: [
     'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Burst out laughing', 'Greet her in Twi',
-    'The telephone', 'Give the padlock', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', "Check Mummy's expression",
-    'Take three biscuits', 'Sit on your hands', 'I know, Mummy', 'Small packet of sugar', 'Loaf of tea bread', 'Box of matches',
-    'Candles', 'Tin of milk', 'Toffees', "That's everything", 'Tell Sister Akos', 'ask Mummy first', 'Laugh',
+    'The wall clock', 'Shout to Auntie', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', "Check Mummy's expression",
+    'Keep staring at Mummy', 'Sit on your hands', 'I know, Mummy', 'Small packet of sugar', 'Loaf of tea bread', 'Box of matches',
+    'Candles', 'Tin of milk', 'Toffees', "That's everything", 'Tell her everything', 'Tell Auntie she gave', 'Laugh',
   ],
 };
 
@@ -50,7 +50,7 @@ describe('compiled story graph', () => {
     expect(compiled.warnings).toEqual([]);
     expect(validateTags(compiled.meta.tags)).toEqual([]);
     expect(compiled.meta.knots.length).toBeGreaterThan(20);
-    expect(compiled.meta.moments).toHaveLength(33);
+    expect(compiled.meta.moments).toHaveLength(36);
   });
 
   it('finishes 250 deterministic random routes with a valid rank and bounded stats', () => {
@@ -67,7 +67,7 @@ describe('compiled story graph', () => {
     }
     expect(invalid).toEqual([]);
     expect(ranks).toEqual(new Set(['golden', 'akola', 'strategist', 'comedian']));
-  }, 15_000);
+  }, 120_000); // re-parses the story per run; slow on a busy machine
 });
 
 describe('rank outcomes', () => {

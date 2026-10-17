@@ -1,3 +1,5 @@
+> **Historical.** This reviews the original prototype. The current game (painted rooms, speech-bubble staging, no Three.js) is described in README.md.
+
 # African Household Drama — Project Review
 
 Review date: 12 October 2026

@@ -9,6 +9,7 @@ export const SAVE_KEY = 'ahd.save';
 export const PROFILE_KEY = 'ahd.profile';
 
 export interface StageState {
+  player: 'boy' | 'girl';
   scene: string;
   light: string;
   cam: string;
@@ -36,6 +37,7 @@ export interface Settings {
   timedChoices: boolean;
   textSpeed: 'normal' | 'fast' | 'instant';
   motion: 'system' | 'reduced' | 'full';
+  bigText: boolean;
 }
 
 export interface Profile {
@@ -44,9 +46,10 @@ export interface Profile {
   endings: string[];
   checkpoints: Record<number, Checkpoint>;
   settings: Settings;
+  player: 'boy' | 'girl';
 }
 
-export const DEFAULT_SETTINGS: Settings = { sound: false, timedChoices: true, textSpeed: 'normal', motion: 'system' };
+export const DEFAULT_SETTINGS: Settings = { sound: false, timedChoices: true, textSpeed: 'normal', motion: 'system', bigText: false };
 
 type Store = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
@@ -135,6 +138,7 @@ export function loadProfile(store = safeStore()): Profile {
     endings: Array.isArray(p?.endings) ? p!.endings.filter((m) => typeof m === 'string') : [],
     checkpoints: p?.checkpoints && typeof p.checkpoints === 'object' ? p.checkpoints : {},
     settings: { ...DEFAULT_SETTINGS, ...(p?.settings || {}) },
+    player: p?.player === 'girl' ? 'girl' : 'boy',
   };
 }
 

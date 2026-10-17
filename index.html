@@ -3,116 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#241b21" />
+  <meta name="theme-color" content="#1c1418" />
   <meta name="description" content="African Household Drama, a playable family sitcom set in Accra, 1998. In a Ghanaian household, even the smallest decision can become everybody's business." />
   <meta property="og:title" content="African Household Drama" />
   <meta property="og:description" content="A playable family sitcom set in Accra, 1998." />
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/rooms/family_hall.webp" />
   <title>African Household Drama · Accra, 1998</title>
 </head>
 <body>
-  <div class="app-shell" id="app">
-    <header class="app-header">
-      <a class="brand" href="#title" id="brand-home" aria-label="African Household Drama, open the title menu">
-        <span class="brand-mark" aria-hidden="true"><span>A</span><span>H</span><span>D</span></span>
-        <span class="brand-copy"><strong>AFRICAN<br />HOUSEHOLD</strong><small>DRAMA <span class="brand-star" aria-hidden="true">✳</span></small></span>
-      </a>
-      <div class="header-center" aria-hidden="true"><span class="header-line"></span><span>THE GHANAIAN CHILDHOOD EXPERIENCE</span><span class="header-line"></span></div>
-      <div class="header-actions">
-        <span class="era-label">ACCRA, 1998 <span class="era-dot" aria-hidden="true">●</span></span>
-        <button id="sound-toggle" class="icon-btn" aria-pressed="false" type="button"><span aria-hidden="true" class="ico">♪</span><span class="label">SOUND</span></button>
-        <button id="settings-open" class="icon-btn" type="button"><span aria-hidden="true" class="ico">⚙</span><span class="label">SETTINGS</span></button>
-      </div>
-    </header>
+  <div class="app" id="app">
+    <main class="stage" id="stage" aria-label="Story scene"></main>
 
-    <main class="game-main" id="game">
-      <div class="top-rail">
-        <div class="breadcrumbs"><span class="mini-diamond" aria-hidden="true">◆</span><span>VOLUME ONE</span><span class="slash" aria-hidden="true">/</span><span id="episode-label">EPISODE 01</span></div>
-        <div class="progress-area">
-          <span id="progress-caption">THE KISSING SCENE</span>
-          <div class="progress-tracks" id="progress" role="progressbar" aria-label="Story progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-fill"></span></div>
-          <span id="progress-num" aria-hidden="true">00%</span>
-        </div>
-      </div>
+    <div class="overlay" id="overlay">
+      <div class="keyhole" id="keyhole" hidden aria-hidden="true"><svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><path fill-rule="evenodd" d="M-200-200H360V300H-200Z M80 6a24 24 0 0 1 13 44l11 48H56l11-48a24 24 0 0 1 13-44Z"/></svg></div>
+      <div class="fx" id="fx" aria-hidden="true"></div>
+      <div class="readroom-stamp" id="readroom-stamp" aria-hidden="true"><span>Read the room</span></div>
+      <figure class="insert" id="insert" aria-hidden="true"><img alt="" /></figure>
 
-      <section class="experience" aria-label="Story">
-        <div class="world-panel" id="world">
-          <div class="scene-heading"><span id="scene-location">HOME · ACCRA</span><strong id="scene-title">The Family Hall</strong></div>
-          <div class="scene-number" id="scene-number" aria-hidden="true">01<span>/</span>03</div>
-          <div class="room-window" id="room">
-            <div class="flat" id="flat"><div class="flat-bg" id="flat-bg"></div></div>
-            <canvas id="three-canvas" aria-hidden="true"></canvas>
-            <div class="light-tint" id="tint" aria-hidden="true"></div>
-            <div class="retro-overlay" aria-hidden="true"></div>
-          </div>
-          <div class="actors" id="actors" aria-hidden="true"></div>
-          <div class="hotspots" id="hotspots"></div>
-          <div class="fx-layer" id="fx" aria-hidden="true"></div>
-          <div class="episode-card" id="card" hidden>
-            <span class="card-kicker" id="card-kicker"></span>
-            <strong class="card-title" id="card-title"></strong>
-            <span class="card-meta" id="card-meta"></span>
-          </div>
-          <div class="world-caption" aria-hidden="true"><span><span class="red-record">●</span> MOMENTS FROM HOME</span><span id="tap-hint">TAP THE SCENE TO CONTINUE</span></div>
-        </div>
+      <div class="caption" id="caption" hidden aria-hidden="true"><p class="text"></p><span class="more">▾</span></div>
+      <div class="bubble" id="bubble" hidden aria-hidden="true"><svg class="tail" viewBox="0 0 40 30" aria-hidden="true"><path d="M3 31C12 22 17 12 19 1C23 13 28 23 37 31" /></svg><span class="tag"></span><p class="text"></p><span class="more">▾</span></div>
 
-        <aside class="story-panel" id="panel">
-          <div class="panel-decoration" aria-hidden="true"><span>✳</span><span>YOUR STORY, YOUR TROUBLE.</span><span>✳</span></div>
-          <ul class="stats" aria-label="Household status">
-            <li class="stat" data-stat="approval"><span class="stat-ico" aria-hidden="true">♥</span><span class="stat-name">Approval</span><strong class="stat-val">50</strong><span class="stat-bar" aria-hidden="true"><span></span></span><span class="stat-delta" aria-hidden="true"></span></li>
-            <li class="stat" data-stat="smarts"><span class="stat-ico" aria-hidden="true">✦</span><span class="stat-name">Street Smarts</span><strong class="stat-val">20</strong><span class="stat-bar" aria-hidden="true"><span></span></span><span class="stat-delta" aria-hidden="true"></span></li>
-            <li class="stat" data-stat="trouble"><span class="stat-ico" aria-hidden="true">!</span><span class="stat-name">Trouble</span><strong class="stat-val">0</strong><span class="stat-bar" aria-hidden="true"><span></span></span><span class="stat-delta" aria-hidden="true"></span></li>
-          </ul>
-          <div class="dialogue" id="dialogue">
-            <div class="dialogue-meta">
-              <div class="speaker-avatar" id="avatar" aria-hidden="true">✳</div>
-              <div><span class="section-eyebrow" id="speaker-eyebrow">THE STORY</span><h2 id="speaker-name">Narrator</h2></div>
-            </div>
-            <p class="dialogue-text" id="line" aria-hidden="true"></p>
-          </div>
-          <div class="feedback" id="feedback" hidden></div>
-          <div class="choices-section">
-            <div class="choices-title" aria-hidden="true"><span id="choices-heading">THE STORY CONTINUES</span><span id="choices-hint"></span></div>
-            <div class="timer" id="timer" hidden><span></span></div>
-            <div class="look-list" id="look-list" role="group" aria-label="Look around" hidden></div>
-            <div class="choices" id="choices" role="group" aria-label="Your choices"></div>
-            <button id="continue" class="continue-btn" type="button"><span>CONTINUE</span><span class="btn-arrow" aria-hidden="true">↗</span></button>
-          </div>
-        </aside>
+      <div class="notices" aria-hidden="true"><div class="feedback" id="feedback" hidden></div><div class="toast" id="toast" hidden></div></div>
+
+      <section class="choices" id="choices" hidden aria-label="Your choices">
+        <p class="prompt" id="prompt" hidden><b></b><span></span></p>
+        <div class="hint" hidden><button type="button" id="hint-btn" aria-expanded="false" aria-controls="hint-text"><span aria-hidden="true">👁</span> What did I notice?</button><p id="hint-text" hidden></p></div>
+        <div class="timer" id="timer" hidden><span></span></div>
+        <div class="choice-list" id="choice-list" role="group" aria-label="Your choices"></div>
       </section>
 
-      <footer class="app-footer" aria-hidden="true"><span>AN INTERACTIVE GHANAIAN STORY <span class="footer-spark">✴</span></span><span>BACK WHEN ONE LOOK FROM MUMMY WAS ENOUGH.</span><span>ENTER / SPACE TO CONTINUE · <kbd>1</kbd>–<kbd>6</kbd> TO CHOOSE</span></footer>
-    </main>
+      <button type="button" class="continue" id="continue">Continue <span aria-hidden="true">▸</span></button>
+
+      <div class="card" id="card" hidden>
+        <span class="card-kicker" id="card-kicker"></span>
+        <strong class="card-title" id="card-title"></strong>
+        <span class="card-meta" id="card-meta"></span>
+        <small>Tap to begin</small>
+      </div>
+    </div>
+
+    <header class="hud" id="hud">
+      <button type="button" class="hud-btn" id="menu-btn" aria-label="Pause menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg></button>
+      <button type="button" class="hud-btn" id="log-btn" aria-label="Story so far"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 10h14M5 15h9M5 20h6" /></svg></button>
+      <div class="ep-chip" id="ep-chip"></div>
+      <ul class="stats" aria-label="Household status">
+        <li class="stat" data-stat="approval"><i aria-hidden="true">♥</i><span class="name">Approval</span><b class="val">50</b><span class="delta" aria-hidden="true"></span></li>
+        <li class="stat" data-stat="smarts"><i aria-hidden="true">✦</i><span class="name">Smarts</span><b class="val">20</b><span class="delta" aria-hidden="true"></span></li>
+        <li class="stat" data-stat="trouble"><i aria-hidden="true">!</i><span class="name">Trouble</span><b class="val">0</b><span class="delta" aria-hidden="true"></span></li>
+      </ul>
+    </header>
 
     <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
     <div id="sr-alert" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
-    <div id="toast" class="toast" aria-hidden="true"></div>
   </div>
 
-  <dialog class="intro" id="title-dialog" aria-labelledby="intro-title">
-    <div class="intro-card">
-      <span class="intro-flower" aria-hidden="true">✳</span>
-      <div class="intro-kicker">A GHANAIAN FAMILY SITCOM YOU PLAY <span aria-hidden="true">•</span> VOL. 01</div>
-      <h1 id="intro-title">African<br /><em>Household</em><br />Drama<span class="intro-period">.</span></h1>
-      <p>Accra, 1998. One television, two parents, a neighbour who hears everything, and a thousand ways to get into trouble.</p>
-      <div class="intro-divider" aria-hidden="true"><span>✦</span><span>THREE EPISODES · ABOUT 20 MINUTES</span><span>✦</span></div>
-      <div class="menu" id="title-menu">
-        <button class="start-btn" id="continue-btn" type="button" hidden><span>CONTINUE YOUR STORY</span><span aria-hidden="true">↗</span></button>
-        <button class="start-btn" id="new-btn" type="button"><span>ENTER THE HOUSEHOLD</span><span aria-hidden="true">↗</span></button>
+  <dialog class="title" id="title-dialog" aria-labelledby="title-heading">
+    <div class="title-tv"></div>
+    <div class="title-card">
+      <span class="kicker">Accra · 1998 · Volume One</span>
+      <h1 id="title-heading"><span>African</span> <span>Household</span> <em>Drama</em></h1>
+      <p class="tagline">Same home. Different rules. Every choice is remembered — by somebody.</p>
+      <div class="menu">
+        <button class="btn primary" id="continue-btn" type="button" hidden>Continue your story</button>
+        <button class="btn primary" id="new-btn" type="button">Enter the household</button>
         <div class="menu-row">
-          <button class="ghost-btn" id="episodes-btn" type="button" hidden>EPISODES</button>
-          <button class="ghost-btn" id="title-settings-btn" type="button">SETTINGS</button>
+          <button class="btn ghost" id="episodes-btn" type="button" hidden>Episodes</button>
+          <button class="btn ghost" id="title-settings-btn" type="button">Settings</button>
         </div>
       </div>
-      <small id="title-moments">EVERY CHOICE IS REMEMBERED. BY SOMEBODY.</small>
+      <small id="title-moments">Three episodes · about 20 minutes</small>
     </div>
+    <div class="lineup" aria-hidden="true">
+      <img src="./assets/characters/auntie_efua_wave.webp" alt="" />
+      <img src="./assets/characters/mother_side_eye.webp" alt="" />
+      <img src="./assets/characters/child_boy_startled.webp" alt="" class="kid" />
+      <img src="./assets/characters/child_girl_think.webp" alt="" class="kid" />
+      <img src="./assets/characters/father_stern.webp" alt="" />
+    </div>
+  </dialog>
+
+  <dialog class="sheet who" id="who-dialog" aria-labelledby="who-title">
+    <form method="dialog" class="sheet-card">
+      <h2 id="who-title">Who are you?</h2>
+      <p class="sheet-note">You are Nana. Same home, same rules, same trouble. Your friend from next door will be the other one.</p>
+      <div class="who-pick">
+        <button class="who-btn" value="boy"><img src="./assets/characters/child_boy_idle.webp" alt="" /><span>Play as a boy</span><small>Friend: Adjoa</small></button>
+        <button class="who-btn" value="girl"><img src="./assets/characters/child_girl_idle.webp" alt="" /><span>Play as a girl</span><small>Friend: Kojo</small></button>
+      </div>
+    </form>
   </dialog>
 
   <dialog class="sheet" id="settings-dialog" aria-labelledby="settings-title">
     <form method="dialog" class="sheet-card">
       <h2 id="settings-title">Settings</h2>
       <label class="toggle"><input type="checkbox" name="sound" /><span>Sound <small>Synthesised ambience and stingers. Nothing in the story needs sound.</small></span></label>
-      <label class="toggle"><input type="checkbox" name="timedChoices" /><span>Timed choices <small>A few panicky moments give you a few seconds. Turn them off to take your time. The "do nothing" option becomes a normal choice.</small></span></label>
+      <label class="toggle"><input type="checkbox" name="timedChoices" /><span>Timed choices <small>A few panicky moments give you a few seconds. Turn them off to take your time.</small></span></label>
+      <label class="toggle"><input type="checkbox" name="bigText" /><span>Larger text <small>Bigger speech bubbles and choices.</small></span></label>
       <fieldset><legend>Text speed</legend>
         <label><input type="radio" name="textSpeed" value="normal" /> Normal</label>
         <label><input type="radio" name="textSpeed" value="fast" /> Fast</label>
@@ -124,9 +111,18 @@
         <label><input type="radio" name="motion" value="full" /> Full</label>
       </fieldset>
       <div class="sheet-actions">
-        <button class="ghost-btn" id="restart-btn" type="button">RESTART STORY</button>
-        <button class="start-btn" value="close"><span>DONE</span><span aria-hidden="true">✓</span></button>
+        <button class="btn ghost" id="title-btn" type="button">Title screen</button>
+        <button class="btn ghost" id="restart-btn" type="button">Restart story</button>
+        <button class="btn primary" value="close">Resume</button>
       </div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet" id="log-dialog" aria-labelledby="log-title">
+    <form method="dialog" class="sheet-card">
+      <h2 id="log-title">The story so far</h2>
+      <div class="log" id="log" tabindex="0"></div>
+      <div class="sheet-actions"><button class="btn primary" value="close">Back to the scene</button></div>
     </form>
   </dialog>
 
@@ -135,19 +131,18 @@
       <h2 id="episodes-title">Episodes</h2>
       <p class="sheet-note">Replay an episode with the choices you carried into it last time.</p>
       <div class="episode-list" id="episode-list"></div>
-      <div class="sheet-actions"><button class="ghost-btn" value="close">CLOSE</button></div>
+      <div class="sheet-actions"><button class="btn ghost" value="close">Close</button></div>
     </form>
   </dialog>
 
   <dialog class="report" id="report-dialog" aria-labelledby="report-title">
-    <div class="report-card" id="report-card">
+    <div class="report-card">
       <div class="report-head">
-        <span class="report-kicker">HOUSEHOLD REPORT CARD · VOLUME ONE</span>
-        <div class="report-stamp" id="report-stamp" aria-hidden="true"></div>
+        <span class="kicker">Household report card · Volume One</span>
         <h2 id="report-title"></h2>
         <div class="report-copy" id="report-copy"></div>
       </div>
-      <figure class="report-quote" id="report-quote"><div class="report-portrait" id="report-portrait" aria-hidden="true"></div><blockquote id="report-quote-text"></blockquote><figcaption id="report-quote-who"></figcaption></figure>
+      <figure class="report-quote"><img id="report-portrait" alt="" /><blockquote id="report-quote-text"></blockquote><figcaption id="report-quote-who"></figcaption></figure>
       <div class="report-scores" id="report-scores"></div>
       <h3>What the family will remember</h3>
       <ul class="report-remember" id="report-remember"></ul>
@@ -155,8 +150,8 @@
       <ul class="report-moments" id="report-moments"></ul>
       <p class="report-tease">Next time on African Household Drama: <em>The Visitor From Abroad.</em> Kwabena is coming home from London, and the whole compound has opinions.</p>
       <div class="sheet-actions">
-        <button class="ghost-btn" id="report-episodes" type="button">REPLAY AN EPISODE</button>
-        <button class="start-btn" id="report-again" type="button"><span>PLAY AGAIN</span><span aria-hidden="true">↻</span></button>
+        <button class="btn ghost" id="report-episodes" type="button">Replay an episode</button>
+        <button class="btn primary" id="report-again" type="button">Play again</button>
       </div>
     </div>
   </dialog>

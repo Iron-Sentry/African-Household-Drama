@@ -10,8 +10,10 @@ describe('parsing', () => {
   it('parses registered dialogue and leaves narration or unknown prefixes untouched', () => {
     expect(parseLine('Mummy: Sit properly.')).toMatchObject({ speaker: CHARACTERS.mum, text: 'Sit properly.' });
     expect(parseLine('Auntie Efua: Come in!')).toMatchObject({ speaker: CHARACTERS.auntie, text: 'Come in!' });
-    expect(parseLine('Narrator: This is deliberately unknown.')).toEqual({ speaker: null, text: 'Narrator: This is deliberately unknown.' });
-    expect(parseLine('The room is quiet.')).toEqual({ speaker: null, text: 'The room is quiet.' });
+    expect(parseLine('Adjoa: Chale!')).toMatchObject({ speaker: CHARACTERS.friend, name: 'Adjoa', text: 'Chale!' });
+    expect(parseLine("Kojo's Mother: Esi!")).toMatchObject({ speaker: CHARACTERS.friendmum, name: "Kojo's Mother" });
+    expect(parseLine('Narrator: This is deliberately unknown.')).toEqual({ speaker: null, name: '', text: 'Narrator: This is deliberately unknown.' });
+    expect(parseLine('The room is quiet.')).toEqual({ speaker: null, name: '', text: 'The room is quiet.' });
   });
 
   it('parses simple, value and paired tags', () => {
@@ -19,6 +21,7 @@ describe('parsing', () => {
     expect(parseTag('scene: hall')).toEqual({ key: 'scene', value: 'hall' });
     expect(parseTag('expr: mum=sideeye')).toEqual({ key: 'expr', who: 'mum', value: 'sideeye' });
     expect(parseTag('quote:auntie=laugh')).toEqual({ key: 'quote', who: 'auntie', value: 'laugh' });
+    expect(parseTag('sticker:mum=akola_bone')).toEqual({ key: 'sticker', who: 'mum', value: 'akola_bone' });
   });
 
   it('has no speaker-shaped source lines with an unregistered speaker', () => {
@@ -35,9 +38,17 @@ describe('parsing', () => {
 });
 
 describe('Session', () => {
+  it('names the friend after the child the player did not pick', () => {
+    const session = new Session(json);
+    session.setPlayer('girl');
+    expect(session.vars()).toMatchObject({ friend: 'Kojo', fhe: 'he', fhis: 'his' });
+    session.setPlayer('boy');
+    expect(session.vars()).toMatchObject({ friend: 'Adjoa', fhe: 'she', fhis: 'her' });
+  });
+
   it('exposes all global variables for checkpoints', () => {
     const vars = new Session(json).vars();
-    expect(vars).toMatchObject({ approval: 50, smarts: 20, trouble: 0, antenna: 'none', finale: 'none' });
+    expect(vars).toMatchObject({ approval: 50, smarts: 20, trouble: 0, antenna: 'none', finale: 'none', friend: 'Adjoa' });
     expect(Object.keys(vars).length).toBeGreaterThan(20);
   });
 
@@ -54,10 +65,10 @@ describe('Session', () => {
     }
     expect(first).not.toBeNull();
     const report = session.collectReport(first!);
-    expect(report.rank).toBe('comedian');
-    expect(report.title).toBe('The Family Comedian');
+    expect(report.rank).toBe('akola');
+    expect(report.title).toBe('Akola Bone!');
     expect(report.copy.length).toBeGreaterThan(0);
-    expect(report.quote?.speaker).toBe('Auntie Efua');
+    expect(report.quote?.speaker).toBe('Mummy');
     expect(report.remember.length).toBeGreaterThan(2);
   });
 });

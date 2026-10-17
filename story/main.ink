@@ -17,6 +17,13 @@ VAR approval = 50
 VAR smarts = 20
 VAR trouble = 0
 
+// ---- The friend from next door: the game renames them after the child the
+// player did not pick (boy player -> Adjoa, girl player -> Kojo).
+VAR friend = "Adjoa"
+VAR fhe = "she"
+VAR fhim = "her"
+VAR fhis = "her"
+
 // ---- Episode 1: The Kissing Scene
 VAR woke = "none"           // pretend | rush | sleepy
 VAR antenna = "none"        // held | foil | slap
@@ -27,7 +34,8 @@ VAR mummy_knows = false     // Mummy saw through your convenient thirst
 VAR greeted = "none"        // proper | twi | forgot
 VAR looked_portrait = false
 VAR heard_london = false    // you asked Auntie about her son in London
-VAR touched_phone = false
+VAR told_clock = false     // you told Auntie her clock has stopped
+VAR touched_phone = false  // you tugged the padlock on Auntie's phone
 VAR biscuit = "none"        // grab | one | many | stare | refuse
 VAR said_medaase = false
 VAR pocketed = false        // a biscuit went into your pocket
@@ -49,7 +57,7 @@ VAR counted_aloud = false
 VAR kojo_friend = false
 VAR kojo_betrayed = false
 VAR pocket_outcome = "none" // confessed | rat | kojo
-VAR sugar = "none"          // gave | ask | lied
+VAR gossip = "none"         // told | fine | london | spy
 VAR has_remote = false
 VAR finale = "none"         // news | eyes | laugh | antenna | mummy | froze
 

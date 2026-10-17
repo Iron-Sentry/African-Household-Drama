@@ -26,7 +26,7 @@ Age rating, localisation priorities, commercial positioning, and audience size h
 - The stakes are intimate and comic: a remote control, one biscuit, a shopping list, and the devastating reach of family memory.
 - Ghanaian household logic is the game system rather than a decorative setting.
 - Earlier behavior returns as gossip, trust, temptations, and tailored report-card memories.
-- Expressive 2D cut-out characters sit over spatial 3D rooms, while illustrated scenes keep the full experience playable without WebGL.
+- Painted 1990s Ghanaian rooms and full-body expressive characters; every line is a speech bubble on the person saying it, so players never look away from the drama. A READ THE ROOM camera push into Mummy's face turns a glance into a decision.
 - Approval, Street Smarts, and Trouble create competing definitions of a “good” choice instead of a single morality meter.
 - The experience is readable as a solo story and performative enough for group play.
 
@@ -43,9 +43,10 @@ Age rating, localisation priorities, commercial positioning, and audience size h
 
 - Three connected, complete episodes: **The Kissing Scene**, **The Neighbour's Biscuit**, and **The Errand**.
 - A full beginning-to-report-card run with four reachable ranks: **The Golden Child**, **Akola Bone!**, **The Little Strategist**, and **The Family Comedian**.
-- Thirty-three discoverable moments and cross-episode callbacks.
+- Thirty-six discoverable moments and cross-episode callbacks.
+- Play as a boy or a girl; the friend next door becomes the other child (Adjoa or Kojo).
 - Responsive desktop, phone portrait, and phone landscape presentation.
-- Three Three.js locations with local illustrated 2D fallbacks.
+- Two painted locations (the family hall and Auntie Efua's front room) with a camera, lighting moods, a live CRT overlay and prop close-ups.
 - Local save/continue, version migration, episode checkpoints, replay, settings, opt-in synthesized sound, and untimed-choice support.
 - Keyboard play, native modal dialogs, a screen-reader status region, reduced-motion behavior, and 44 px minimum tested choice targets.
 - A writer-facing Ink pipeline with live compilation, tag validation, direct knot preview, editable variables, automated route simulation, unit tests, and production browser tests.
@@ -56,7 +57,7 @@ The slice does **not** demonstrate a backend, accounts, cloud saves, analytics, 
 
 ### Demonstrated
 
-The current target is a static web release for modern desktop and mobile browsers. It needs no server-side runtime and makes no external runtime requests. The 2D stage is the compatibility baseline; Three.js is progressive enhancement.
+The current target is a static web release for modern desktop and mobile browsers. It needs no server-side runtime and makes no external runtime requests. It is plain HTML/CSS over WebP art, so it runs on anything with a modern browser; no WebGL is required.
 
 ### Proposed
 
@@ -83,7 +84,7 @@ Additional volumes, localisation, selected voice performance, richer shareable r
 
 - **Cultural accuracy:** the comedy depends on precise language, manners, material culture, and 1998 context. The flagged details need Ghanaian editorial ownership.
 - **Branch growth:** persistent callbacks create value but can multiply writing, testing, and localisation cost. Keep a documented variable budget per episode.
-- **Hardware variation:** the measured desktop WebGL result is strong, but representative low-end phones have not been profiled. The 2D fallback reduces, but does not eliminate, device risk.
+- **Hardware variation:** desktop holds 60 fps and first load is about 1.4 MB, but representative low-end phones have not been profiled on real devices yet.
 - **Accessibility validation:** automated keyboard, target-size, reduced-motion, overflow, and modal behavior are covered; manual screen-reader and zoom testing remains.
 - **Commercial uncertainty:** audience size, willingness to pay, distribution channel, and acquisition strategy have not been tested.
 - **Content throughput:** the slice has a robust authoring foundation, but it has not yet demonstrated a multi-writer editorial workflow.
@@ -91,12 +92,12 @@ Additional volumes, localisation, selected voice performance, richer shareable r
 ## Pitch-video shot list
 
 1. **Cold open — 5 seconds:** title card, Accra 1998, and the tagline over the warm household palette.
-2. **The room — 8 seconds:** wide 3D hall, CRT snow, character cut-outs entering, then a fast cut to the identical illustrated fallback.
+2. **The room — 8 seconds:** the view through the keyhole: Daddy fighting the antenna, CRT snow, Mummy's off-stage bubble.
 3. **The impossible choice — 12 seconds:** Daddy adjusting the antenna, the kissing scene approaching, three choices appearing, and Nana's reaction.
-4. **Consequences travel — 12 seconds:** Auntie Efua's biscuit tray, a callback to Episode One, then Kojo repeating compound gossip in Episode Three.
-5. **The errand — 15 seconds:** compound wide shot, “GOD'S TIME IS THE BEST” kiosk, item hotspots, the extra-change dilemma, and rapidly moving score feedback.
+4. **Consequences travel — 12 seconds:** Auntie Efua's biscuit tray, READ THE ROOM on Mummy's side-eye, a callback to Episode One, then the friend next door repeating compound gossip in Episode Three.
+5. **The errand — 15 seconds:** Auntie Efua's provisions cupboard, the gossip trap ("You know nothing"), the extra-change dilemma, and rapidly moving score feedback.
 6. **Expression reel — 8 seconds:** Mummy's side-eye, Daddy's focus, Auntie's laugh, Kojo's delight, and emote/impact beats.
-7. **Play anywhere — 8 seconds:** desktop, phone portrait, phone landscape, reduced motion, and the 2D fallback.
+7. **Play anywhere — 8 seconds:** desktop, phone portrait (camera follows the speaker), phone landscape, reduced motion, larger text.
 8. **Payoff — 10 seconds:** the household report card, remembered choices, discovered moments, and all four rank names.
 9. **Forward tease — 5 seconds:** “Next time: The Visitor From Abroad” clearly labelled as proposed content.
 

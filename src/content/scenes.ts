@@ -1,29 +1,20 @@
 // Scene registry: every location the story can switch to with #scene:<id>.
-// Camera shots and hotspots are named here so writers can reference them
-// from ink, and both the 3D stage and the 2D fallback know where things are.
+// All positions are percentages of the painted background (16:9), so the
+// camera, actors, hotspots and the TV overlay stay glued to the painting.
 
-export type Vec3 = [number, number, number];
-
-export interface Shot {
-  pos: Vec3; // 3D camera position
-  look: Vec3; // 3D look-at target
-  fov?: number;
-  flat: [number, number, number]; // 2D fallback framing: scale, x%, y% (transform-origin)
-}
-
-export interface Hotspot {
-  label: string;
-  pos: Vec3; // 3D anchor
-  flat: [number, number]; // 2D fallback anchor, % of the room window
-}
+/** Camera framing: zoom, then the point (x%, y%) to centre on. */
+export type Shot = [scale: number, x: number, y: number];
 
 export interface Scene {
   id: string;
-  title: string; // shown top-left of the stage
+  title: string;
   location: string;
-  fallback: string; // illustrated 2D room (assets/)
+  bg: string; // public/assets/...
+  floor: [number, number]; // x% range the cast spreads across
+  tv?: [left: number, top: number, width: number, height: number]; // the painted screen, if the room has one
+  lamp: [number, number]; // where a kerosene lamp would sit
   shots: Record<string, Shot>;
-  hotspots: Record<string, Hotspot>;
+  hotspots: Record<string, { label: string; at: [number, number] }>;
 }
 
 export const SCENES: Record<string, Scene> = {
@@ -31,76 +22,87 @@ export const SCENES: Record<string, Scene> = {
     id: 'hall',
     title: 'The Family Hall',
     location: 'Home · Accra',
-    fallback: 'room-tv.svg',
+    bg: 'rooms/family_hall.webp',
+    floor: [10, 70],
+    tv: [79.5, 29.8, 7.9, 14.9],
+    lamp: [51, 60],
     shots: {
-      wide: { pos: [7, 5, 9.4], look: [0, 1.65, 0], flat: [1, 50, 50] },
-      sofa: { pos: [5.6, 3.4, 6.6], look: [0.6, 1.4, -0.4], fov: 40, flat: [1.12, 55, 62] },
-      tv: { pos: [0.9, 2.6, 2.6], look: [-2.3, 2.0, -1.9], fov: 38, flat: [1.6, 30, 45] },
-      tv_close: { pos: [-1.95, 2.15, 0.2], look: [-2.35, 2.0, -1.85], fov: 36, flat: [2.4, 26, 44] },
-      remote: { pos: [4.7, 2.7, 3.4], look: [3.15, 1.4, 0.9], fov: 34, flat: [1.8, 82, 70] },
-      calendar: { pos: [3.4, 3.0, -0.4], look: [3.6, 3.0, -3.9], fov: 36, flat: [2.0, 76, 30] },
-      photo: { pos: [1.45, 3.0, -0.2], look: [1.45, 3.15, -3.8], fov: 36, flat: [1.9, 52, 26] },
-      fan: { pos: [2.2, 2.6, 6.0], look: [4.26, 2.4, 2.43], fov: 36, flat: [1.7, 92, 50] },
-      lamp: { pos: [3.4, 2.2, 1.9], look: [1.3, 1.0, -1.2], fov: 40, flat: [1.5, 52, 70] },
-      table: { pos: [3.4, 2.9, 2.6], look: [1.2, 0.8, -1.2], fov: 42, flat: [1.4, 52, 72] },
+      wide: [1, 50, 50],
+      keyhole: [1.3, 66, 40],
+      sofa: [1.12, 38, 58],
+      tv: [1.8, 83.5, 40],
+      tv_close: [3.4, 83.5, 37.5],
+      remote: [2.4, 57, 62],
+      photo: [2.4, 89, 14],
+      fan: [2, 71, 36],
+      lamp: [1.7, 51, 60],
+      table: [1.5, 51, 64],
     },
-    hotspots: {
-      remote: { label: 'Remote control', pos: [3.2, 1.55, 0.95], flat: [83, 70] },
-      calendar: { label: 'Calendar', pos: [3.6, 3.0, -3.85], flat: [74, 30] },
-      photo: { label: 'Wedding photograph', pos: [1.45, 3.17, -3.7], flat: [52, 25] },
-      fan: { label: 'Standing fan', pos: [4.26, 2.8, 2.45], flat: [93, 46] },
-    },
+    hotspots: {},
   },
   auntie: {
     id: 'auntie',
     title: "Auntie Efua's House",
     location: 'Next door',
-    fallback: 'room-neighbour.svg',
+    bg: 'rooms/neighbours_lounge.webp',
+    floor: [14, 72],
+    tv: [76.85, 30.3, 6.65, 12.75],
+    lamp: [40, 58],
     shots: {
-      wide: { pos: [7, 5, 9.4], look: [0, 1.65, 0], flat: [1, 50, 50] },
-      door: { pos: [7.6, 4.2, 8.2], look: [0.4, 1.6, -0.6], fov: 42, flat: [1.08, 60, 55] },
-      phone: { pos: [-2.6, 2.0, 2.6], look: [-4.2, 1.15, 1.0], fov: 34, flat: [2.0, 12, 62] },
-      showcase: { pos: [3.4, 2.4, 0.4], look: [3.7, 1.9, -3.5], fov: 38, flat: [1.8, 80, 45] },
-      portrait: { pos: [1.45, 3.0, -0.2], look: [1.45, 3.15, -3.8], fov: 36, flat: [1.9, 52, 26] },
-      auntie_tv: { pos: [-1.1, 2.4, 0.6], look: [-2.3, 2.1, -2.5], fov: 36, flat: [2.0, 25, 45] },
-      tray: { pos: [3.2, 3.0, 1.6], look: [1.24, 0.85, -1.2], fov: 38, flat: [1.6, 50, 72] },
-      tray_close: { pos: [2.2, 2.0, 0.2], look: [1.2, 0.85, -1.2], fov: 34, flat: [2.4, 50, 74] },
-      mum_eyes: { pos: [5.2, 3.1, 5.4], look: [0.0, 1.6, 0.0], fov: 32, flat: [1.35, 30, 45] },
+      wide: [1, 50, 50],
+      door: [1.35, 40, 42],
+      clock: [3, 72.4, 15.5],
+      showcase: [2.1, 62, 35],
+      phone: [2.6, 71.5, 40],
+      portrait: [2.6, 62, 12],
+      auntie_tv: [2.6, 80.3, 36],
+      tray: [1.7, 40, 58],
+      tray_close: [2.8, 39, 57],
+      counter: [1.9, 40, 56],
     },
     hotspots: {
-      phone: { label: 'Telephone', pos: [-4.2, 1.2, 1.0], flat: [12, 62] },
-      showcase: { label: 'Glass showcase', pos: [3.7, 1.9, -3.5], flat: [80, 42] },
-      portrait: { label: 'Framed photograph', pos: [1.45, 3.17, -3.7], flat: [52, 25] },
-      auntie_tv: { label: "Auntie's television", pos: [-2.3, 2.1, -2.5], flat: [25, 44] },
-    },
-  },
-  compound: {
-    id: 'compound',
-    title: 'The Compound',
-    location: 'Outside · Accra',
-    fallback: 'compound.svg',
-    shots: {
-      wide: { pos: [6.5, 4.6, 10], look: [0, 1.6, -1], flat: [1, 50, 50] },
-      gate: { pos: [-1.2, 2.8, 6.5], look: [-3.4, 1.6, -2.5], fov: 42, flat: [1.3, 22, 55] },
-      gate_close: { pos: [-2.4, 2.2, 2.6], look: [-3.6, 1.7, -2.6], fov: 36, flat: [1.8, 18, 52] },
-      kiosk: { pos: [5.6, 3.0, 5.8], look: [2.8, 1.8, -2.2], fov: 40, flat: [1.35, 72, 50] },
-      shelf: { pos: [3.0, 2.1, 1.4], look: [2.8, 1.8, -2.3], fov: 36, flat: [2.0, 72, 48] },
-      counter: { pos: [3.6, 1.9, 0.6], look: [2.8, 1.3, -1.3], fov: 34, flat: [2.2, 72, 62] },
-      road: { pos: [1.5, 2.4, 7.5], look: [-1.0, 1.2, 2.5], fov: 40, flat: [1.4, 40, 70] },
-    },
-    hotspots: {
-      milk: { label: 'Tin of milk', pos: [1.95, 2.2, -2.45], flat: [62, 40] },
-      bread: { label: 'Loaf of tea bread', pos: [2.65, 2.2, -2.45], flat: [70, 40] },
-      sugar: { label: 'Small packet of sugar', pos: [3.35, 2.2, -2.45], flat: [78, 40] },
-      matches: { label: 'Box of matches', pos: [1.95, 1.65, -2.45], flat: [62, 54] },
-      toffee: { label: 'Toffees', pos: [2.65, 1.65, -2.45], flat: [70, 54] },
-      candles: { label: 'Candles', pos: [3.35, 1.65, -2.45], flat: [78, 54] },
+      clock: { label: 'The wall clock', at: [72.4, 15] },
+      phone: { label: 'The telephone', at: [71.5, 41] },
+      showcase: { label: 'The glass showcase', at: [62, 38] },
+      portrait: { label: 'The framed photograph', at: [62.3, 11.5] },
+      auntie_tv: { label: "Auntie's television", at: [81.5, 37] },
     },
   },
 };
 
-export const LIGHTS = ['snow', 'evening', 'film', 'tension', 'blackout', 'lamp', 'afternoon', 'dusk', 'day'] as const;
-export type LightId = (typeof LIGHTS)[number];
+// Outdoor and bedroom paintings from art_incoming (see docs/ASSET_REQUESTS.md).
+SCENES.compound = {
+  id: 'compound',
+  title: 'The Compound',
+  location: 'Outside · Accra',
+  bg: 'rooms/compound_courtyard.webp',
+  floor: [22, 78],
+  lamp: [50, 60],
+  shots: { wide: [1, 50, 50], gate: [1.8, 40, 38], door: [1.7, 88, 42], tree: [1.8, 70, 25] },
+  hotspots: {},
+};
+SCENES.street = {
+  id: 'street',
+  title: 'The Lane',
+  location: 'Outside the gate',
+  bg: 'rooms/bofrot_street.webp',
+  floor: [32, 84],
+  lamp: [14, 46],
+  shots: { wide: [1, 50, 50], stall: [1.9, 17, 45], sign: [2.8, 31, 24], gate: [1.8, 57, 40] },
+  hotspots: {},
+};
+SCENES.bedroom = {
+  id: 'bedroom',
+  title: "Nana's Room",
+  location: 'Home · Night',
+  bg: 'rooms/nana_bedroom_night.webp',
+  floor: [34, 74],
+  lamp: [2, 56],
+  shots: { wide: [1, 50, 50], bed: [1.8, 18, 62], door: [1.9, 84, 42], window: [2, 44, 24] },
+  hotspots: {},
+};
+
+export const LIGHTS = ['day', 'afternoon', 'evening', 'dusk', 'moon', 'film', 'tension', 'snow', 'lamp', 'blackout', 'doorway'] as const;
 
 export const ALL_SHOTS = new Set(Object.values(SCENES).flatMap((s) => [...Object.keys(s.shots), 'push']));
 export const ALL_HOTSPOTS = new Set(Object.values(SCENES).flatMap((s) => Object.keys(s.hotspots)));
