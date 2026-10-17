@@ -16,10 +16,26 @@ describe('cross-episode callbacks', () => {
 
   it('carries the bofrot decision into the Episode 3 home scene', () => {
     const spent = run('Spend it on bofrot');
-    const returned = run('Tell Sister Akos she gave you too much');
-    const knockOn = "Kojo's Mother: Esi! Thank you oo, for the bofrot your child bought my Kojo! Ten bofrot! You people are rich now!";
+    const returned = run('Tell Auntie she gave you too much');
+    const knockOn = "Adjoa's Mother: Esi! Thank you oo, for the bofrot your child bought my Adjoa! Ten bofrot! You people are rich now!";
     expect(spent.lines).toContain(knockOn);
     expect(returned.lines).not.toContain(knockOn);
-    expect(returned.lines).toContain('Auntie Efua: Esi! Have you heard? Akos says your child gave back her money! A whole thousand cedis!');
+    expect(returned.lines).toContain('Auntie Efua: Esi! Have you heard? Your child gave me back my own money! A whole thousand cedis!');
+  });
+
+  it('brings what you told Auntie Efua home with you', () => {
+    const told = run('Tell her everything');
+    const fine = run('Everybody is fine');
+    expect(told.lines).toContain("Mummy: Nana. Why does Efua know that Daddy's car is still at the mechanic?");
+    expect(fine.lines).not.toContain("Mummy: Nana. Why does Efua know that Daddy's car is still at the mechanic?");
+    expect(fine.lines).toContain('Mummy: Efua says you told her "everybody is fine." She was very annoyed.');
+  });
+
+  it('only accuses a biscuit thief who pocketed one', () => {
+    const pocketed = run('Slip one biscuit');
+    const honest = run('Sit on your hands');
+    const accusation = 'Auntie Efua: When you left, I counted.';
+    expect(pocketed.lines).toContain(accusation);
+    expect(honest.lines).not.toContain(accusation);
   });
 });

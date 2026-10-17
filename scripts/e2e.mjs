@@ -43,27 +43,23 @@ async function waitForServer() {
   throw new Error(`Vite preview did not start.\n${previewLog}`);
 }
 
-const defaults = { sound: false, timedChoices: false, textSpeed: 'instant', motion: 'full' };
+const defaults = { sound: false, timedChoices: false, textSpeed: 'instant', motion: 'full', bigText: false };
 const allErrors = [];
 const missing = [];
-const expectedWebglErrors = [];
 
-function monitor(page, scenario, allowWebglFailure = false) {
+function monitor(page, scenario) {
   page.on('pageerror', (error) => allErrors.push(`${scenario}: ${error.message}`));
   page.on('console', (message) => {
-    if (message.type() !== 'error') return;
-    const entry = `${scenario}: ${message.text()}`;
-    if (allowWebglFailure && /webgl|context/i.test(entry)) expectedWebglErrors.push(entry);
-    else allErrors.push(entry);
+    if (message.type() === 'error') allErrors.push(`${scenario}: ${message.text()}`);
   });
   page.on('response', (response) => {
     if (response.status() === 404) missing.push(`${scenario}: ${response.url()}`);
   });
 }
 
-async function makePage(browser, scenario, viewport, settings = defaults, allowWebglFailure = false) {
+async function makePage(browser, scenario, viewport, settings = defaults, player = 'boy') {
   const context = await browser.newContext({ viewport, reducedMotion: settings.motion === 'reduced' ? 'reduce' : 'no-preference' });
-  await context.addInitScript((savedSettings) => {
+  await context.addInitScript(([savedSettings, savedPlayer]) => {
     if (sessionStorage.getItem('ahd.e2e-ready')) return;
     sessionStorage.setItem('ahd.e2e-ready', '1');
     localStorage.clear();
@@ -73,10 +69,11 @@ async function makePage(browser, scenario, viewport, settings = defaults, allowW
       endings: [],
       checkpoints: {},
       settings: savedSettings,
+      player: savedPlayer,
     }));
-  }, settings);
+  }, [settings, player]);
   const page = await context.newPage();
-  monitor(page, scenario, allowWebglFailure);
+  monitor(page, scenario);
   return { context, page };
 }
 
@@ -86,12 +83,17 @@ async function keyboardStart(page, url) {
   const focused = await page.evaluate(() => document.activeElement?.id);
   if (focused !== 'new-btn') throw new Error(`Title focus was ${focused || '(none)'}, expected new-btn`);
   await page.keyboard.press('Enter');
+  await page.locator('#who-dialog[open]').waitFor();
+  await page.keyboard.press('Enter'); // the remembered player is focused
   await page.locator('#title-dialog').waitFor({ state: 'hidden' });
 }
 
+const choiceVisible = (page) => page.locator('#choices .choice').first().isVisible().catch(() => false);
+const currentLine = (page) => page.evaluate(() => document.querySelector('#bubble:not([hidden]) .text, #caption:not([hidden]) .text')?.textContent || '');
+
 async function reachFirstChoice(page) {
-  for (let step = 0; step < 50; step++) {
-    if (await page.locator('#choices .choice-btn').first().isVisible().catch(() => false)) {
+  for (let step = 0; step < 60; step++) {
+    if (await choiceVisible(page)) {
       await page.locator('#card').waitFor({ state: 'hidden' });
       return;
     }
@@ -102,25 +104,46 @@ async function reachFirstChoice(page) {
 }
 
 async function fullKeyboardRun(page) {
-  await keyboardStart(page, `${origin}/?test&flat`);
+  await keyboardStart(page, `${origin}/?test`);
   let decisions = 0;
-  for (let step = 0; step < 900; step++) {
+  let bubbles = 0;
+  for (let step = 0; step < 1200; step++) {
     if (await page.locator('#report-dialog[open]').count()) {
       return {
         decisions,
+        speechBubblesSeen: bubbles,
         title: await page.locator('#report-title').textContent(),
         rank: await page.locator('#report-dialog').getAttribute('data-rank'),
       };
     }
-    if (await page.locator('#choices .choice-btn').first().isVisible().catch(() => false)) {
+    if (await choiceVisible(page)) {
       await page.keyboard.press('1');
       decisions++;
     } else {
+      if (await page.locator('#bubble:not([hidden])').count()) bubbles++;
       await page.keyboard.press('Enter');
     }
     await page.waitForTimeout(15);
   }
   throw new Error('Keyboard play-through did not reach the report card.');
+}
+
+/** Every visible dialogue box and choice must sit fully inside the viewport. */
+function measureLayout() {
+  const vw = innerWidth;
+  const vh = innerHeight;
+  const inside = (el) => {
+    const r = el.getBoundingClientRect();
+    return r.left >= -1 && r.top >= -1 && r.right <= vw + 1 && r.bottom <= vh + 1;
+  };
+  const visible = [...document.querySelectorAll('#bubble, #caption, #choices, .choice')].filter((el) => !el.closest('[hidden]') && el.getClientRects().length);
+  return {
+    viewport: { width: vw, height: vh },
+    bodyScroll: { width: document.body.scrollWidth, height: document.body.scrollHeight },
+    offscreen: visible.filter((el) => !inside(el)).map((el) => el.id || el.className),
+    minChoiceHeight: Math.min(...[...document.querySelectorAll('.choice')].map((el) => el.getBoundingClientRect().height)),
+    hudButtons: [...document.querySelectorAll('.hud-btn')].map((el) => Math.round(el.getBoundingClientRect().height)),
+  };
 }
 
 function distMetrics() {
@@ -144,7 +167,6 @@ function distMetrics() {
 }
 
 let browser;
-let noGpuBrowser;
 try {
   await waitForServer();
   browser = await chromium.launch({ headless: true, executablePath });
@@ -152,12 +174,15 @@ try {
   const keyboard = await makePage(browser, 'keyboard', { width: 1440, height: 900 }, { ...defaults, motion: 'reduced' });
   const keyboardResult = await fullKeyboardRun(keyboard.page);
   if (!keyboardResult.title || !keyboardResult.rank) throw new Error('Report card was missing its rank or title.');
+  if (keyboardResult.speechBubblesSeen < 50) throw new Error(`Only ${keyboardResult.speechBubblesSeen} speech bubbles were shown.`);
+  await keyboard.page.waitForTimeout(400);
   await keyboard.page.screenshot({ path: path.join(shotDir, 'report-card.png') });
   await keyboard.context.close();
 
   const layouts = [
     ['desktop', { width: 1440, height: 900 }],
     ['mobile-portrait', { width: 390, height: 844 }],
+    ['small-portrait', { width: 360, height: 800 }],
     ['mobile-landscape', { width: 844, height: 390 }],
   ];
   const layoutResults = {};
@@ -165,21 +190,23 @@ try {
   for (const [name, viewport] of layouts) {
     const item = await makePage(browser, name, viewport);
     await keyboardStart(item.page, `${origin}/?test`);
+    await item.page.keyboard.press('Enter'); // past the episode card
+    for (let i = 0; i < 2; i++) await item.page.keyboard.press('Enter');
+    await item.page.waitForTimeout(900);
+    const line = measureLayout.toString();
+    const lineLayout = await item.page.evaluate(`(${line})()`);
+    await item.page.screenshot({ path: path.join(shotDir, `${name}-dialogue.png`) });
     await reachFirstChoice(item.page);
-    await item.page.locator('#room.three-ready').waitFor({ timeout: 10_000 });
-    const measurements = await item.page.evaluate(() => ({
-      viewport: { width: innerWidth, height: innerHeight },
-      bodyScroll: { width: document.body.scrollWidth, height: document.body.scrollHeight },
-      world: document.getElementById('world').getBoundingClientRect().toJSON(),
-      panel: document.getElementById('panel').getBoundingClientRect().toJSON(),
-      panelOverflowY: getComputedStyle(document.getElementById('panel')).overflowY,
-      minChoiceHeight: Math.min(...[...document.querySelectorAll('.choice-btn')].map((el) => el.getBoundingClientRect().height)),
-    }));
-    if (measurements.bodyScroll.width > measurements.viewport.width + 1) throw new Error(`${name} has horizontal page overflow.`);
-    if (measurements.minChoiceHeight < 44) throw new Error(`${name} choice target is below 44px.`);
-    if (name !== 'desktop' && measurements.bodyScroll.height > measurements.viewport.height + 1) throw new Error(`${name} scrolls the page instead of the story panel.`);
-    await item.page.screenshot({ path: path.join(shotDir, `${name}-episode1.png`) });
-    layoutResults[name] = measurements;
+    await item.page.waitForTimeout(600);
+    const choiceLayout = await item.page.evaluate(`(${line})()`);
+    for (const m of [lineLayout, choiceLayout]) {
+      if (m.bodyScroll.width > m.viewport.width + 1 || m.bodyScroll.height > m.viewport.height + 1) throw new Error(`${name} scrolls the page.`);
+      if (m.offscreen.length) throw new Error(`${name} has dialogue or choices off screen: ${m.offscreen.join(', ')}`);
+      if (m.hudButtons.some((h) => h < 44)) throw new Error(`${name} HUD button below 44px.`);
+    }
+    if (choiceLayout.minChoiceHeight < 44) throw new Error(`${name} choice target is below 44px.`);
+    await item.page.screenshot({ path: path.join(shotDir, `${name}-choices.png`) });
+    layoutResults[name] = { dialogue: lineLayout, choices: choiceLayout };
 
     if (name === 'desktop') {
       performanceResult = await item.page.evaluate(async () => {
@@ -202,94 +229,79 @@ try {
           loadMs: navigation.loadEventEnd - navigation.startTime,
           firstContentfulPaintMs: paint?.startTime || null,
           measuredFps: (frames * 1000) / elapsed,
-          webgl: !!document.querySelector('#room.three-ready'),
-          tier: window.__stage?.tier || null,
+          transferredBytes: performance.getEntriesByType('resource').reduce((sum, r) => sum + (r.transferSize || 0), navigation.transferSize || 0),
         };
       });
-
-      const hadStage = await item.page.evaluate(() => !!(window).__stage);
-      if (!hadStage) throw new Error('3D test hook was not exposed.');
-      await item.page.evaluate(() => (window).__stage.loseContext());
-      await item.page.locator('#room:not(.three-ready)').waitFor({ timeout: 5_000 });
-      await item.page.waitForFunction(() => Number(getComputedStyle(document.querySelector('#flat')).opacity) > 0.9);
-      await item.page.evaluate(() => (window).__stage.restoreContext());
-      await item.page.locator('#room.three-ready').waitFor({ timeout: 8_000 });
     }
     await item.context.close();
   }
 
-  const flat = await makePage(browser, 'flat', { width: 1440, height: 900 });
-  await keyboardStart(flat.page, `${origin}/?test&flat`);
-  await reachFirstChoice(flat.page);
-  if (await flat.page.locator('#room.three-ready').count()) throw new Error('?flat unexpectedly initialized Three.js.');
-  const flatImage = await flat.page.locator('#flat-bg').evaluate((el) => getComputedStyle(el).backgroundImage);
-  if (!flatImage.includes('room-tv.svg')) throw new Error('Flat fallback did not load the hall artwork.');
-  await flat.page.screenshot({ path: path.join(shotDir, 'flat-fallback.png') });
-  await flat.context.close();
+  // Playing as a girl makes the friend next door Kojo, drawn with the boy sprite.
+  const girl = await makePage(browser, 'girl-player', { width: 1280, height: 800 }, defaults, 'girl');
+  await keyboardStart(girl.page, `${origin}/?test&knot=ep3.errand`);
+  let friendTag = '';
+  // scene changes now play a curtain, so give the lines time to arrive
+  for (let step = 0; step < 80 && !friendTag; step++) {
+    friendTag = await girl.page.evaluate(() => (document.querySelector('#bubble:not([hidden]) .tag')?.textContent === 'Kojo' ? 'Kojo' : ''));
+    if (!friendTag) await girl.page.keyboard.press('Enter');
+    await girl.page.waitForTimeout(120);
+  }
+  const sprites = await girl.page.evaluate(() => [...document.querySelectorAll('.actor img.on')].map((img) => img.getAttribute('src')));
+  if (friendTag !== 'Kojo') throw new Error('Girl player never heard from Kojo.');
+  if (!sprites.some((s) => s?.includes('child_girl_')) || !sprites.some((s) => s?.includes('child_boy_'))) throw new Error(`Girl player sprites wrong: ${sprites.join(', ')}`);
+  await girl.page.screenshot({ path: path.join(shotDir, 'girl-player-kojo.png') });
+  await girl.context.close();
 
   const reducedPage = await makePage(browser, 'reduced-motion', { width: 390, height: 844 }, { ...defaults, motion: 'reduced' });
-  await keyboardStart(reducedPage.page, `${origin}/?test&flat`);
+  await keyboardStart(reducedPage.page, `${origin}/?test`);
   await reachFirstChoice(reducedPage.page);
   const motion = await reducedPage.page.evaluate(() => ({
     mode: document.documentElement.dataset.motion,
-    transition: getComputedStyle(document.querySelector('.choice-btn')).transitionDuration,
-    animation: getComputedStyle(document.querySelector('.red-record')).animationDuration,
+    transition: getComputedStyle(document.querySelector('.choice')).transitionDuration,
+    worldTransition: getComputedStyle(document.querySelector('.world')).transitionDuration,
   }));
   if (motion.mode !== 'reduced') throw new Error('Reduced-motion setting was not applied.');
   await reducedPage.page.screenshot({ path: path.join(shotDir, 'reduced-motion.png') });
   await reducedPage.context.close();
 
   const saving = await makePage(browser, 'save-reload', { width: 1280, height: 800 }, { ...defaults, motion: 'reduced' });
-  await keyboardStart(saving.page, `${origin}/?test&flat`);
-  await saving.page.keyboard.press('Enter');
-  await saving.page.waitForTimeout(50);
-  const savedLine = await saving.page.locator('#line').textContent();
+  await keyboardStart(saving.page, `${origin}/?test`);
+  // advance past the opening curtain and card until a couple of lines have played
+  let shownLines = 0;
+  for (let i = 0; i < 40 && shownLines < 2; i++) {
+    if (await currentLine(saving.page)) shownLines++;
+    await saving.page.keyboard.press('Enter');
+    await saving.page.waitForTimeout(150);
+  }
+  await saving.page.waitForFunction(() => !!document.querySelector('#bubble:not([hidden]) .text, #caption:not([hidden]) .text')?.textContent);
+  const savedLine = await currentLine(saving.page);
   const rawSave = await saving.page.evaluate(() => localStorage.getItem('ahd.save'));
-  if (!rawSave) throw new Error('No save was written after advancing the story.');
+  if (!rawSave || !savedLine) throw new Error('No save was written after advancing the story.');
   await saving.page.reload({ waitUntil: 'networkidle' });
   await saving.page.locator('#continue-btn:visible').waitFor();
   await saving.page.keyboard.press('Enter');
   await saving.page.locator('#title-dialog').waitFor({ state: 'hidden' });
-  await saving.page.waitForFunction((expected) => document.querySelector('#line')?.textContent === expected, savedLine);
-  const restoredLine = await saving.page.locator('#line').textContent();
-  if (restoredLine !== savedLine) throw new Error(`Reload restored a different line: "${savedLine}" -> "${restoredLine}"`);
+  await saving.page.waitForFunction((expected) => document.querySelector('#bubble:not([hidden]) .text, #caption:not([hidden]) .text')?.textContent === expected, savedLine);
   await saving.context.close();
-
-  noGpuBrowser = await chromium.launch({
-    headless: true,
-    executablePath,
-    args: ['--disable-gpu', '--disable-webgl'],
-  });
-  const disabled = await makePage(noGpuBrowser, 'webgl-disabled', { width: 1280, height: 800 }, defaults, true);
-  await keyboardStart(disabled.page, `${origin}/?test`);
-  await reachFirstChoice(disabled.page);
-  await disabled.page.waitForTimeout(700);
-  if (await disabled.page.locator('#room.three-ready').count()) throw new Error('Three.js became ready with WebGL explicitly disabled.');
-  const disabledFallback = await disabled.page.locator('#flat').evaluate((el) => Number(getComputedStyle(el).opacity) > 0.9);
-  if (!disabledFallback) throw new Error('Fallback was not visible with WebGL disabled.');
-  await disabled.page.screenshot({ path: path.join(shotDir, 'webgl-disabled-fallback.png') });
-  await disabled.context.close();
 
   const result = {
     ranAt: new Date().toISOString(),
     executablePath,
     keyboard: keyboardResult,
     layouts: layoutResults,
-    fallbacks: { flat: true, webglDisabled: true, contextLossRecovered: true },
+    girlPlayer: { friend: friendTag },
     reducedMotion: motion,
-    saveReload: { saved: true, restoredSameLine: true },
+    saveReload: { saved: true, restoredSameLine: true, line: savedLine },
     performance: performanceResult,
     bundle: distMetrics(),
     screenshots: fs.readdirSync(shotDir).sort(),
     consoleErrors: allErrors,
-    expectedWebglErrors,
     missing404s: missing,
   };
   fs.writeFileSync(path.join(outDir, 'e2e-results.json'), `${JSON.stringify(result, null, 2)}\n`);
   console.log(JSON.stringify(result, null, 2));
   if (allErrors.length || missing.length) process.exitCode = 1;
 } finally {
-  await noGpuBrowser?.close();
   await browser?.close();
   preview.kill('SIGTERM');
 }

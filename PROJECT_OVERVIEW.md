@@ -1,4 +1,6 @@
-# African Household Drama — Project Review
+> **Historical.** This reviews the original prototype. The current game (painted rooms, speech-bubble staging, no Three.js) is described in README.md.
+
+# African Household Drama: Project Review
 
 Review date: 12 October 2026
 
@@ -16,8 +18,8 @@ No release-blocking functional defect was found during static and local-server r
 
 The player moves through two episodes:
 
-1. **The Kissing Scene** — the player reacts to an awkward television moment with their parents.
-2. **The Neighbour's Biscuit** — the player interprets household etiquette while visiting Auntie Efua.
+1. **The Kissing Scene:** the player reacts to an awkward television moment with their parents.
+2. **The Neighbour's Biscuit:** the player interprets household etiquette while visiting Auntie Efua.
 
 Choices modify three scores:
 
@@ -232,7 +234,7 @@ The current structure is appropriate for a prototype. For a larger game, the saf
 - a minimal test suite for graph integrity and rules;
 - optional versioned save data, added only when required.
 
-Localization would require moving all visible strings—including headings, control labels, feedback, and scene metadata—out of HTML and rendering logic. Longer translated text should also be tested because the desktop story panel uses a constrained height and hidden overflow.
+Localization would require moving all visible strings (headings, control labels, feedback, and scene metadata) out of HTML and rendering logic. Longer translated text should also be tested because the desktop story panel uses a constrained height and hidden overflow.
 
 ## Suggested delivery plan
 
@@ -259,7 +261,7 @@ Localization would require moving all visible strings—including headings, cont
 - Test keyboard, screen reader, zoom, reduced motion, touch, and low-powered mobile behavior.
 - Add desired favicon/social-sharing metadata and a deployment smoke test.
 
-## Vertical-slice implementation update — 12 October 2026
+## Vertical-slice implementation update, 12 October 2026
 
 The original prototype has been expanded into a build-backed, three-episode vertical slice while retaining its visual identity and static-hosting model.
 

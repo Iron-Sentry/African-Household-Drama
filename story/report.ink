@@ -19,14 +19,14 @@
     Akola Bone!
     You collected side-eyes like trophies. Everybody in the compound has a story about you, and Mummy remembers all of them. #rankcopy
     {kojo_friend:
-        At least Kojo thinks you are a legend. Kojo's opinion is not currently being accepted. #rankcopy
+        At least {friend} thinks you are a legend. {friend}'s opinion is not currently being accepted. #rankcopy
     }
     Mummy: This child will finish me. Pass me my slippers. #quote:mum=angry
 - r == "strategist":
     The Little Strategist
     Not every choice was perfect, but you always knew where the exits were. A future household diplomat. #rankcopy
     {counted_aloud:
-        Sister Akos has already offered you a job. #rankcopy
+        Auntie Efua has already offered you a job behind her provisions cupboard. #rankcopy
     }
     Daddy: Hmm. This one is going to be a lawyer. #quote:dad=smug
 - else:
@@ -41,7 +41,7 @@
 - tv_reaction == "eyes":
     You closed your eyes at exactly the right moment and earned the whole episode. #remember
 - tv_reaction == "comment":
-    "Ei! See what they are doing!" Your head still remembers Mummy's knuckle. #remember
+    "Ei! See what they are doing!" Mummy's finger pointed you to bed before the kiss had even finished. #remember
 - tv_reaction == "water":
     The most convenient thirst in the history of the household. #remember
 - tv_reaction == "froze":
@@ -75,15 +75,25 @@
 - pocket_outcome == "rat":
     The compound is still looking for a rat with pockets. #remember
 - pocket_outcome == "kojo":
-    Kojo has not forgotten the biscuit. Kojo will never forget the biscuit. #remember
+    {friend} has not forgotten the biscuit. {friend} will never forget the biscuit. #remember
 }
 {
 - change == "returned":
-    You gave back a thousand cedis, and the news reached home before you did. #remember
+    You gave Auntie Efua back a thousand cedis, and the news reached home before you did. #remember
 - change == "spent":
     Ten bofrot. One thousand cedis. One knock at the door. #remember
 - change == "home":
     You carried the extra money home untouched, and took it back the next morning. #remember
+}
+{
+- gossip == "told":
+    You told Auntie Efua about Daddy's car, the light bill and the snoring. The whole compound sends its sympathy. #remember
+- gossip == "fine":
+    "Everybody is fine, Auntie." The official family statement. Mummy has framed it in her heart. #remember
+- gossip == "london":
+    You asked about Kwabena, and Auntie Efua forgot every question she ever had. #remember
+- gossip == "spy":
+    You came home from an errand with Mummy's biggest secret. Daddy is still asking about the cake. #remember
 }
 {
 - finale == "news":

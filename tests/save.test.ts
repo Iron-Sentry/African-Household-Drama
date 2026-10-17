@@ -16,8 +16,8 @@ class MemoryStore {
 }
 
 const stage: StageState = {
-  scene: 'auntie', light: 'afternoon', cam: 'tray', amb: 'auntie', cast: ['mum', 'child', 'auntie'],
-  expr: { mum: 'sideeye' }, props: { tray: 'on' },
+  player: 'girl', scene: 'auntie', light: 'afternoon', cam: 'tray', amb: 'auntie', cast: ['mum', 'child', 'auntie'],
+  expr: { mum: 'sideeye' }, props: { auntie_tv: 'snow' },
 };
 
 describe('save data', () => {

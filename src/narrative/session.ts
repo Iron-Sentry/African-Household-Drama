@@ -2,7 +2,7 @@
 // "beats" (a line with cues, a set of choices, or the end) for the director.
 // No DOM here, so it runs in Node tests too.
 import { Story } from 'inkjs';
-import { parseLine, type Character } from '../content/characters.ts';
+import { friendFor, parseLine, type Character, type Player } from '../content/characters.ts';
 
 export interface Cue {
   key: string;
@@ -13,6 +13,7 @@ export interface Cue {
 export interface LineBeat {
   kind: 'line';
   speaker: Character | null;
+  name: string; // the prefix as written ("Adjoa", "Auntie"), for the name tag
   text: string;
   cues: Cue[];
   /** ink state just before this line, for saving/resuming exactly here */
@@ -48,7 +49,7 @@ export interface Report {
   remember: string[];
 }
 
-const PAIRED = new Set(['expr', 'emote', 'anim', 'quote']);
+const PAIRED = new Set(['expr', 'emote', 'anim', 'quote', 'sticker']);
 
 export function parseTag(tag: string): Cue {
   const i = tag.indexOf(':');
@@ -78,8 +79,8 @@ export class Session {
     if (this.story.canContinue) {
       const resumeState = this.story.state.ToJson();
       const raw = this.story.Continue() || '';
-      const { speaker, text } = parseLine(raw.trim());
-      return { kind: 'line', speaker, text, cues: (this.story.currentTags || []).map(parseTag), resumeState };
+      const { speaker, name, text } = parseLine(raw.trim());
+      return { kind: 'line', speaker, name, text, cues: (this.story.currentTags || []).map(parseTag), resumeState };
     }
     const choices = this.story.currentChoices;
     if (!choices.length) return { kind: 'end' };
@@ -91,6 +92,11 @@ export class Session {
         return { index, text: c.text, flavour: get('flavour'), hotspot: get('hotspot'), timeout: cues.some((q) => q.key === 'timeout') };
       }),
     };
+  }
+
+  /** Name the friend from next door after the child the player didn't pick. */
+  setPlayer(p: Player) {
+    for (const [k, v] of Object.entries(friendFor(p))) this.story.variablesState.$(k, v);
   }
 
   choose(index: number) {
@@ -114,7 +120,7 @@ export class Session {
         report.title = line;
         needsTitle = false;
       } else if (quote) {
-        report.quote = { who: quote.who!, expr: quote.value, speaker: b.speaker?.name || '', text: b.text };
+        report.quote = { who: quote.who!, expr: quote.value, speaker: b.name, text: b.text };
       } else if (has('rankcopy')) report.copy.push(line);
       else if (has('remember')) report.remember.push(line);
     };

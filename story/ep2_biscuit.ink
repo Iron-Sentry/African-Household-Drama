@@ -1,15 +1,15 @@
 // =====================================================================
-//  EPISODE TWO — THE NEIGHBOUR'S BISCUIT
-//  Monday afternoon. Auntie Efua's front room: a padlocked telephone,
-//  a glass showcase nobody eats from, and one very important tray.
+//  EPISODE TWO: THE NEIGHBOUR'S BISCUIT
+//  Monday afternoon. Auntie Efua's front room: a clock that stopped in
+//  1994, a glass showcase nobody eats from, and one very important tray.
 // =====================================================================
 
 === ep2 ===
-#episode:2 #scene:compound #light:afternoon #cast:mum,child #cam:gate #amb:compound #prop:lamp=off
+#episode:2 #scene:hall #light:afternoon #cast:mum,child #cam:wide #amb:compound #prop:lamp=off #prop:tv=off
 #card:Episode Two/The Neighbour's Biscuit/The next afternoon · 3:15 PM
 The next afternoon is hot enough to fry an egg on the compound wall. #expr:mum=flat #expr:child=neutral
-Mummy walks you across to Auntie Efua's house, holding your hand a little too tightly.
-Mummy: Listen to me. Greet properly. Sit nicely. And do not embarrass me. #focus:mum
+Mummy ties her headscarf, inspects your collar, and takes your hand a little too tightly.
+Mummy: Listen to me. Greet properly. Sit nicely. And do not embarrass me. #focus:mum #expr:mum=scold
 {
 - tv_reaction == "laugh" || tv_reaction == "comment" || tv_reaction == "froze":
     Mummy: After yesterday's performance, I want to see a different child today. #expr:mum=sideeye
@@ -19,11 +19,11 @@ Mummy: Listen to me. Greet properly. Sit nicely. And do not embarrass me. #focus
 - tv_reaction == "water":
     Mummy: And today, nobody is going to any kitchen. You will sit where I can see you. #expr:mum=sideeye
 }
-Mummy: Agoo! #sfx:knock #focus:none
+Mummy marches you across the compound, past the washing line and the water drum, to Auntie Efua's door. #scene:compound #light:afternoon #cast:mum,child #cam:wide #amb:compound #prop:auntie_tv=snow #focus:none
+Mummy: Agoo! #sfx:knock #expr:mum=neutral #cam:door
 Auntie Efua: Amee! Come in, come in!
 "Agoo" is how you announce yourself at somebody's door. "Amee" is how they tell you to come in.
-#scene:auntie #light:afternoon #cast:mum,child,auntie #cam:door #amb:auntie
-Auntie Efua appears in the doorway in a dress so bright it makes the sun look tired. #expr:auntie=delight #anim:auntie=bounce
+The door flies open. Auntie Efua, in a dress so bright it makes the sun look tired. #scene:auntie #amb:auntie #cast:mum,child,auntie #cam:door #expr:auntie=delight #anim:auntie=bounce
 Mummy squeezes your hand. This is the moment. #expr:mum=flat
 * ["Good afternoon, Auntie." #flavour:Polite. Correct. Safe.]
     ~ greeted = "proper"
@@ -34,7 +34,7 @@ Mummy squeezes your hand. This is the moment. #expr:mum=flat
     ~ greeted = "twi"
     ~ score(9, 4, 0)
     Nana: Auntie, maaha!
-    Auntie Efua: Yaa, me ba! Ei! Somebody is teaching this child well! #expr:auntie=delight #emote:auntie=heart
+    Auntie Efua: Yaa, me ba! Ei! Somebody is teaching this child well! #expr:auntie=welcome #emote:auntie=heart #sticker:auntie=ei
     #moment:maaha/Maaha, Auntie
     Mummy stands a little taller. #expr:mum=proud
 * [Wave and head straight for the sofa #flavour:Greetings are for adults.]
@@ -42,7 +42,7 @@ Mummy squeezes your hand. This is the moment. #expr:mum=flat
     ~ score(-10, 0, 7)
     You give a small wave and walk straight towards the sofa. #anim:child=bounce
     Mummy: Nana. #expr:mum=angry #focus:mum
-    It is only one word, but it stops you like a wall. #fx:shake #expr:child=shock
+    It is only one word, but it stops you like a wall. #fx:shake #expr:child=shock #sticker:mum=hmmm
     Mummy: Come back here. Greet your Auntie.
     You march back to the door and greet her like a soldier reporting for duty. #anim:child=jump #focus:none
     Nana: Good afternoon, Auntie Efua!
@@ -51,13 +51,13 @@ Mummy squeezes your hand. This is the moment. #expr:mum=flat
 - -> welcome
 
 = welcome
-Auntie Efua: Ah! Look how big you've grown! #cam:wide #expr:auntie=happy
+Auntie Efua: Ah! Look how big you've grown! #cam:wide #expr:auntie=welcome
 {
 - tv_reaction == "laugh":
-    Auntie Efua: And I hear somebody was laughing at the kissing scene! Hihihi! #expr:auntie=laugh
+    Auntie Efua: And I hear somebody was laughing at the kissing scene! Hihihi! #expr:auntie=gossip
     Mummy: Efua! #expr:mum=shock
 - tv_reaction == "comment":
-    Auntie Efua: So you are the famous film critic! Your mummy told me everything. #expr:auntie=laugh
+    Auntie Efua: So you are the famous film critic! Your mummy told me everything. #expr:auntie=gossip
     Mummy: Efua! #expr:mum=shock
 - tv_reaction == "eyes":
     Auntie Efua: Your mummy says you closed your eyes like a pastor praying. Good child! #expr:auntie=proud
@@ -75,7 +75,7 @@ In a Ghanaian household, even the smallest decision becomes everybody's business
 }
 Auntie Efua: Sit, sit! Let me bring you something. #anim:auntie=bounce
 #cast:mum,child #cam:wide
-She disappears into the kitchen. Mummy settles onto the sofa, which crackles under its plastic cover. #sfx:crinkle
+She disappears into the kitchen. Mummy settles onto the sofa, which crackles under its lace and its plastic cover. #sfx:crinkle
 Mummy: Sit down. And do not touch anything. #expr:mum=flat #focus:mum
 -> look
 
@@ -83,45 +83,61 @@ Mummy: Sit down. And do not touch anything. #expr:mum=flat #focus:mum
 You sit. Auntie Efua's front room looks back at you. #focus:none #expr:child=neutral
 - (opts)
 * [The telephone #hotspot:phone]
-    On a lace mat sits Auntie Efua's telephone. A cream one, with a round dial. #cam:phone
-    There is a tiny padlock through the first hole of the dial, so nobody can make a call without her permission.
+    On a lace mat by the television sits Auntie Efua's telephone. A cream one, with a round dial. #insert:rotary_phone_padlock
+    There is a tiny padlock through the first hole of the dial, so nobody can make a call without her permission. #insert:rotary_phone_padlock
     It is the most secure object in the whole of Accra.
     ** [Give the padlock one tiny tug #flavour:Mummy said don't touch anything.]
         ~ touched_phone = true
         ~ score(-3, 0, 4)
-        You give the padlock one tiny tug. #sfx:click
-        Mummy: Nana. #expr:mum=angry #emote:mum=anger
-        Mummy did not even turn around. Mummy does not need to turn around. #expr:child=shock
+        You give the padlock one tiny tug. #sfx:click #insert:rotary_phone_padlock
+        Mummy: Nana. #expr:mum=angry #emote:mum=anger #focus:mum #sticker:mum=shh
+        Mummy did not even turn around. Mummy does not need to turn around. #expr:child=shock #focus:none
     ** [Leave it alone #flavour:Some locks are not for children.]
         ~ score(0, 3, 0)
         You leave it alone. Some locks are not for children. Some locks are not even for husbands.
     -- -> opts
+* [The wall clock #hotspot:clock]
+    Auntie Efua's wall clock says a quarter past three. #cam:clock
+    It has said a quarter past three since 1994. Nobody has told her. In this house, it is always tea time.
+    ** [Shout to Auntie that her clock has stopped #flavour:Somebody has to tell her.]
+        ~ told_clock = true
+        ~ score(-3, 0, 4)
+        Nana: Auntie! Your clock is not working! #cam:wide #expr:child=comment
+        Auntie Efua: It's working! It's just resting! #sfx:crinkle
+        Mummy: Nana. #expr:mum=angry #emote:mum=anger #focus:mum
+        Mummy did not even turn around. Mummy does not need to turn around. #expr:child=shock #focus:none
+    ** [Leave it alone #flavour:Some clocks are not for children.]
+        ~ score(0, 3, 0)
+        You leave it alone. In an elder's house, some things are not your business. Most things. #cam:wide
+    -- -> opts
 * [The glass showcase #hotspot:showcase]
-    A glass cabinet full of shining plates, cups with gold rims, and one ceramic swan. #cam:showcase
-    Nobody has ever eaten from these plates. They are for visitors.
-    You are a visitor. You are not that kind of visitor. #emote:child=dots
+    A glass cabinet full of shining plates, a tea set with gold rims, and photographs of people you have never met. #cam:showcase
+    Nobody has ever drunk from those cups. They are for visitors.
+    You are a visitor. You are not that kind of visitor. #emote:child=dots #cam:wide
     -> opts
 * [The framed photograph #hotspot:portrait]
     ~ looked_portrait = true
-    A young man in a very thick coat, standing in front of a red bus, smiling like he has won something. #cam:portrait
+    In the biggest frame, a young man in a very thick coat, smiling like he has won something. #cam:portrait
+    Somebody is very proud of him. Somebody has dusted this frame this morning. #cam:wide
     -> opts
 * {antenna == "foil"} [Auntie's television #hotspot:auntie_tv]
     Auntie's television is showing two newsreaders through a blizzard. #cam:auntie_tv
-    You know exactly what this television needs. #emote:child=sparkle #expr:child=smug
+    You know exactly what this television needs. #emote:child=sparkle #expr:child=smug #cam:wide
     -> opts
 + [Sit nicely and wait #flavour:Like a good child in a catalogue.]
     -> tray
 
 = tray
-Auntie Efua comes back carrying a tray like she is presenting a crown. #cast:mum,child,auntie #cam:tray #prop:tray=on #prop:biscuits=12 #expr:auntie=happy
+Auntie Efua comes back carrying a tray like she is presenting a crown. #cast:mum,child,auntie #cam:wide #expr:auntie=offer_biscuits #insert:biscuit_tray
 {looked_portrait:
     Auntie Efua: Ah! You were looking at my Kwabena! He is in London. He is doing very well. #expr:auntie=proud #focus:auntie
     -> london ->
 }
-Auntie Efua: Do you want some biscuits and malt? #focus:none
-She places the whole tray on the low table. Your stomach says YES. Your survival instincts say WAIT. #cam:tray #expr:child=worried
-Auntie pushes the plate towards you. Mummy is sitting right there... watching. #focus:mum #expr:mum=sideeye #sfx:sting #light:tension
-The biscuits look incredible. What is the correct household protocol? #focus:none
+Auntie Efua: Do you want some biscuits and malt? #focus:none #expr:auntie=offer_biscuits
+She places the whole tray on the low table. Your stomach says YES. Your survival instincts say WAIT. #cam:tray #expr:child=worried #expr:auntie=welcome #insert:malt_bottle
+Auntie pushes the plate towards you. Mummy is sitting right there... watching. #cam:wide #focus:mum #readroom #expr:mum=sideeye #sfx:sting #light:tension
+The biscuits look incredible. What is the correct household protocol?
+#hint:Mummy has not moved. Her eyes have. In a visitor's house, Mummy's face is the menu.
 * [Take the biscuits immediately #flavour:Food is food!]
     -> grab
 * [Check Mummy's expression first #flavour:Eyes before appetite.]
@@ -146,13 +162,13 @@ Auntie Efua: He writes to me every month. Every month! Last month he sent a phot
 = grab
 ~ biscuit = "grab"
 ~ score(-14, -5, 15)
-You take the biscuits. Several. Immediately. #prop:biscuits=8 #anim:child=bounce #sfx:crunch #light:afternoon
+You take the biscuits. Several. Immediately. #anim:child=bounce #sfx:crunch #light:afternoon
 #note:You forgot to read the room.
-Mummy: Ei! Are we starving you at home? You haven't even said thank you! #expr:mum=angry #fx:shake #focus:mum #emote:mum=anger
+Mummy: Ei! Are we starving you at home? You haven't even said thank you! #expr:mum=angry #fx:shake #focus:mum #emote:mum=anger #sticker:mum=ei
 {tv_reaction == "eyes":
     Mummy: Yesterday a saint, today a vulture?
 }
-Auntie Efua laughs. You freeze with a biscuit halfway to your mouth. #focus:none #expr:auntie=laugh #expr:child=shock
+Auntie Efua laughs. You freeze with a biscuit halfway to your mouth. #focus:none #expr:auntie=laugh #expr:child=shock #sticker:child=oops
 Nana: Th-thank you, Auntie.
 #moment:vulture/Halfway to the Mouth
 Auntie Efua: Leave the child, Esi! Children must eat! But next time, thank you first, eh? #expr:auntie=happy
@@ -160,7 +176,7 @@ Auntie Efua: Leave the child, Esi! Children must eat! But next time, thank you f
 
 = look_mum
 ~ score(0, 18, 0)
-You look at Mummy. Not at the biscuits. At Mummy. #focus:mum #cam:mum_eyes
+You look at Mummy. Not at the biscuits. At Mummy. #focus:mum #readroom
 #note:You noticed the real boss of this conversation.
 {trouble >= 25:
     Mummy gives the tiniest nod. It is the nod of a woman who is still thinking about yesterday. #expr:mum=sideeye
@@ -168,6 +184,7 @@ You look at Mummy. Not at the biscuits. At Mummy. #focus:mum #cam:mum_eyes
     Mummy gives the tiniest nod and a very serious look. Nobody else seems to notice. #expr:mum=sideeye
 }
 The tiny nod means you may accept ONE. Politely. #focus:none
+#hint:One nod. One biscuit. The nod is not a voucher.
 * [Take one and say "Thank you, Auntie" #flavour:Respectful. Elegant. Perfect.]
     -> winner
 * {greeted == "twi"} [Take one and say "Medaase, Auntie" #flavour:Twi again? Now you are showing off.]
@@ -182,7 +199,7 @@ The tiny nod means you may accept ONE. Politely. #focus:none
 = winner
 ~ biscuit = "one"
 ~ score(24, 10, 0)
-You take one biscuit. Just one. #prop:biscuits=11 #sfx:good #light:afternoon #expr:child=happy
+You take one biscuit. Just one. #sfx:good #light:afternoon #expr:child=happy
 {said_medaase:
     Nana: Medaase, Auntie.
     Auntie Efua: Twi again! Esi, this child will be a chief one day! #expr:auntie=delight
@@ -190,7 +207,7 @@ You take one biscuit. Just one. #prop:biscuits=11 #sfx:good #light:afternoon #ex
     Nana: Thank you, Auntie.
 }
 #note:Perfectly played!
-Auntie Efua: Awww! This child has manners. You have trained your child well! #expr:auntie=delight #emote:auntie=heart
+Auntie Efua: Awww! This child has manners. You have trained your child well! #expr:auntie=delight #emote:auntie=heart #sticker:auntie=good_child
 #moment:one_biscuit/The One-Biscuit Rule
 Mummy smiles. You receive one biscuit, one malt, and something rarer than both: public praise. #expr:mum=proud #emote:mum=sparkle
 -> alone
@@ -198,9 +215,9 @@ Mummy smiles. You receive one biscuit, one malt, and something rarer than both: 
 = too_much
 ~ biscuit = "many"
 ~ score(-12, 0, 17)
-You take three biscuits and two malts. You need both arms. #prop:biscuits=9 #anim:child=bounce #sfx:bad #light:afternoon
+You take three biscuits and two malts. You need both arms. #anim:child=bounce #sfx:bad #light:afternoon
 #note:You misunderstood the assignment.
-Mummy: Ah. Did I give you permission to carry the whole tray? #expr:mum=angry #focus:mum
+Mummy: Ah. Did I give you permission to carry the whole tray? #expr:mum=angry #focus:mum #sticker:mum=trouble
 Auntie Efua starts laughing. Your interpretation of the nod was a little ambitious. #focus:none #expr:auntie=laugh #expr:child=worried
 #moment:ambitious_nod/An Ambitious Interpretation
 Auntie Efua: Leave the child, Esi. At least now we know my malt is good!
@@ -214,7 +231,7 @@ Auntie Efua looks from Mummy, to you, to Mummy again. #focus:auntie #light:after
 Auntie Efua: My dear, are you waiting for your mother to blink twice? #expr:auntie=laugh
 Everybody laughs. At least you did not cause major trouble. #focus:none #expr:mum=smile
 #moment:blink_twice/Waiting for Two Blinks
-Auntie Efua puts one biscuit directly into your hand, the way you would feed a shy goat. #prop:biscuits=11
+Auntie Efua puts one biscuit directly into your hand, the way you would feed a shy goat.
 -> alone
 
 = refuse
@@ -222,30 +239,29 @@ Auntie Efua puts one biscuit directly into your hand, the way you would feed a s
 ~ score(-4, 3, 7)
 Nana: No, thank you, Auntie. I'm fine. #light:afternoon
 #note:Safe... but now Auntie is offended.
-Auntie Efua: Ei, why? Is my food not good enough for you? #expr:auntie=hurt #focus:auntie
+Auntie Efua: Ei, why? Is my food not good enough for you? #expr:auntie=hurt #focus:auntie #sticker:auntie=ei
 Mummy gives you a puzzled look. Somehow, you have caused trouble by saying no. #focus:none #expr:mum=sideeye #expr:child=worried
 Mummy: Take it. Auntie gave it with her whole heart.
 #moment:polite_refusal/The Refusal That Backfired
-You take one biscuit. It tastes slightly of guilt. #prop:biscuits=11
+You take one biscuit. It tastes slightly of guilt.
 -> alone
 
 = alone
 Auntie Efua: Ei! My soup! #expr:auntie=shock #anim:auntie=jump
-#cast:mum,child
-Auntie Efua runs into the kitchen.
+Auntie Efua runs into the kitchen. #cast:mum,child
 Outside, a woman calls out that she has fresh fish. Mummy is at the gate in two seconds. #cast:child
-You are alone. With the tray. #cam:tray_close #light:tension #amb:clock #expr:child=stare
+You are alone. With the tray. #cam:tray_close #light:tension #amb:clock #expr:child=stare #insert:biscuit_tray
 The biscuits sit in a perfect circle. Like a clock. Like a trap.
 * [Slip one biscuit into your pocket #flavour:For later. For emergencies.]
     ~ pocketed = true
     ~ score(0, 2, 6)
-    One biscuit goes into your pocket. Your heart is beating like a talking drum. #prop:biscuits=-1 #anim:child=shake #emote:child=sweat
+    One biscuit goes into your pocket. Your heart is beating like a talking drum. #anim:child=shake #emote:child=sweat
     Nobody saw. Probably.
 * [Take one, then rearrange the circle so nobody can tell #flavour:Careful geometry.]
     ~ pocketed = true
     ~ rearranged = true
     ~ score(0, 8, 4)
-    You take one biscuit, then gently spread the others until the gap disappears. #prop:biscuits=-1 #emote:child=sparkle #expr:child=smug
+    You take one biscuit, then gently spread the others until the gap disappears. #emote:child=sparkle #expr:child=smug
     #moment:geometry/Biscuit Geometry
     It is the finest work of your career.
 * [Sit on your hands and count the ceiling boards #flavour:Resist. Resist. Resist.]
@@ -258,13 +274,13 @@ The biscuits sit in a perfect circle. Like a clock. Like a trap.
     You find a toffee wrapper in your pocket and give Auntie's antenna two careful twists. #cam:auntie_tv #sfx:tvclear #prop:auntie_tv=fixed
     The blizzard clears. The newsreaders appear, sharp and surprised. #emote:child=sparkle
     #moment:house_call/The Engineer Makes a House Call
-- Footsteps. Auntie Efua and Mummy come back at the same time. #cast:mum,child,auntie #light:afternoon #amb:auntie #cam:wide #expr:child=neutral
+- Footsteps. Auntie Efua and Mummy come back at the same time. #cast:mum,child,auntie #light:afternoon #amb:auntie #cam:wide #expr:child=neutral #expr:auntie=neutral
 {
 - auntie_tv_fixed:
-    Auntie Efua: Ei! My television! Esi, look! Your child is a genius! #expr:auntie=delight #anim:auntie=bounce
+    Auntie Efua: Ei! My television! Esi, look! Your child is a genius! #expr:auntie=delight #anim:auntie=bounce #sticker:auntie=ei
     Mummy: It comes from Daddy's side. Mostly the side that touches foil. #expr:mum=smug
 - rearranged:
-    Auntie Efua looks at the tray. Her head tilts. #expr:auntie=sideeye #focus:auntie
+    Auntie Efua looks at the tray. Her head tilts. #expr:auntie=sideeye #focus:auntie #sticker:auntie=hmmm
     Auntie Efua: Hmm. My biscuits have moved. I don't know how. But they have moved. #emote:auntie=question
 - pocketed:
     Auntie Efua glances at the tray. Her eyes stay there one second longer than normal. #expr:auntie=sideeye #focus:auntie
@@ -273,7 +289,7 @@ The biscuits sit in a perfect circle. Like a clock. Like a trap.
     Auntie Efua: Look at this! The tray is exactly as I left it. This child has discipline! #expr:auntie=proud
     ~ score(4, 0, 0)
 }
-The visit ends the way every visit ends: with the adults standing at the door, saying goodbye for twenty-five minutes. #focus:none #cam:door
+The visit ends the way every visit ends: with the adults standing at the door, saying goodbye for twenty-five minutes. #focus:none #cam:door #expr:auntie=wave
 {
 - biscuit == "one":
     Auntie Efua presses two more biscuits into your hand, wrapped in a napkin. "For the road." #expr:auntie=happy
@@ -284,15 +300,14 @@ The visit ends the way every visit ends: with the adults standing at the door, s
 - else:
     Auntie Efua: And next time, you don't need permission to blink! #expr:auntie=laugh
 }
-#scene:compound #light:dusk #cast:mum,child #cam:gate #amb:compound
-Walking home, Mummy holds your hand again.
+Walking home across the compound, the sun is going down orange behind the mango tree. Mummy is still holding your hand. #scene:compound #light:dusk #cast:mum,child #cam:wide #amb:compound
 {
 - approval >= 65:
-    Looser this time.
+    She lets go and smooths your collar instead.
     Mummy: You did well today. #expr:mum=proud #focus:mum
     Three words. They will keep you warm for a week. #focus:none #expr:child=happy
 - approval < 40:
-    The same grip as before. Possibly tighter.
+    She does not let go. If anything, the grip is tighter.
     Mummy: We will talk at home. #expr:mum=flat #focus:mum
     You will not talk at home. Mummy will talk. You will listen. #focus:none #expr:child=sad
 - else:
