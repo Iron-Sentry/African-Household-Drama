@@ -156,22 +156,22 @@ Into the tin. It looks surprised. #insert:pepper_plant_tin #focus:none
 {homework_told != "nobody":
     Mummy goes in to check the soup. Daddy goes in to wash the hole off his hands. #cast:child #expr:child=sneak
 }
-You tiptoe to the gap in the wall. #cast:child@56 #cam:wall #expr:child=sneak
+You tiptoe to the gap in the wall. #cast:child@10 #cam:wall #expr:child=sneak
 Crickets. Moonlight. Your heart, louder than both. #sfx:heartbeat
 You ease the little tree out of the ground. #prop:auntie_seedling=off #expr:child=dig #sfx:dig
-Auntie Efua: WHO IS THERE? #cast:child@56,auntie@78 #expr:auntie=over_wall #fx:impact #sticker:auntie=ei #expr:child=panic
+Auntie Efua: WHO IS THERE? #prop:auntie_over_wall=on #fx:impact #expr:child=panic #cam:wall
 {trouble >= 35 || pocket_outcome == "rat":
     ~ auntie_caught = true
     ~ score(-2, 0, 2)
-    Auntie Efua: Nana?! With my orange tree?! #expr:auntie=shocked #focus:auntie
+    Auntie Efua: Nana?! With my orange tree?!
     Nana: Auntie... it's for Agric. Madam said. #expr:child=worried #focus:child
-    Auntie Efua: Hmm. Take it. But by tomorrow, the whole compound will know who planted my tree. #expr:auntie=gossip #focus:auntie #sticker:auntie=hmmm
+    Auntie Efua: Hmm. Take it. But by tomorrow, the whole compound will know who planted my tree. #focus:none
 - else:
     You become a shadow. You become the wall. #expr:child=sneak #focus:child #auto:1800
-    Auntie Efua: Hmm. Goats. #expr:auntie=arms_crossed #focus:auntie
-    She goes in. #cast:child@56 #focus:none
+    Auntie Efua: Hmm. Goats. #focus:none
+    She goes in. #prop:auntie_over_wall=off
 }
-You run. #expr:child=run #sfx:whoosh #focus:none
+You run. #expr:child=run #sfx:whoosh #focus:none #prop:auntie_over_wall=off
 #moment:night_operation/The Night Operation
 -> water
 

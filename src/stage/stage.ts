@@ -144,6 +144,7 @@ export class Stage {
   private W = 0;
   private H = 0;
   private cam = { s: 1, tx: 0, ty: 0 };
+  private landsAt = 0; // performance.now() when the camera finishes its current move
   private snowRaf = 0;
   private preloaded = new Set<string>();
 
@@ -542,12 +543,24 @@ export class Stage {
     const tx = clamp(vw / 2 - (s * x * this.W) / 100, vw - s * this.W, 0);
     const wantY = portrait && face ? vh * faceAt - (s * this.faceY(face) * this.H) / 100 : vh / 2 - (s * y * this.H) / 100;
     const ty = clamp(wantY, vh - s * this.H, 0);
+    // A nudge between neighbours is quick; a pan across the room or a big zoom takes its time.
+    const was = this.cam;
+    const travel = Math.hypot(tx - was.tx, ty - was.ty) / Math.max(vw, vh) + Math.abs(Math.log(s / was.s));
+    const dur = instant || this.reduced ? 0 : slow ? 2.8 : clamp(0.45 + travel * 0.9, 0.45, 1.5);
+    this.world.style.setProperty('--cam-dur', `${dur}s`);
+    if (!slow && travel > 0.002) this.landsAt = performance.now() + dur * 1000;
     this.cam = { s, tx, ty };
     this.world.classList.toggle('instant', instant || this.reduced);
     this.world.classList.toggle('slow', slow);
     this.world.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
     this.world.style.setProperty('--inv', String(1 / s));
     for (const [id, a] of this.actors) a.el.classList.toggle('dim', !!focus && id !== this.focused);
+  }
+
+  /** Resolves when the current camera move is nearly done (`early` ms before it lands), at most `max` ms from now. */
+  landing(early = 300, max = 900): Promise<void> {
+    const ms = Math.min(max, this.landsAt - performance.now() - early);
+    return new Promise((r) => (ms > 0 ? setTimeout(r, ms) : r()));
   }
 
   /** Screen position of a world point given in % of the painting. */

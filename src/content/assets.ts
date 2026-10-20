@@ -8,69 +8,7 @@
 // delete its line here. `npm test` fails while a delivered file still has a
 // line, and fails if anything the story uses is neither on disk nor listed.
 
-export const PLACEHOLDERS: Record<string, string | null> = {
-  // ---- Batch 2: Episode Four, The Agric Homework (brief items in brackets)
-  // Backgrounds [1–3]. The scene pieces in scenes.ts (dug hole, Auntie's
-  // seedling) are positioned for the stand-ins; re-place them on the new art.
-  'rooms/compound_corner_dusk.webp': 'rooms/compound_courtyard.webp',
-  'rooms/compound_corner_night.webp': 'rooms/compound_courtyard.webp',
-  'rooms/school_yard_morning.webp': 'rooms/bofrot_street.webp',
-
-  // Madam, the class teacher [4]. Stand-in: Kojo's mother's poses.
-  // Re-measure `head` for the teacher sheet in characters.ts when she lands.
-  'characters/teacher_idle.webp': 'characters/friend_mother_idle.webp',
-  'characters/teacher_inspect.webp': 'characters/friend_mother_point.webp',
-  'characters/teacher_approve.webp': 'characters/friend_mother_wave.webp',
-  'characters/teacher_stern.webp': 'characters/friend_mother_hands_on_hips.webp',
-  'characters/teacher_shocked.webp': 'characters/friend_mother_shocked.webp',
-  'characters/teacher_laugh.webp': 'characters/friend_mother_laugh.webp',
-
-  // Kwame, the show-off classmate [5] (nice to have). Stand-in: the boy.
-  'characters/classmate_idle.webp': 'characters/child_boy_idle.webp',
-  'characters/classmate_show_off.webp': 'characters/child_boy_proud.webp',
-  'characters/classmate_laugh.webp': 'characters/child_boy_laugh.webp',
-
-  // Nana at home [6].
-  'characters/child_boy_panic.webp': 'characters/child_boy_startled.webp',
-  'characters/child_boy_dig.webp': 'characters/child_boy_proud.webp',
-  'characters/child_boy_sneak.webp': 'characters/child_boy_run.webp',
-  'characters/child_girl_panic.webp': 'characters/child_girl_scared.webp',
-  'characters/child_girl_dig.webp': 'characters/child_girl_celebrate.webp',
-  'characters/child_girl_sneak.webp': 'characters/child_girl_run.webp',
-
-  // Nana at school, in uniform [7]: the `uniform` outfit sheets.
-  'characters/child_boy_uniform_idle.webp': 'characters/child_boy_idle.webp',
-  'characters/child_boy_uniform_proud.webp': 'characters/child_boy_proud.webp',
-  'characters/child_boy_uniform_nervous.webp': 'characters/child_boy_plead.webp',
-  'characters/child_boy_uniform_ashamed.webp': 'characters/child_boy_ashamed.webp',
-  'characters/child_girl_uniform_idle.webp': 'characters/child_girl_idle.webp',
-  'characters/child_girl_uniform_proud.webp': 'characters/child_girl_celebrate.webp',
-  'characters/child_girl_uniform_nervous.webp': 'characters/child_girl_scared.webp',
-  'characters/child_girl_uniform_ashamed.webp': 'characters/child_girl_shy.webp',
-
-  // Daddy and Mummy [8–9], Auntie Efua [10] (nice to have).
-  'characters/father_dig.webp': 'characters/father_hands_on_hips.webp',
-  'characters/father_lecture.webp': 'characters/father_scold.webp',
-  'characters/mother_lantern.webp': 'characters/mother_stern.webp',
-  'characters/mother_wail.webp': 'characters/mother_shocked.webp',
-  'characters/auntie_efua_over_wall.webp': 'characters/auntie_efua_gossip.webp',
-
-  // Props [11–18]: close-up panels (#insert) and scene pieces.
-  'props/seedling_tin.webp': null,
-  'props/pepper_plant_tin.webp': null,
-  'props/auntie_seedling.webp': null,
-  'props/mango_stick_tin.webp': null,
-  'props/dug_hole.webp': null,
-  'props/hurricane_lantern.webp': null,
-  'props/agric_exercise_book.webp': null,
-  'props/watering_can_tin.webp': null,
-
-  // Stickers [19–22].
-  'fx/ewurade.webp': 'fx/ei.webp',
-  'fx/see_me.webp': 'fx/trouble.webp',
-  'fx/very_good.webp': 'fx/good_child.webp',
-  'fx/my_pepper.webp': 'fx/oops.webp',
-};
+export const PLACEHOLDERS: Record<string, string | null> = {};
 
 const BASE = import.meta.env?.BASE_URL ?? './';
 

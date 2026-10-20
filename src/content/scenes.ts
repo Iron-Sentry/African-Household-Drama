@@ -113,9 +113,9 @@ SCENES.bedroom = {
   hotspots: {},
 };
 
-// Episode Four. Until the paintings arrive these scenes borrow existing ones
-// (src/content/assets.ts), and the pieces are placed for those stand-ins:
-// re-place `pieces` and the shots on the delivered art.
+// Episode Four. The dusk and night corners are the same view (they cross-fade
+// under #light:moon). Auntie's seedling is painted out of both and drawn as a
+// piece instead, so Nana can uproot it.
 SCENES.garden = {
   id: 'garden',
   title: 'The Back Corner',
@@ -124,10 +124,12 @@ SCENES.garden = {
   night: 'rooms/compound_corner_night.webp',
   floor: [24, 76],
   lamp: [46, 64],
-  shots: { wide: [1, 50, 50], hole: [1.6, 26, 60], peppers: [2, 18, 50], wall: [1.5, 64, 46] },
+  shots: { wide: [1, 50, 50], hole: [1.6, 24, 68], peppers: [2, 46, 44], wall: [1.8, 16, 42] },
   pieces: {
-    hole: { src: 'props/dug_hole.webp', at: [18, 82], w: 22 }, // beside Daddy (#cast:…,dad@32)
-    auntie_seedling: { src: 'props/auntie_seedling.webp', at: [58, 44], w: 5 }, // where Nana sneaks to (#cast:child@56)
+    hole: { src: 'props/dug_hole.webp', at: [20, 88], w: 26 }, // the bare patch, beside Daddy (#cast:…,dad@32)
+    auntie_seedling: { src: 'props/auntie_seedling.webp', at: [8.2, 39.6], w: 3 }, // over the low wall, where Nana sneaks to (#cast:child@10)
+    // Auntie Efua leaning on the low wall: a piece, not an actor, so she stays behind the wall at its scale
+    auntie_over_wall: { src: 'characters/auntie_efua_over_wall.webp', at: [18, 40.6], w: 7 },
   },
   hotspots: {},
 };
@@ -138,7 +140,7 @@ SCENES.school = {
   bg: 'rooms/school_yard_morning.webp',
   floor: [14, 86],
   lamp: [50, 60],
-  shots: { wide: [1, 50, 50], line: [1.3, 50, 58], farm: [1.9, 82, 62] },
+  shots: { wide: [1, 50, 50], line: [1.3, 50, 58], farm: [1.9, 88, 42] },
   hotspots: {},
 };
 

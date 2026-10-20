@@ -244,6 +244,7 @@ async function stageLine(beat: LineBeat, id: number) {
   const who = beat.speaker?.id ?? null;
   stage.speaking(who && CHARACTERS[who].sprite ? who : null);
   if (who) await stage.measured(who);
+  await stage.landing(); // a long pan finishes before the bubble hangs off its face
   if (id !== runId) return;
   const anchor = who ? stage.anchor(who) : null;
   const stopTalking = setTimeout(() => stage.speaking(null), Math.min(4200, 400 + beat.text.length * 22));

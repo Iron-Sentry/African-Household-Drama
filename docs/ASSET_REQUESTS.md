@@ -2,7 +2,7 @@
 
 **Status (20 October 2026):**
 
-- **Batch 2, Episode Four "The Agric Homework": requested, not yet delivered.** The brief is below. The episode is already written and playable on stand-ins; every file below is listed in `src/content/assets.ts`, and `docs/AUTHORING.md` ("Art that hasn't arrived yet") says how to swap each one in.
+- **Batch 2, Episode Four "The Agric Homework": delivered to `art_incoming/` on 20 October 2026 and integrated** (all 37 required and 6 nice-to-have files). Auntie Efua's seedling was painted out of both `compound_corner_*` paintings (sources kept as `*_patched.png`) so the game's `auntie_seedling` piece can be uprooted; `auntie_efua_over_wall` is drawn as a garden piece, not an actor pose. The brief is kept below for the record.
 - Batch 1 (Episodes 1–3 top-up) was delivered to `art_incoming/` on 17 October 2026 and integrated. Its list is kept at the end of this file for the record.
 
 Source PNGs stay in `art_incoming/`. The game uses WebP copies in `public/assets/`. Wiring the art into the game happens separately, after delivery.

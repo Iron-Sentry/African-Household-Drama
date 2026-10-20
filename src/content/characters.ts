@@ -62,27 +62,27 @@ const SHEETS: Record<string, { poses: string[]; moods: string[]; head: number }>
   },
   auntie_efua: {
     head: 22,
-    poses: ['idle', 'arms_crossed', 'gossip', 'laugh', 'offer_biscuits', 'point', 'shocked', 'wave', 'welcome', 'over_wall'],
+    poses: ['idle', 'arms_crossed', 'gossip', 'laugh', 'offer_biscuits', 'point', 'shocked', 'wave', 'welcome'], // over_wall is a garden piece (scenes.ts)
     moods: ['idle', 'welcome', 'wave', 'laugh', 'welcome', 'idle', 'gossip', 'arms_crossed', 'arms_crossed', 'point', 'shocked', 'gossip', 'arms_crossed', 'arms_crossed', 'laugh', 'idle', 'arms_crossed', 'arms_crossed'],
   },
   // ---- Episode Four
   child_boy_uniform: {
-    head: 22.5,
+    head: 23.5,
     poses: ['idle', 'proud', 'nervous', 'ashamed'],
     moods: ['idle', 'proud', 'proud', 'proud', 'proud', 'idle', 'proud', 'idle', 'nervous', 'nervous', 'nervous', 'nervous', 'ashamed', 'ashamed', 'ashamed', 'idle', 'nervous', 'nervous'],
   },
   child_girl_uniform: {
-    head: 26,
+    head: 30, // includes the hair puffs
     poses: ['idle', 'proud', 'nervous', 'ashamed'],
     moods: ['idle', 'proud', 'proud', 'proud', 'proud', 'idle', 'proud', 'idle', 'nervous', 'nervous', 'nervous', 'nervous', 'ashamed', 'ashamed', 'ashamed', 'idle', 'nervous', 'nervous'],
   },
   teacher: {
-    head: 19, // the stand-in's; re-measure on teacher_idle when the art lands
+    head: 15.5,
     poses: ['idle', 'inspect', 'approve', 'stern', 'shocked', 'laugh'],
     moods: ['idle', 'approve', 'approve', 'laugh', 'approve', 'approve', 'approve', 'idle', 'stern', 'stern', 'shocked', 'inspect', 'stern', 'shocked', 'laugh', 'inspect', 'inspect', 'stern'],
   },
   classmate: {
-    head: 22.5, // the stand-in's; re-measure on classmate_idle when the art lands
+    head: 15.5, // drawn shorter than Nana, under his banana plant
     poses: ['idle', 'show_off', 'laugh'],
     moods: ['idle', 'show_off', 'show_off', 'laugh', 'show_off', 'idle', 'show_off', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'laugh', 'idle', 'idle', 'idle'],
   },
