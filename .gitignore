@@ -5,3 +5,4 @@ test-results/
 .DS_Store
 *.log
 art_incoming/
+.claude/settings.json
