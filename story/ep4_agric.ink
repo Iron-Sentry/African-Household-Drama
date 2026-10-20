@@ -1,5 +1,5 @@
 // =====================================================================
-//  EPISODE FOUR: THE AGRIC HOMEWORK
+//  EPISODE FOUR: THE SCIENCE HOMEWORK
 //  The next Sunday, 6:40 PM. On Friday Madam said: one seedling, in a
 //  tin, for the school farm, on Monday. Nana remembers now. Daddy
 //  remembers his village. Mummy counts her peppers. Auntie Efua
@@ -8,7 +8,7 @@
 
 === ep4 ===
 #episode:4 #scene:hall #light:evening #cast:mum,child,dad #cam:wide #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none
-#card:Episode Four/The Agric Homework/The next Sunday · 6:40 PM
+#card:Episode Four/The Science Homework/The next Sunday · 6:40 PM
 Sunday evening. Uniform ironed. Shoes polished. The week is ready. #expr:child=happy #expr:mum=neutral #expr:dad=read_paper
 Mummy: Nana. Your homework. Finished? #focus:mum
 Nana: Yes, Mummy! #focus:child #expr:child=proud
@@ -26,7 +26,7 @@ One seedling. In a tin. Tomorrow morning. #readroom
 = tell_mummy
 ~ homework_told = "mummy"
 ~ score(6, 0, -2)
-Nana: Mummy... Agric homework. A seedling, in a tin. For tomorrow. #expr:child=worried
+Nana: Mummy... Science homework. A seedling, in a tin. For tomorrow. #expr:child=worried
 Mummy: Tomorrow. And you are telling me at 6:40 on Sunday? #expr:mum=stern #focus:mum #sticker:mum=hmmm
 Mummy: Hmm. At least you told me. #expr:mum=flat
 #note:Bad news, delivered early.
@@ -38,11 +38,11 @@ Daddy: A seedling? Leave it to me. #focus:none
 ~ homework_told = "daddy"
 ~ score(2, 1, 0)
 You tiptoe to Daddy's chair. #expr:child=sneak
-Nana: Daddy. Agric homework. A seedling. Tomorrow. Don't tell Mummy. #expr:child=worried
+Nana: Daddy. Science homework. A seedling. Tomorrow. Don't tell Mummy. #expr:child=worried
 Daddy folds the newspaper. Slowly. Like a general. #expr:dad=lecture #focus:dad
 Daddy: In my village, I planted cocoa before I could walk. #emote:dad=sparkle
 {antenna == "foil":
-    Daddy: My engineer needs an agric engineer. Come! #expr:dad=delight
+    Daddy: My engineer needs a scientist. Come! #expr:dad=delight
 }
 Mummy: Planted what? #expr:mum=sideeye #focus:mum #sticker:mum=hmmm
 Mummy heard everything. Mummy always hears everything. #focus:none
@@ -164,7 +164,7 @@ Auntie Efua: WHO IS THERE? #prop:auntie_over_wall=on #fx:impact #expr:child=pani
     ~ auntie_caught = true
     ~ score(-2, 0, 2)
     Auntie Efua: Nana?! With my orange tree?!
-    Nana: Auntie... it's for Agric. Madam said. #expr:child=worried #focus:child
+    Nana: Auntie... it's for Science. Madam said. #expr:child=worried #focus:child
     Auntie Efua: Hmm. Take it. But by tomorrow, the whole compound will know who planted my tree. #focus:none
 - else:
     You become a shadow. You become the wall. #expr:child=sneak #focus:child #auto:1800
@@ -193,7 +193,7 @@ You tie the leaf on properly with Mummy's thread. Botany. #expr:child=proud #emo
 Across the compound, to Auntie Efua's door. At night. #scene:compound #light:moon #cast:child #cam:door #amb:night #transition:iris
 Knock knock. #sfx:knock
 Auntie Efua: Who is knocking at this hour?! #cast:child,auntie #expr:auntie=arms_crossed #cam:wide
-Nana: Good evening, Auntie. Please, I need one seedling. For Agric. #expr:child=worried
+Nana: Good evening, Auntie. Please, I need one seedling. For Science. #expr:child=worried
 {said_medaase || greeted == "twi" || auntie_tv_fixed || change == "returned":
     ~ score(8, 1, -3)
     Auntie Efua: Ah! My Nana! For school? Come, come! #expr:auntie=welcome #focus:auntie #emote:auntie=heart

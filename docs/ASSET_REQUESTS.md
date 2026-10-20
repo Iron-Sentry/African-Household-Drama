@@ -2,7 +2,7 @@
 
 **Status (20 October 2026):**
 
-- **Batch 2, Episode Four "The Agric Homework": delivered to `art_incoming/` on 20 October 2026 and integrated** (all 37 required and 6 nice-to-have files). Auntie Efua's seedling was painted out of both `compound_corner_*` paintings (sources kept as `*_patched.png`) so the game's `auntie_seedling` piece can be uprooted; `auntie_efua_over_wall` is drawn as a garden piece, not an actor pose. The brief is kept below for the record.
+- **Batch 2, Episode Four "The Science Homework": delivered to `art_incoming/` on 20 October 2026 and integrated** (all 37 required and 6 nice-to-have files). Auntie Efua's seedling was painted out of both `compound_corner_*` paintings (sources kept as `*_patched.png`) so the game's `auntie_seedling` piece can be uprooted; `auntie_efua_over_wall` is drawn as a garden piece, not an actor pose. The episode was later renamed "The Science Homework"; the exercise book was re-lettered "SCIENCE H/W" (source: `agric_exercise_book_science.png`). The brief is kept below for the record.
 - Batch 1 (Episodes 1–3 top-up) was delivered to `art_incoming/` on 17 October 2026 and integrated. Its list is kept at the end of this file for the record.
 
 Source PNGs stay in `art_incoming/`. The game uses WebP copies in `public/assets/`. Wiring the art into the game happens separately, after delivery.
@@ -15,7 +15,7 @@ You are producing **original illustrated game art** for *African Household Drama
 
 ## The episode you are drawing for
 
-**Episode Four: The Agric Homework.** It is Sunday evening. Nana (the player child, a boy or a girl, about 10) suddenly remembers what Madam said on Friday: *"Every pupil must bring a seedling, planted in a tin, for the school farm on Monday."* Panic. Daddy takes over the homework, as Ghanaian fathers do, and digs a hole far too big by lantern light while Mummy holds the lamp. There is no seedling in the house. Nana has to choose: pull up Mummy's pepper plant, sneak Auntie Efua's little seedling from beside the wall, stick a dry mango stick in a tin and hope, or tell the truth. On Monday morning, Madam inspects every pupil's tin in the school yard.
+**Episode Four: The Science Homework.** It is Sunday evening. Nana (the player child, a boy or a girl, about 10) suddenly remembers what Madam said on Friday: *"Every pupil must bring a seedling, planted in a tin, for the school farm on Monday."* Panic. Daddy takes over the homework, as Ghanaian fathers do, and digs a hole far too big by lantern light while Mummy holds the lamp. There is no seedling in the house. Nana has to choose: pull up Mummy's pepper plant, sneak Auntie Efua's little seedling from beside the wall, stick a dry mango stick in a tin and hope, or tell the truth. On Monday morning, Madam inspects every pupil's tin in the school yard.
 
 The scenes, in order:
 

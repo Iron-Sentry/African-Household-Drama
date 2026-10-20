@@ -62,7 +62,7 @@ VAR gossip = "none"         // told | fine | london | spy
 VAR has_remote = false
 VAR finale = "none"         // news | eyes | laugh | antenna | mummy | froze
 
-// ---- Episode 4: The Agric Homework
+// ---- Episode 4: The Science Homework
 VAR homework_told = "none"  // mummy | daddy | nobody
 VAR hole_by = "none"        // daddy | me | tin  (who dug in the back corner; none if nobody knew)
 VAR seedling = "none"       // pepper | auntie | stick | asked | none

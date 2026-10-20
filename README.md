@@ -1,6 +1,6 @@
 # African Household Drama
 
-An interactive Ghanaian family sitcom set in Accra in 1998. Volume One has four episodes: **The Kissing Scene**, **The Neighbour's Biscuit**, **The Errand**, and **The Agric Homework**. Episode Four runs on placeholder art until its batch is delivered (see `src/content/assets.ts`). Choices change Approval, Street Smarts, and Trouble, carry consequences between episodes, unlock discoverable moments, and lead to one of four household report cards.
+An interactive Ghanaian family sitcom set in Accra in 1998. Volume One has four episodes: **The Kissing Scene**, **The Neighbour's Biscuit**, **The Errand**, and **The Science Homework**. Choices change Approval, Street Smarts, and Trouble, carry consequences between episodes, unlock discoverable moments, and lead to one of four household report cards.
 
 It plays like the choice-driven story games it is inspired by: the painted room fills the screen, the family stands in it, and every line hangs off whoever is saying it in a speech bubble. Narration appears as a comic caption, the TV talks from the TV, choices rise over the scene, and at key moments the camera pushes into Mummy's face so you can **read the room**.
 

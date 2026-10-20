@@ -20,7 +20,7 @@ import { Audio } from './audio/audio.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const params = new URLSearchParams(location.search);
-const EPISODE_TITLES = ['', 'The Kissing Scene', "The Neighbour's Biscuit", 'The Errand', 'The Agric Homework'];
+const EPISODE_TITLES = ['', 'The Kissing Scene', "The Neighbour's Biscuit", 'The Errand', 'The Science Homework'];
 const EPISODES = EPISODE_TITLES.length - 1;
 
 const ui = new UI();
