@@ -13,8 +13,18 @@ export interface Scene {
   floor: [number, number]; // x% range the cast spreads across
   tv?: [left: number, top: number, width: number, height: number]; // the painted screen, if the room has one
   lamp: [number, number]; // where a kerosene lamp would sit
+  keyhole?: [number, number]; // what a child peeping through the door looks at (#prop:keyhole=on)
+  night?: string; // the same view after dark: cross-fades in under #light:moon, blackout or lamp
+  pieces?: Record<string, Piece>; // cut-out images in the room, shown with #prop:<name>=on
   shots: Record<string, Shot>;
   hotspots: Record<string, { label: string; at: [number, number] }>;
+}
+
+/** A cut-out standing in the painting: bottom-centre at `at` (x%, y%), `w`% of the painting wide. */
+export interface Piece {
+  src: string; // public/assets/...
+  at: [number, number];
+  w: number;
 }
 
 export const SCENES: Record<string, Scene> = {
@@ -26,9 +36,10 @@ export const SCENES: Record<string, Scene> = {
     floor: [10, 70],
     tv: [79.5, 29.8, 7.9, 14.9],
     lamp: [51, 60],
+    keyhole: [78, 35], // Daddy (#cast:…,dad@72) wrestling the antenna beside the TV
     shots: {
       wide: [1, 50, 50],
-      keyhole: [1.3, 66, 40],
+      keyhole: [1.3, 78, 51],
       sofa: [1.12, 38, 58],
       tv: [1.8, 83.5, 40],
       tv_close: [3.4, 83.5, 37.5],
@@ -101,6 +112,38 @@ SCENES.bedroom = {
   shots: { wide: [1, 50, 50], bed: [1.8, 18, 62], door: [1.9, 84, 42], window: [2, 44, 24] },
   hotspots: {},
 };
+
+// Episode Four. Until the paintings arrive these scenes borrow existing ones
+// (src/content/assets.ts), and the pieces are placed for those stand-ins:
+// re-place `pieces` and the shots on the delivered art.
+SCENES.garden = {
+  id: 'garden',
+  title: 'The Back Corner',
+  location: 'Home · Sunday evening',
+  bg: 'rooms/compound_corner_dusk.webp',
+  night: 'rooms/compound_corner_night.webp',
+  floor: [24, 76],
+  lamp: [46, 64],
+  shots: { wide: [1, 50, 50], hole: [1.6, 26, 60], peppers: [2, 18, 50], wall: [1.5, 64, 46] },
+  pieces: {
+    hole: { src: 'props/dug_hole.webp', at: [18, 82], w: 22 }, // beside Daddy (#cast:…,dad@32)
+    auntie_seedling: { src: 'props/auntie_seedling.webp', at: [58, 44], w: 5 }, // where Nana sneaks to (#cast:child@56)
+  },
+  hotspots: {},
+};
+SCENES.school = {
+  id: 'school',
+  title: 'The School Yard',
+  location: 'Monday morning',
+  bg: 'rooms/school_yard_morning.webp',
+  floor: [14, 86],
+  lamp: [50, 60],
+  shots: { wide: [1, 50, 50], line: [1.3, 50, 58], farm: [1.9, 82, 62] },
+  hotspots: {},
+};
+
+/** Every #prop name the scene pieces add (each takes on/off). */
+export const PIECES = new Set(Object.values(SCENES).flatMap((s) => Object.keys(s.pieces || {})));
 
 export const LIGHTS = ['day', 'afternoon', 'evening', 'dusk', 'moon', 'film', 'tension', 'snow', 'lamp', 'blackout', 'doorway'] as const;
 

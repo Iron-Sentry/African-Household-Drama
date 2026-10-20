@@ -10,7 +10,7 @@ import '@fontsource/fraunces/600.css';
 import '@fontsource/fraunces/400-italic.css';
 import './styles.css';
 import { storyJson, meta } from 'virtual:story';
-import { CHARACTERS, poseUrl, type Player } from './content/characters.ts';
+import { CHARACTERS, castEntry, poseUrl, type Player } from './content/characters.ts';
 import { SCENES } from './content/scenes.ts';
 import { Session, type Cue, type LineBeat, type Report } from './narrative/session.ts';
 import { clearSave, loadProfile, loadSave, writeProfile, writeSave, type Checkpoint, type Settings, type StageState } from './game/save.ts';
@@ -20,7 +20,8 @@ import { Audio } from './audio/audio.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const params = new URLSearchParams(location.search);
-const EPISODE_TITLES = ['', 'The Kissing Scene', "The Neighbour's Biscuit", 'The Errand'];
+const EPISODE_TITLES = ['', 'The Kissing Scene', "The Neighbour's Biscuit", 'The Errand', 'The Agric Homework'];
+const EPISODES = EPISODE_TITLES.length - 1;
 
 const ui = new UI();
 const stage = new Stage($('stage'));
@@ -44,6 +45,7 @@ const freshState = (): StageState => ({
   amb: '',
   cast: [],
   expr: {},
+  outfit: {},
   props: { tv: 'off', auntie_tv: 'off', foil: 'off', lamp: 'off', keyhole: 'off' },
 });
 let state = freshState();
@@ -78,12 +80,21 @@ function applyState(s: StageState) {
   stage.setScene(state.scene);
   stage.setLight(state.light);
   for (const [k, v] of Object.entries(state.props)) stage.setProp(k, v);
+  for (const [id, o] of Object.entries(state.outfit || {})) stage.setOutfit(id, o);
   stage.setCast(state.cast, state.expr);
-  for (const id of state.cast) stage.setExpr(id, state.expr[id] || 'neutral');
+  for (const { id } of state.cast.map(castEntry)) stage.setExpr(id, state.expr[id] || 'neutral');
   stage.setShot(state.cam, true);
-  ui.keyhole(state.props.keyhole === 'on');
+  aimKeyhole();
   audio.ambience(state.amb);
 }
+
+/** Peeping through the door: the hole follows what the scene says the child is looking at. */
+function aimKeyhole() {
+  const on = state.props.keyhole === 'on';
+  const at = SCENES[state.scene]?.keyhole;
+  ui.keyhole(on, on && at ? stage.project(at[0], at[1]) : undefined);
+}
+addEventListener('resize', () => requestAnimationFrame(aimKeyhole));
 
 function applyCue(c: Cue) {
   switch (c.key) {
@@ -100,12 +111,15 @@ function applyCue(c: Cue) {
     case 'prop': {
       const [name, value] = c.value.split('=');
       state.props[name] = value;
-      if (name === 'keyhole') return ui.keyhole(value === 'on');
+      if (name === 'keyhole') return aimKeyhole();
       return stage.setProp(name, value);
     }
     case 'cast':
       state.cast = c.value === 'none' ? [] : c.value.split(',').map((s) => s.trim());
       return stage.setCast(state.cast, state.expr);
+    case 'outfit':
+      state.outfit = { ...state.outfit, [c.who!]: c.value };
+      return stage.setOutfit(c.who!, c.value);
     case 'expr':
       state.expr[c.who!] = c.value;
       return stage.setExpr(c.who!, c.value);
@@ -168,6 +182,7 @@ async function play(id: number) {
         hint,
         hintOpen: session.stats.smarts >= 50,
         hotspots: (list) => (list.length ? stage.showHotspots(list) : stage.clearHotspots()),
+        faces: stage.faces(),
       });
       if (id !== runId) return;
       audio.sfx('click');
@@ -207,6 +222,7 @@ async function stageLine(beat: LineBeat, id: number) {
     else if (c.key === 'insert') insert = c.value;
     else applyCue(c);
   }
+  if (state.props.keyhole === 'on') aimKeyhole();
   writeSave({ ink: beat.resumeState, stage: before, resume: checkpoint });
   if (covered) {
     // hold long enough to read the place name, and until the new art can draw
@@ -227,9 +243,11 @@ async function stageLine(beat: LineBeat, id: number) {
   if (!beat.text) return;
   const who = beat.speaker?.id ?? null;
   stage.speaking(who && CHARACTERS[who].sprite ? who : null);
+  if (who) await stage.measured(who);
+  if (id !== runId) return;
   const anchor = who ? stage.anchor(who) : null;
   const stopTalking = setTimeout(() => stage.speaking(null), Math.min(4200, 400 + beat.text.length * 22));
-  await ui.showLine(beat.speaker, beat.name, beat.text, { auto, speed: settings.textSpeed, anchor, insert });
+  await ui.showLine(beat.speaker, beat.name, beat.text, { auto, speed: settings.textSpeed, anchor, faces: stage.faces(), insert });
   clearTimeout(stopTalking);
 }
 
@@ -341,7 +359,7 @@ function openTitle() {
   $('new-btn').classList.toggle('ghost', hasSave);
   $('new-btn').classList.toggle('primary', !hasSave);
   const n = profile.moments.length;
-  $('title-moments').textContent = n ? `${n} of ${meta.moments.length} moments discovered · ${profile.endings.length} of 4 endings` : 'Three episodes · about 20 minutes';
+  $('title-moments').textContent = n ? `${n} of ${meta.moments.length} moments discovered · ${profile.endings.length} of 4 endings` : `${EPISODES} episodes · about 30 minutes`;
   audio.setTitle(true);
   if (!titleDlg.open) titleDlg.showModal();
   (hasSave ? $('continue-btn') : $('new-btn')).focus();
@@ -380,7 +398,7 @@ $('title-settings-btn').addEventListener('click', () => openSettings());
 
 function openEpisodes() {
   $('episode-list').replaceChildren(
-    ...[1, 2, 3].map((n) => {
+    ...Array.from({ length: EPISODES }, (_, i) => i + 1).map((n) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'episode-btn';

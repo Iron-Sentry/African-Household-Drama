@@ -7,7 +7,7 @@ import { friendFor, parseLine, type Character, type Player } from '../content/ch
 export interface Cue {
   key: string;
   value: string;
-  who?: string; // for expr/emote/anim/quote: "mum=angry" -> who "mum", value "angry"
+  who?: string; // for expr/emote/anim/quote/sticker/outfit: "mum=angry" -> who "mum", value "angry"
 }
 
 export interface LineBeat {
@@ -49,7 +49,7 @@ export interface Report {
   remember: string[];
 }
 
-const PAIRED = new Set(['expr', 'emote', 'anim', 'quote', 'sticker']);
+const PAIRED = new Set(['expr', 'emote', 'anim', 'quote', 'sticker', 'outfit']);
 
 export function parseTag(tag: string): Cue {
   const i = tag.indexOf(':');

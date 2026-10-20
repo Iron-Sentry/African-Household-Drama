@@ -44,6 +44,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .world.instant { transition: none; }
 .room { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: filter .8s; }
 .world.read-room .room { filter: saturate(.55) brightness(.8) blur(1.5px); }
+/* a scene's night painting fades in over the day one once it is dark */
+.room.after-dark { opacity: 0; transition: opacity 1.6s ease, filter .8s; }
+.room.after-dark:not([src]) { display: none; }
+.room.after-dark.on { opacity: 1; }
+.room.after-dark.instant { transition: none; }
+/* cut-outs standing in the painting (#prop:<piece>=on), bottom-centre on their spot */
+.pieces { position: absolute; inset: 0; }
+.pieces img { position: absolute; height: auto; transform: translate(-50%, -100%) scale(.9); transform-origin: 50% 100%; opacity: 0; transition: opacity .5s, transform .5s var(--pop, ease); }
+.pieces img.on { opacity: 1; transform: translate(-50%, -100%); }
 
 .cast { position: absolute; inset: 0; }
 .actor {
@@ -221,6 +230,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font: italic 400 calc(var(--fs-line) + 1px) / 1.42 var(--display);
 }
 .caption .text { margin: 0; }
+/* flipped to the other edge because the usual one would cover a face */
+.caption.flip { top: auto; bottom: calc(20px + var(--safe-b)); }
 .caption.pop { animation: captionIn .35s var(--pop); }
 @keyframes captionIn { from { opacity: 0; transform: translateX(-50%) translateY(-8px) rotate(-1.5deg); } }
 
@@ -229,6 +240,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   position: absolute; z-index: 7; left: 50%; bottom: calc(18px + var(--safe-b)); transform: translateX(-50%);
   width: min(580px, calc(100vw - 20px)); display: flex; flex-direction: column; gap: 8px;
 }
+/* slid aside so the stack doesn't cover a face (wide screens) */
+.choices.to-left { left: 24px; transform: none; }
+.choices.to-right { left: auto; right: 24px; transform: none; }
 body.choosing .overlay::before { content: ''; position: absolute; inset: auto 0 0 0; height: 75%; pointer-events: none; background: linear-gradient(transparent, rgba(18, 8, 14, .8) 70%); animation: pop .4s ease-out; }
 .choice-list { display: flex; flex-direction: column; gap: 9px; }
 .choice {
@@ -442,6 +456,7 @@ legend { padding: 0 6px; font: 700 12px var(--mono); text-transform: uppercase; 
   /* narration sits at the bottom, under the faces, until it's choice time */
   .caption { top: auto; bottom: calc(20px + var(--safe-b)); transform: translateX(-50%) rotate(-.4deg); }
   .caption.pop { animation: captionUp .35s var(--pop); }
+  .caption.flip { top: var(--cap-top, calc(var(--hud) + 10px)); bottom: auto; }
   /* notices and stamps stay in a slim strip under the HUD, above the faces */
   .notices { left: 50%; top: calc(var(--hud) + 24px); transform: translateX(-50%); align-items: center; text-align: center; gap: 4px; width: calc(100vw - 24px); }
   .feedback { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0 8px; padding: 4px 12px; border-radius: 99px; }

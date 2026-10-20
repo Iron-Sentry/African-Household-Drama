@@ -96,6 +96,30 @@
     You came home from an errand with Mummy's biggest secret. Daddy is still asking about the cake. #remember
 }
 {
+- seedling == "pepper" && homework_told == "mummy":
+    Mummy gave up one pepper plant for your education. You are still watering the other five. #remember
+- seedling == "pepper":
+    Madam's VERY GOOD pepper. Mummy still counts her plants every morning. #remember
+- seedling == "auntie" && auntie_caught:
+    Auntie Efua caught you with her orange tree. She now says she sponsors your education. #remember
+- seedling == "auntie":
+    Auntie Efua's orange tree went to school one night and never came back. #remember
+- seedling == "asked":
+    You knocked on Auntie Efua's door at night for a seedling. She has told the story at three funerals. #remember
+- seedling == "stick":
+    The resting mango. Madam kept it on her desk for eleven years. #remember
+- seedling == "none":
+    Monday morning. An empty tin. Two words from Madam: SEE ME. #remember
+}
+{
+- credit == "daddy":
+    You told Madam the truth, so Daddy got a VERY GOOD too. He has not stopped talking about it. #remember
+- credit == "blisters":
+    Madam said you have a farmer's hands. You showed everybody the blisters for a week. #remember
+- hole_by == "daddy":
+    Daddy's hole is still in the back corner. He calls it "the foundation". #remember
+}
+{
 - finale == "news":
     When Maria came back, you changed the channel to the news. Very educational. #remember
 - finale == "mummy":

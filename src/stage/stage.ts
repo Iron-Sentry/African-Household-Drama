@@ -3,7 +3,8 @@
 // the TV overlay stay glued together. The UI asks where a speaker's face is on
 // screen (anchor) to hang speech bubbles off it.
 import { SCENES, type Scene } from '../content/scenes.ts';
-import { CHARACTERS, allPoseUrls, poseUrl, type Player } from '../content/characters.ts';
+import { assetUrl } from '../content/assets.ts';
+import { CHARACTERS, allPoseUrls, castEntry, headHeight, poseUrl, type Player } from '../content/characters.ts';
 
 const BASE = import.meta.env.BASE_URL;
 const ASPECT = 16 / 9;
@@ -26,33 +27,56 @@ const EMOTE_ART: Record<string, string> = {
 };
 
 /**
- * Where the head is in a pose, in % of the 512×640 canvas, measured from the
- * sprite's own pixels: torso centre first, then the first opaque row above it.
- * Raised hands sit to the sides, so they don't fool it.
+ * Where the face is in a pose, in % of the 512×640 canvas, measured from the
+ * sprite's own pixels. Every pose of a sheet shares one head height (top of the
+ * hair to the chin, see SHEETS in characters.ts), so only the head top and the
+ * face centre are found here: the top is the highest point near the torso line
+ * that is head-wide just below it (a raised hand is too narrow), and the centre
+ * is the middle of the cheeks, below hair puffs and head ties.
  */
-const heads = new Map<string, Promise<{ x: number; y: number; w: number }>>();
-function measureHead(url: string) {
+type Head = { x: number; y: number; chin: number; w: number };
+const heads = new Map<string, Promise<Head>>();
+function measureHead(url: string, head: number) {
   if (!heads.has(url)) {
     heads.set(url, (async () => {
       const img = new Image();
       img.src = url;
       await img.decode();
-      const W = 64, H = 80;
+      const W = 128, H = 160;
       const ctx = Object.assign(document.createElement('canvas'), { width: W, height: H }).getContext('2d', { willReadFrequently: true })!;
       ctx.drawImage(img, 0, 0, W, H);
       const a = ctx.getImageData(0, 0, W, H).data;
-      const on = (x: number, y: number) => a[(y * W + x) * 4 + 3] > 140;
+      const on = (x: number, y: number) => x >= 0 && x < W && y >= 0 && y < H && a[(y * W + x) * 4 + 3] > 140;
+      const runAt = (x: number, y: number): [number, number] | null => {
+        if (!on(x, y)) return null;
+        let l = x, r = x;
+        while (on(l - 1, y)) l--;
+        while (on(r + 1, y)) r++;
+        return [l, r];
+      };
       let sx = 0, n = 0;
       for (let y = Math.round(H * 0.4); y < H * 0.5; y++) for (let x = 0; x < W; x++) if (on(x, y)) { sx += x; n++; }
       const cx = n ? Math.round(sx / n) : W / 2;
-      let top = 0;
-      outer: for (; top < H; top++) for (let x = Math.max(0, cx - 5); x <= Math.min(W - 1, cx + 5); x++) if (on(x, top)) break outer;
-      const row = Math.min(H - 1, top + 4);
-      let l = cx, r = cx;
-      while (l > 0 && on(l - 1, row)) l--;
-      while (r < W - 1 && on(r + 1, row)) r++;
-      return { x: ((l + r + 1) / 2 / W) * 100, y: (top / H) * 100, w: Math.max(8, ((r - l + 1) / W) * 100) };
-    })().catch(() => ({ x: 50, y: 3, w: 22 })));
+      const hp = (head / 100) * H;
+      const fw = hp * 0.85;
+      let best: { t: number; x: number; score: number } | null = null;
+      for (let x = Math.max(0, cx - Math.round(W * 0.2)); x <= Math.min(W - 1, cx + Math.round(W * 0.2)); x++) {
+        let t = 0;
+        while (t < H * 0.6 && !on(x, t)) t++;
+        if (t >= H * 0.6) continue;
+        const r = runAt(x, Math.round(t + hp * 0.45));
+        if (!r || r[1] - r[0] + 1 < fw * 0.55) continue;
+        const score = t + Math.abs(x - cx) * 0.15;
+        if (!best || score < best.score) best = { t, x, score };
+      }
+      const top = best ? best.t : 0;
+      const hx = best ? best.x : cx;
+      const low = Math.round(top + hp * 0.75);
+      let r: [number, number] | null = null;
+      for (let d = 0; d < 24 && !r; d++) r = runAt(hx - d, low) || runAt(hx + d, low);
+      const fx = !r ? hx : r[1] - r[0] + 1 < fw * 1.5 ? (r[0] + r[1]) / 2 : Math.max(r[0] + fw / 2, Math.min(r[1] - fw / 2, hx));
+      return { x: (fx / W) * 100, y: (top / H) * 100, chin: ((top + hp) / H) * 100, w: (fw / W) * 100 };
+    })().catch(() => ({ x: 50, y: 3, chin: 3 + head, w: 22 })));
   }
   return heads.get(url)!;
 }
@@ -65,6 +89,7 @@ interface Actor {
   imgs: HTMLImageElement[];
   front: number;
   url: string;
+  pose: string; // the mood or pose ink asked for, kept so a re-skin can ask again
   x: number;
   emote: HTMLElement;
   sticker: HTMLImageElement;
@@ -72,9 +97,21 @@ interface Actor {
 
 export interface Anchor {
   x: number;
-  y: number;
+  y: number; // face centre
+  top: number; // top of the hair
+  chin: number;
+  half: number; // half the face's width
   h: number; // on-screen sprite height, for spacing the bubble
   onScreen: boolean;
+}
+
+/** A face on screen, in px: the UI keeps captions and answers off these. */
+export interface FaceBox {
+  id: string;
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
 }
 
 export class Stage {
@@ -83,6 +120,10 @@ export class Stage {
   private root: HTMLElement;
   private world: HTMLElement;
   private bg: HTMLImageElement;
+  private dark: HTMLImageElement; // the night painting, faded in over the day one
+  private pieces: HTMLElement;
+  private light = '';
+  private outfits: Record<string, string> = {};
   private cast: HTMLElement;
   private spots: HTMLElement;
   private tv: HTMLElement;
@@ -108,9 +149,11 @@ export class Stage {
 
   constructor(root: HTMLElement) {
     this.root = root;
-    root.innerHTML = `<div class="world" id="world"><img class="room" alt="" draggable="false"><div class="tv" aria-hidden="true"><img class="tv-film" src="${BASE}assets/tv/film_two_shot.webp" alt=""><img class="tv-kiss" src="${BASE}assets/tv/film_kiss.webp" alt=""><div class="tv-news"><img src="${BASE}assets/tv/news_desk.webp" alt=""><b><span>AKOSOMBO WATER LEVEL LOW · LIGHTS OFF TUESDAY AND THURSDAY · BLACK STARS SQUAD NAMED · </span></b></div><canvas width="96" height="72"></canvas><i class="glass"></i></div><div class="antenna" aria-hidden="true">${ANTENNA}</div><div class="lamp" aria-hidden="true"><i></i></div><div class="cast" aria-hidden="true"></div><div class="light" aria-hidden="true"></div><div class="spots"></div></div>`;
+    root.innerHTML = `<div class="world" id="world"><img class="room" alt="" draggable="false"><img class="room after-dark" alt="" draggable="false"><div class="pieces" aria-hidden="true"></div><div class="tv" aria-hidden="true"><img class="tv-film" src="${BASE}assets/tv/film_two_shot.webp" alt=""><img class="tv-kiss" src="${BASE}assets/tv/film_kiss.webp" alt=""><div class="tv-news"><img src="${BASE}assets/tv/news_desk.webp" alt=""><b><span>AKOSOMBO WATER LEVEL LOW · LIGHTS OFF TUESDAY AND THURSDAY · BLACK STARS SQUAD NAMED · </span></b></div><canvas width="96" height="72"></canvas><i class="glass"></i></div><div class="antenna" aria-hidden="true">${ANTENNA}</div><div class="lamp" aria-hidden="true"><i></i></div><div class="cast" aria-hidden="true"></div><div class="light" aria-hidden="true"></div><div class="spots"></div></div>`;
     this.world = root.querySelector('.world')!;
     this.bg = root.querySelector('.room')!;
+    this.dark = root.querySelector('.room.after-dark')!;
+    this.pieces = root.querySelector('.pieces')!;
     this.cast = root.querySelector('.cast')!;
     this.spots = root.querySelector('.spots')!;
     this.tv = root.querySelector('.tv')!;
@@ -129,7 +172,19 @@ export class Stage {
   setScene(id: string) {
     this.scene = SCENES[id] || SCENES.hall;
     const s = this.scene;
-    this.bg.src = `${BASE}assets/${s.bg}`;
+    this.bg.src = assetUrl(s.bg);
+    this.dark.removeAttribute('src');
+    if (s.night) this.dark.src = assetUrl(s.night);
+    this.pieces.replaceChildren(
+      ...Object.entries(s.pieces || {}).map(([name, p]) => {
+        const img = Object.assign(document.createElement('img'), { alt: '', draggable: false, src: assetUrl(p.src) });
+        img.dataset.piece = name;
+        Object.assign(img.style, { left: `${p.at[0]}%`, top: `${p.at[1]}%`, width: `${p.w}%` });
+        return img;
+      }),
+    );
+    this.renderPieces();
+    this.renderNight(true);
     const [l, t, w, h] = s.tv || [0, 0, 0, 0];
     Object.assign(this.tv.style, { left: `${l}%`, top: `${t}%`, width: `${w}%`, height: `${h}%`, display: s.tv ? '' : 'none' });
     Object.assign(this.antenna.style, { left: `${l + w * 0.5}%`, top: `${t - 17}%`, display: s.tv ? '' : 'none' });
@@ -165,12 +220,41 @@ export class Stage {
 
   setLight(id: string) {
     this.world.dataset.light = id;
+    this.light = id;
+    this.renderNight();
+  }
+
+  /** Scenes with a night painting swap to it once it is dark. */
+  private renderNight(instant = false) {
+    const on = !!this.scene.night && ['moon', 'blackout', 'lamp'].includes(this.light);
+    this.dark.classList.toggle('instant', instant || this.reduced);
+    this.dark.classList.toggle('on', on);
+  }
+
+  private renderPieces() {
+    for (const img of this.pieces.querySelectorAll<HTMLImageElement>('img')) img.classList.toggle('on', this.props[img.dataset.piece!] === 'on');
+  }
+
+  /** Dress a character in another sheet (#outfit:child=uniform), or back in their own ('none'). */
+  setOutfit(id: string, outfit: string) {
+    const was = this.outfits[id] || '';
+    const now = outfit === 'none' ? '' : outfit;
+    if (was === now) return;
+    if (now) this.outfits[id] = now;
+    else delete this.outfits[id];
+    const a = this.actors.get(id);
+    if (!a) return;
+    const pose = a.pose;
+    a.url = '';
+    this.setExpr(id, pose);
+    this.preload(id);
   }
 
   setProp(name: string, value: string) {
     this.props[name] = value;
     if (name === 'foil') this.antenna.classList.toggle('foiled', value === 'on');
     if (name === 'lamp') this.lamp.classList.toggle('on', value === 'on');
+    this.renderPieces();
     this.renderTv();
   }
 
@@ -209,7 +293,9 @@ export class Stage {
   }
 
   // ---------------------------------------------------------------- cast
-  setCast(ids: string[], expr: Record<string, string>) {
+  /** Who stands in the room, left to right. A token may pin a spot: "dad@73". */
+  setCast(tokens: string[], expr: Record<string, string>) {
+    const ids = tokens.map((t) => castEntry(t).id);
     for (const [id, a] of this.actors) {
       if (ids.includes(id)) continue;
       this.actors.delete(id);
@@ -217,10 +303,11 @@ export class Stage {
       a.el.classList.add('leaving');
       setTimeout(() => a.el.remove(), this.reduced ? 0 : 450);
     }
-    this.order = ids.filter((id) => CHARACTERS[id]?.sprite);
+    const entries = tokens.map(castEntry).filter((e) => CHARACTERS[e.id]?.sprite);
+    this.order = entries.map((e) => e.id);
     const [a0, a1] = this.scene.floor;
-    this.order.forEach((id, i) => {
-      const x = this.order.length === 1 ? (a0 + a1) / 2 : a0 + ((a1 - a0) * (i + 0.5)) / this.order.length;
+    entries.forEach(({ id, at }, i) => {
+      const x = at ?? (entries.length === 1 ? (a0 + a1) / 2 : a0 + ((a1 - a0) * (i + 0.5)) / entries.length);
       let a = this.actors.get(id);
       if (!a) {
         a = this.makeActor(id, expr[id] || 'neutral', x);
@@ -246,38 +333,49 @@ export class Stage {
     el.style.left = `${x}%`;
     el.innerHTML = `<div class="body"><img alt="" draggable="false" class="on"><img alt="" draggable="false"></div><div class="emote"></div><img class="sticker" alt="">`;
     this.cast.append(el);
-    const url = poseUrl(id, expr, this.player)!;
+    const url = poseUrl(id, expr, this.player, this.outfits[id])!;
     const imgs = [...el.querySelectorAll<HTMLImageElement>('.body img')];
     imgs[0].src = url;
-    this.placeHead(el, url);
+    this.placeHead(el, id, url);
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('entering')));
     this.preload(id);
-    return { id, el, imgs, front: 0, url, x, emote: el.querySelector('.emote')!, sticker: el.querySelector('.sticker')! };
+    return { id, el, imgs, front: 0, url, pose: expr, x, emote: el.querySelector('.emote')!, sticker: el.querySelector('.sticker')! };
   }
 
-  private placeHead(el: HTMLElement, url: string) {
-    measureHead(url).then((h) => {
+  private placeHead(el: HTMLElement, id: string, url: string) {
+    return measureHead(url, headHeight(id, this.player, this.outfits[id])).then((h) => {
       el.style.setProperty('--hx', `${h.x}%`);
       el.style.setProperty('--hy', `${h.y}%`);
       el.style.setProperty('--hw', `${h.w}%`);
       el.dataset.hx = String(h.x);
       el.dataset.hy = String(h.y);
+      el.dataset.hc = String(h.chin);
       el.dataset.hw = String(h.w);
+      if (id === this.followId || id === this.focused) this.frame(); // the face moved: keep it framed
     });
   }
 
+  /** Resolves once this character's current pose has a measured face (or after `ms`). */
+  measured(id: string, ms = 400): Promise<void> {
+    const a = this.actors.get(id);
+    if (!a) return Promise.resolve();
+    const done = this.placeHead(a.el, id, a.url).then(() => {});
+    return Promise.race([done, new Promise<void>((r) => setTimeout(r, ms))]);
+  }
+
   private preload(id: string) {
-    for (const u of allPoseUrls(id, this.player)) {
+    for (const u of allPoseUrls(id, this.player, this.outfits[id])) {
       if (this.preloaded.has(u)) continue;
       this.preloaded.add(u);
-      new Image().src = u;
+      measureHead(u, headHeight(id, this.player, this.outfits[id])); // loads the pose and knows its face before it is needed
     }
   }
 
   /** Swap pose with a short crossfade (static sprites: no fake skeletal animation). */
   setExpr(id: string, expr: string) {
     const a = this.actors.get(id);
-    const url = poseUrl(id, expr, this.player);
+    const url = poseUrl(id, expr, this.player, this.outfits[id]);
+    if (a) a.pose = expr;
     if (!a || !url || a.url === url) return;
     a.url = url;
     const back = a.imgs[1 - a.front];
@@ -287,7 +385,7 @@ export class Stage {
       a.imgs[a.front].classList.remove('on');
       a.front = 1 - a.front;
     };
-    this.placeHead(a.el, url);
+    this.placeHead(a.el, id, url);
     back.src = url;
     back.decode().then(swap, swap);
   }
@@ -298,9 +396,8 @@ export class Stage {
     this.player = p;
     for (const a of this.actors.values()) {
       if (a.id !== 'child' && a.id !== 'friend') continue;
-      const pose = a.url.match(/_(?:boy|girl)_(\w+)\.webp$/)?.[1] || 'idle';
       a.url = '';
-      this.setExpr(a.id, pose);
+      this.setExpr(a.id, a.pose);
     }
   }
 
@@ -326,7 +423,7 @@ export class Stage {
   sticker(id: string, name: string) {
     const a = this.actors.get(id);
     if (!a) return;
-    a.sticker.src = `${BASE}assets/fx/${name}.webp`;
+    a.sticker.src = assetUrl(`fx/${name}.webp`);
     // burst on the side away from where the speech bubble will hang
     // near a screen edge there's no room beside the head, so burst above it
     const sx = this.project(a.x, 0).x / this.root.clientWidth;
@@ -388,13 +485,30 @@ export class Stage {
     this.frame(instant);
   }
 
-  /** Face height in % of the world: measured head when known, a body-type guess before that. */
-  private faceY(a: Actor) {
+  /** A point on the head in % of the world: `at` 0 is the top of the hair, 1 the chin, 0.5 the face centre. */
+  private headY(a: Actor, at = 0.5) {
     const b = BODY[CHARACTERS[a.id].kind];
-    const hy = Number(a.el.dataset.hy);
-    const hw = Number(a.el.dataset.hw);
-    const face = hy >= 0 && hw ? (hy + hw * 0.55 * 0.8) / 100 : b.face;
+    const top = Number(a.el.dataset.hy);
+    const chin = Number(a.el.dataset.hc);
+    const face = a.el.dataset.hc ? (top + (chin - top) * at) / 100 : b.face + (at - 0.5) * 0.2; // a body-type guess until measured
     return 100 - (b.b + b.h) + b.h * face;
+  }
+
+  private faceY(a: Actor) {
+    return this.headY(a);
+  }
+
+  /** Half the face's width in % of the world. */
+  private faceHalf(a: Actor) {
+    const hw = a.el.dataset.hw ? Number(a.el.dataset.hw) : 22;
+    return ((hw / 100) * (BODY[CHARACTERS[a.id].kind].h * 0.8)) / ASPECT / 2;
+  }
+
+  /** Horizontal face centre in % of the world (the sprite is centred on a.x). */
+  private faceX(a: Actor) {
+    const b = BODY[CHARACTERS[a.id].kind];
+    const hx = a.el.dataset.hx ? Number(a.el.dataset.hx) : 50;
+    return a.x + ((hx - 50) / 100) * (b.h * 0.8) / ASPECT;
   }
 
   private frame(instant = false, slow = false) {
@@ -408,7 +522,7 @@ export class Stage {
     let face: Actor | undefined;
     if (focus) {
       s = this.readRoom ? (portrait ? 1.55 : 1.75) : portrait ? 1.35 : 1.32;
-      x = focus.x;
+      x = this.faceX(focus);
       y = this.faceY(focus) + (this.readRoom ? 4 : 12);
       face = focus;
     } else {
@@ -416,7 +530,7 @@ export class Stage {
       if (portrait && PEOPLE_SHOTS.has(this.shot)) {
         const xs = this.order.map((id) => this.actors.get(id)!.x);
         face = (this.followId && this.actors.get(this.followId)) || undefined;
-        x = face?.x ?? (xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : x);
+        x = face ? this.faceX(face) : (xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : x);
         s = Math.max(s, 1.25); // closer, so faces are big enough to read
       }
     }
@@ -450,13 +564,32 @@ export class Stage {
       if (!this.scene.tv) return null;
       const [l, t, w] = this.scene.tv;
       const p = this.project(l + w / 2, t);
-      return { ...p, h: 0, onScreen: p.x > 0 && p.x < vw && p.y > 0 && p.y < vh };
+      return { ...p, top: p.y, chin: p.y, half: 0, h: 0, onScreen: p.x > 0 && p.x < vw && p.y > 0 && p.y < vh };
     }
     const a = this.actors.get(id);
     if (!a) return null;
-    const p = this.project(a.x, this.faceY(a));
+    const p = this.project(this.faceX(a), this.faceY(a));
+    const top = this.project(0, this.headY(a, 0)).y;
+    const chin = this.project(0, this.headY(a, 1)).y;
+    const half = this.project(this.faceHalf(a), 0).x - this.project(0, 0).x;
     const h = (BODY[CHARACTERS[id].kind].h / 100) * this.H * this.cam.s;
-    return { ...p, h, onScreen: p.x > 20 && p.x < vw - 20 && p.y > 0 && p.y < vh * 0.8 };
+    return { ...p, top, chin, half, h, onScreen: p.x > 20 && p.x < vw - 20 && p.y > 0 && p.y < vh * 0.8 };
+  }
+
+  /** Every face currently on screen (where the camera is heading, not mid-move). */
+  faces(): FaceBox[] {
+    const vw = this.root.clientWidth;
+    const vh = this.root.clientHeight;
+    const out: FaceBox[] = [];
+    for (const a of this.actors.values()) {
+      if (!a.el.dataset.hc) continue;
+      const half = this.faceHalf(a);
+      const l = this.project(this.faceX(a) - half, this.headY(a, 0.15));
+      const r = this.project(this.faceX(a) + half, this.headY(a, 1));
+      if (r.x < 0 || l.x > vw || r.y < 0 || l.y > vh) continue;
+      out.push({ id: a.id, left: l.x, right: r.x, top: l.y, bottom: r.y });
+    }
+    return out;
   }
 
   // ---------------------------------------------------------------- hotspots

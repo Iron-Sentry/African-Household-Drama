@@ -25,23 +25,27 @@ const paths: Record<string, string[]> = {
     'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Burst out laughing', 'Greet her in Twi', 'Sit nicely and wait',
     "Check Mummy's expression", 'Take one and say "Thank you', 'rearrange the circle', 'Repeat the list', 'Confess',
     'Small packet of sugar', 'Toffees', "That's everything", 'Ask what SHE', 'Count the change', 'Close your eyes',
+    'Whisper it to Daddy', 'Remind him', 'Plant the mango stick',
   ],
   akola: [
     'Pretend to be asleep', 'Do exactly what Daddy says', 'Announce that you are very thirsty', 'Good afternoon',
     'The wall clock', 'Shout to Auntie', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', 'Take the biscuits immediately',
     'rearrange the circle', 'I know, Mummy', 'Look at', 'Box of matches', 'Small packet of sugar', 'Tin of milk', 'Toffees', "That's everything",
     'Tell her everything', 'Spend it on bofrot', 'Reach for the antenna',
+    'Say nothing', 'Borrow Auntie Efua', 'All by myself',
   ],
   golden: [
     'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Announce that you are very thirsty', 'Greet her in Twi', 'Sit nicely and wait',
     "Check Mummy's expression", 'Take one and say "Medaase', 'Slip one biscuit', 'Write it on the back', 'Confess', 'Loaf of tea bread',
     'Candles', 'Box of matches', 'Tin of milk', 'Small packet of sugar', "That's everything", 'Everybody is fine', 'Say nothing. Take it home', 'Close your eyes',
+    'Tell Mummy the truth', 'Take the hoe', 'Go and ask Auntie Efua properly', 'Show her your blisters',
   ],
   comedian: [
     'Answer in a sleepy voice', 'Do exactly what Daddy says', 'Burst out laughing', 'Greet her in Twi',
     'The wall clock', 'Shout to Auntie', 'The framed photograph', 'Sit nicely and wait', 'Nod politely', "Check Mummy's expression",
     'Keep staring at Mummy', 'Sit on your hands', 'I know, Mummy', 'Small packet of sugar', 'Loaf of tea bread', 'Box of matches',
     'Candles', 'Tin of milk', 'Toffees', "That's everything", 'Tell her everything', 'Tell Auntie she gave', 'Laugh',
+    'Tell Mummy the truth', 'Let Daddy finish', 'Pull up one of Mummy', 'All by myself',
   ],
 };
 
@@ -50,7 +54,7 @@ describe('compiled story graph', () => {
     expect(compiled.warnings).toEqual([]);
     expect(validateTags(compiled.meta.tags)).toEqual([]);
     expect(compiled.meta.knots.length).toBeGreaterThan(20);
-    expect(compiled.meta.moments).toHaveLength(36);
+    expect(compiled.meta.moments).toHaveLength(47);
   });
 
   it('finishes 250 deterministic random routes with a valid rank and bounded stats', () => {

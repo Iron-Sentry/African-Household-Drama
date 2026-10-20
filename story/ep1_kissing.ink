@@ -6,12 +6,12 @@
 // =====================================================================
 
 === ep1 ===
-#episode:1 #scene:hall #light:evening #cast:mum,dad #cam:keyhole #prop:tv=snow #prop:keyhole=on #amb:static
+#episode:1 #scene:hall #light:evening #cast:mum@50,dad@72 #cam:keyhole #prop:tv=snow #prop:keyhole=on #amb:static
 #card:Episode One/The Kissing Scene/Accra, Ghana · Sunday · 8:25 PM
 Bedtime. But your eye is pressed to the keyhole. #expr:dad=strain #anim:dad=lean #expr:mum=flat
 Daddy: Ah! This antenna! #anim:dad=shake #sfx:static
 Mummy: Maria starts in five minutes, oo.
-Daddy: NANA! #fx:impact #expr:dad=strain #sfx:sting #cam:wide
+Daddy: NANA! #fx:impact #expr:dad=strain #sfx:sting #cam:push
 Your name. Your chance. But you are supposed to be asleep.
 * [Pretend to be asleep #flavour:His voice will pass.]
     -> pretend

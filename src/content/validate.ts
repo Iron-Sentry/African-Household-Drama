@@ -1,20 +1,21 @@
 // Story tag validation, shared by the tests, `npm run story:check` and the Vite plugin.
-import { ON_STAGE, validExpr } from './characters.ts';
-import { SCENES, LIGHTS, ALL_SHOTS, ALL_HOTSPOTS } from './scenes.ts';
+import { ON_STAGE, castEntry, validExpr, validOutfit } from './characters.ts';
+import { SCENES, LIGHTS, ALL_SHOTS, ALL_HOTSPOTS, PIECES } from './scenes.ts';
 
 export const EMOTES = ['sweat', 'shock', 'question', 'anger', 'sparkle', 'heart', 'dots'];
 export const ANIMS = ['bounce', 'shake', 'jump', 'lean', 'slump'];
 export const FX = ['shake', 'impact', 'flash'];
-export const STICKERS = ['akola_bone', 'ei', 'good_child', 'hmmm', 'trouble', 'chale', 'shh', 'oops'];
-export const INSERTS = ['tv_remote', 'biscuit_tray', 'malt_bottle', 'boombox', 'wall_clock', 'framed_family_photo', 'rotary_phone_padlock'];
-export const SFX = ['good', 'bad', 'click', 'sting', 'kiss', 'romance', 'tvclear', 'static', 'thump', 'whoosh', 'powercut', 'powerup', 'knock', 'crinkle', 'crunch', 'coin', 'pop', 'radio', 'radiooff', 'cheer', 'title', 'theme', 'door', 'throat', 'heartbeat', 'snore', 'yawn'];
-export const AMBIENCE = ['static', 'film', 'night', 'hall', 'auntie', 'clock', 'compound', 'street'];
+export const STICKERS = ['akola_bone', 'ei', 'good_child', 'hmmm', 'trouble', 'chale', 'shh', 'oops', 'ewurade', 'see_me', 'very_good', 'my_pepper'];
+export const INSERTS = ['tv_remote', 'biscuit_tray', 'malt_bottle', 'boombox', 'wall_clock', 'framed_family_photo', 'rotary_phone_padlock', 'agric_exercise_book', 'seedling_tin', 'pepper_plant_tin', 'mango_stick_tin', 'hurricane_lantern', 'watering_can_tin'];
+export const SFX = ['good', 'bad', 'click', 'sting', 'kiss', 'romance', 'tvclear', 'static', 'thump', 'whoosh', 'powercut', 'powerup', 'knock', 'crinkle', 'crunch', 'coin', 'pop', 'radio', 'radiooff', 'cheer', 'title', 'theme', 'door', 'throat', 'heartbeat', 'snore', 'yawn', 'dig', 'splash', 'bell', 'rooster'];
+export const AMBIENCE = ['static', 'film', 'night', 'hall', 'auntie', 'clock', 'compound', 'street', 'school', 'dusk'];
 export const PROPS: Record<string, RegExp> = {
   tv: /^(snow|film|kiss|news|off)$/,
   auntie_tv: /^(snow|fixed|off)$/,
   foil: /^(on|off)$/,
   lamp: /^(on|off)$/,
   keyhole: /^(on|off)$/,
+  ...Object.fromEntries([...PIECES].map((name) => [name, /^(on|off)$/])),
 };
 
 const FLAGS = ['report', 'rankcopy', 'remember', 'timeout', 'readroom'];
@@ -35,10 +36,14 @@ export function validateTag(tag: string): string | null {
     case 'hotspot': return ALL_HOTSPOTS.has(val) ? null : `unknown hotspot "${val}"`;
     case 'cast': {
       if (val === 'none') return null;
-      const bad = val.split(',').map((s) => s.trim()).filter((id) => !ON_STAGE.includes(id));
-      return bad.length ? `unknown cast member(s) ${bad.join(', ')}` : null;
+      const entries = val.split(',').map(castEntry);
+      const bad = entries.filter((e) => !ON_STAGE.includes(e.id)).map((e) => e.id);
+      if (bad.length) return `unknown cast member(s) ${bad.join(', ')}`;
+      const off = entries.filter((e) => e.at !== undefined && !(e.at >= 0 && e.at <= 100));
+      return off.length ? `cast position must be 0–100: ${off.map((e) => e.id).join(', ')}` : null;
     }
     case 'expr': case 'quote': return pair(validExpr(who, what));
+    case 'outfit': return pair(validOutfit(who, what));
     case 'emote': return pair(EMOTES.includes(what));
     case 'anim': return pair(ANIMS.includes(what));
     case 'sticker': return pair(STICKERS.includes(what));

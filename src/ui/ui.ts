@@ -4,10 +4,10 @@
 // advances, showChoices resolves with the chosen ink index.
 import type { Character } from '../content/characters.ts';
 import type { ChoiceView, Stats } from '../narrative/session.ts';
-import type { Anchor } from '../stage/stage.ts';
+import type { Anchor, FaceBox } from '../stage/stage.ts';
+import { assetUrl } from '../content/assets.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
-const BASE = import.meta.env.BASE_URL;
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const STAT_NAMES: Record<keyof Stats, string> = { approval: 'Approval', smarts: 'Street Smarts', trouble: 'Trouble' };
 
@@ -15,6 +15,7 @@ export interface LineOpts {
   auto?: number;
   speed: 'normal' | 'fast' | 'instant';
   anchor: Anchor | null; // where the speaker's face is, if on screen
+  faces?: FaceBox[]; // every face on screen: narration steers clear of them
   insert?: string; // prop close-up panel for this line
 }
 
@@ -23,11 +24,16 @@ export interface ChoiceOpts {
   hint?: string;
   hintOpen?: boolean; // street-smart players notice without asking
   hotspots?: (ids: { id: string; label: string; pick: () => void }[]) => void;
+  faces?: FaceBox[]; // the answer stack stops below these on phones
 }
+
+const overlap = (r: DOMRect, f: FaceBox) =>
+  Math.max(0, Math.min(r.right, f.right) - Math.max(r.left, f.left)) * Math.max(0, Math.min(r.bottom, f.bottom) - Math.max(r.top, f.top));
 
 export class UI {
   private overlay = $('overlay');
   private caption = $('caption');
+  private hole: { x: number; y: number; r: number } | null = null; // the keyhole's round top, when peeping
   private bubble = $('bubble');
   private choicesEl = $('choices');
   private list = $('choice-list');
@@ -94,8 +100,8 @@ export class UI {
         if (o.auto) auto = window.setTimeout(() => this.advance === done && this.next(), o.auto);
       });
       // Layout is final from the first frame (untyped text is invisible, not missing).
-      if (speaker) this.placeBubble(o.anchor, speaker.id === 'tv');
-      else this.pop(box);
+      if (speaker) this.placeBubble(o.anchor, speaker.id === 'tv', o.faces || []);
+      else this.placeCaption(o.faces || []);
     });
   }
 
@@ -112,44 +118,79 @@ export class UI {
    * (landscape), below the chin otherwise (portrait), or pinned to the top
    * edge for voices that are off screen.
    */
-  private placeBubble(a: Anchor | null, tv: boolean) {
+  /** The top of the free area: under the HUD and under any notice that is showing. */
+  private topEdge() {
+    let top = ($('hud').offsetHeight || 56) + 8;
+    for (const n of [this.feedbackEl, this.toastEl]) {
+      if (n.hidden || !n.getClientRects().length) continue;
+      top = Math.max(top, n.getBoundingClientRect().bottom + 6);
+    }
+    return top;
+  }
+
+  /**
+   * Narration sits at the bottom on phones (at the top on wide screens). If
+   * that would cover a face, it moves to the other edge, unless that is worse.
+   */
+  private placeCaption(faces: FaceBox[]) {
+    const c = this.caption;
+    c.classList.remove('flip');
+    c.style.removeProperty('--cap-top');
+    const cover = () => faces.reduce((sum, f) => sum + overlap(c.getBoundingClientRect(), f), 0);
+    const here = cover();
+    if (here > 0) {
+      c.style.setProperty('--cap-top', `${Math.round(this.topEdge())}px`);
+      c.classList.add('flip');
+      if (cover() >= here) c.classList.remove('flip');
+    }
+    this.pop(c);
+  }
+
+  /**
+   * Hang the bubble off the speaker. Wide screens try beside the face (right,
+   * then left) and below the chin; phones go below the chin. The spot that
+   * covers the least of anybody's face wins. Voices that are off screen (or
+   * hidden behind the keyhole) pin to the top edge.
+   */
+  private placeBubble(a: Anchor | null, tv: boolean, faces: FaceBox[]) {
     const b = this.bubble;
     const vw = this.overlay.clientWidth;
     const vh = this.overlay.clientHeight;
     const m = 12;
-    const top = ($('hud').offsetHeight || 56) + 8;
+    const top = this.topEdge();
     b.style.left = '0px';
     b.style.top = '0px';
     b.dataset.tail = 'none';
     const bw = b.offsetWidth;
     const bh = b.offsetHeight;
     const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
-    let x = (vw - bw) / 2;
-    let y = top;
-    let tail = 'none';
-    let tailAt = 0;
-    if (a?.onScreen) {
-      const gap = tv ? 16 : Math.max(26, a.h * 0.06);
-      const roomR = vw - a.x - gap - m;
-      const roomL = a.x - gap - m;
-      if (Math.max(roomL, roomR) >= bw && vw > 700) {
-        const right = tv ? false : roomR >= bw && (roomL < bw || a.x < vw / 2);
-        x = right ? a.x + gap : a.x - gap - bw;
-        y = clamp(a.y - bh * 0.55, top, vh - bh - m);
-        tail = right ? 'left' : 'right';
-        tailAt = clamp(a.y - y, 18, bh - 18);
-      } else {
-        x = clamp(a.x - bw / 2, m, vw - bw - m);
-        y = clamp(a.y + (tv ? 12 : a.h * 0.11), top, vh - bh - m);
-        tail = 'up';
-        tailAt = clamp(a.x - x, 22, bw - 22);
-      }
+    const h = this.hole;
+    const visible = !!a?.onScreen && (!h || Math.hypot(a.x - h.x, a.y - h.y) < h.r * 1.05);
+    let best = { x: (vw - bw) / 2, y: top, tail: 'none', tailAt: 0, cost: 0 };
+    if (a && visible) {
+      const gap = tv ? 16 : a.half + 14;
+      const below = { x: clamp(a.x - bw / 2, m, vw - bw - m), y: clamp(tv ? a.y + 12 : a.chin + 30, top, vh - bh - m), tail: 'up' }; // the tail is 27 px tall: its tip lands on the chin
+      const besideY = clamp(a.y - bh * 0.55, top, vh - bh - m);
+      const right = vw > 700 && !tv ? [{ x: a.x + gap, y: besideY, tail: 'left' }] : [];
+      const left = vw > 700 ? [{ x: a.x - gap - bw, y: besideY, tail: 'right' }] : [];
+      // open towards the middle of the screen first
+      const options = [...(a.x < vw / 2 ? [...right, ...left] : [...left, ...right]), below].filter((o) => o.x >= m - 1 && o.x + bw <= vw - m + 1);
+      let cost = Infinity;
+      options.forEach((o, i) => {
+        const r = new DOMRect(o.x, o.y, bw, bh);
+        const c = faces.reduce((sum, f) => sum + overlap(r, f), 0) + i; // ties keep the preferred order
+        if (c < cost) {
+          cost = c;
+          const tailAt = o.tail === 'up' ? clamp(a.x - o.x, 22, bw - 22) : clamp(a.y - o.y, 18, bh - 18);
+          best = { ...o, tailAt, cost: c };
+        }
+      });
     }
-    b.style.left = `${Math.round(x)}px`;
-    b.style.top = `${Math.round(y)}px`;
-    b.dataset.tail = tail;
-    b.style.setProperty('--tail', `${Math.round(tailAt)}px`);
-    b.classList.toggle('offstage', !a?.onScreen);
+    b.style.left = `${Math.round(best.x)}px`;
+    b.style.top = `${Math.round(best.y)}px`;
+    b.dataset.tail = best.tail;
+    b.style.setProperty('--tail', `${Math.round(best.tailAt)}px`);
+    b.classList.toggle('offstage', !(a && visible));
     this.pop(b);
   }
 
@@ -194,7 +235,7 @@ export class UI {
       this.insertEl.classList.remove('show');
       return;
     }
-    this.insertEl.querySelector('img')!.src = `${BASE}assets/props/${name}.webp`;
+    this.insertEl.querySelector('img')!.src = assetUrl(`props/${name}.webp`);
     this.insertEl.classList.remove('show');
     void this.insertEl.offsetWidth;
     this.insertEl.classList.add('show');
@@ -269,6 +310,7 @@ export class UI {
       this.hintBtn.setAttribute('aria-expanded', 'false');
       if (o.hint && o.hintOpen) this.openHint();
       this.choicesEl.hidden = false;
+      this.fitChoices(o.faces || []);
       const onHidden = () => {
         // never let a timer run out while the player is away
         if (document.hidden && timer) {
@@ -294,6 +336,33 @@ export class UI {
       // keyboard players land on the first choice; pointer players see no stray focus ring
       if (document.documentElement.dataset.input === 'keys') this.list.querySelector('button')?.focus({ preventScroll: true });
     });
+  }
+
+  /** On phones the answers scroll inside themselves rather than climb over a face. */
+  private fitChoices(faces: FaceBox[]) {
+    const el = this.choicesEl;
+    el.style.removeProperty('max-height');
+    el.classList.remove('to-left', 'to-right');
+    const vh = this.overlay.clientHeight;
+    if (this.overlay.clientWidth >= vh * 1.15) {
+      // wide screens have room beside the stack: slide it off a face rather than cover it
+      const cover = () => faces.reduce((sum, f) => sum + overlap(el.getBoundingClientRect(), f), 0);
+      let least = cover();
+      let side = '';
+      for (const s of ['to-right', 'to-left']) {
+        if (!least) break;
+        el.classList.add(s);
+        const c = cover();
+        el.classList.remove(s);
+        if (c < least) [least, side] = [c, s];
+      }
+      if (side) el.classList.add(side);
+      return;
+    }
+    const chin = Math.max(0, ...faces.filter((f) => f.bottom < vh * 0.6).map((f) => f.bottom));
+    if (!chin) return;
+    const bottom = vh - el.getBoundingClientRect().bottom;
+    el.style.maxHeight = `${Math.round(Math.max(vh * 0.4, vh - bottom - chin - 10))}px`;
   }
 
   chooseByKey(key: string): boolean {
@@ -428,9 +497,26 @@ export class UI {
     app.classList.add('fx-shake');
   }
 
-  /** The child's view through the bedroom keyhole: a mask over the whole stage. */
-  keyhole(on: boolean) {
-    $('keyhole').hidden = !on;
+  /**
+   * The child's view through the bedroom keyhole: a mask over the whole stage
+   * with the hole's round top over `at` (screen px), or the middle of the screen.
+   */
+  keyhole(on: boolean, at?: { x: number; y: number }) {
+    const el = $('keyhole');
+    el.hidden = !on;
+    this.hole = null;
+    if (!on) return;
+    const vw = this.overlay.clientWidth;
+    const vh = this.overlay.clientHeight;
+    const k = Math.max(vw / 160, vh / 100); // the hole is sized to the screen, like a real door up close
+    const r = 24 * k;
+    const x = Math.min(vw - r * 0.6, Math.max(r * 0.6, at?.x ?? vw / 2));
+    const y = Math.min(vh * 0.45, Math.max(r + 6, at?.y ?? vh * 0.3)); // keep the round top on screen
+    this.hole = { x, y, r };
+    const svg = el.querySelector('svg')!;
+    svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+    svg.querySelector('path')!.setAttribute('d',
+      `M-10 -10H${vw + 10}V${vh + 10}H-10Z M${x} ${y - r}a${r} ${r} 0 0 1 ${13 * k} ${44 * k}l${11 * k} ${48 * k}H${x - r}l${11 * k} ${-48 * k}a${r} ${r} 0 0 1 ${13 * k} ${-44 * k}Z`);
   }
 
   toast(text: string) {

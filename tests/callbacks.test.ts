@@ -38,4 +38,21 @@ describe('cross-episode callbacks', () => {
     expect(pocketed.lines).toContain(accusation);
     expect(honest.lines).not.toContain(accusation);
   });
+
+  it('lets Auntie Efua remember Episode 2 when you knock for a seedling in Episode 4', () => {
+    const polite = run('Greet her in Twi', 'Spend it on bofrot', 'Go and ask Auntie Efua properly', 'Auntie Efua gave it to me');
+    const rude = run('Good afternoon', 'Take the biscuits immediately', 'Spend it on bofrot', 'Go and ask Auntie Efua properly');
+    expect(polite.lines).toContain('Auntie Efua: Ah! My Nana! For school? Come, come!');
+    expect(polite.lines).toContain('Madam: Efua? Efua from Form Two? We were in school together!');
+    expect(rude.lines).toContain('Auntie Efua: A seedling. At night. On Sunday.');
+    expect(rude.lines).not.toContain('Auntie Efua: Ah! My Nana! For school? Come, come!');
+  });
+
+  it('turns the pepper plant into a gift only when Mummy was told', () => {
+    const told = run('Tell Mummy the truth', 'Pull up one of Mummy');
+    const secret = run('Say nothing', 'Pull up one of Mummy');
+    expect(told.lines).toContain('Mummy: ...Take one. ONE. And you will water the other five until Christmas.');
+    expect(told.lines).not.toContain('Mummy: Who has kidnapped my pepper?!');
+    expect(secret.lines).toContain('Mummy: Who has kidnapped my pepper?!');
+  });
 });

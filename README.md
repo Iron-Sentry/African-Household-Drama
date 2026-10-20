@@ -1,6 +1,6 @@
 # African Household Drama
 
-An interactive Ghanaian family sitcom set in Accra in 1998. Volume One is a complete three-episode vertical slice: **The Kissing Scene**, **The Neighbour's Biscuit**, and **The Errand**. Choices change Approval, Street Smarts, and Trouble, carry consequences between episodes, unlock discoverable moments, and lead to one of four household report cards.
+An interactive Ghanaian family sitcom set in Accra in 1998. Volume One has four episodes: **The Kissing Scene**, **The Neighbour's Biscuit**, **The Errand**, and **The Agric Homework**. Episode Four runs on placeholder art until its batch is delivered (see `src/content/assets.ts`). Choices change Approval, Street Smarts, and Trouble, carry consequences between episodes, unlock discoverable moments, and lead to one of four household report cards.
 
 It plays like the choice-driven story games it is inspired by: the painted room fills the screen, the family stands in it, and every line hangs off whoever is saying it in a speech bubble. Narration appears as a comic caption, the TV talks from the TV, choices rise over the scene, and at key moments the camera pushes into Mummy's face so you can **read the room**.
 
@@ -45,7 +45,7 @@ Settings: sound, timed choices, larger text, three text speeds, and system/reduc
 
 ## Architecture
 
-- `story/main.ink` includes the three episode files and the report card. Open it in Inky.
+- `story/main.ink` includes the four episode files and the report card. Open it in Inky.
 - `vite.config.ts` compiles the Ink sources into `virtual:story` and rejects invalid story tags at build time.
 - `src/narrative/session.ts` adapts inkjs output into typed line, choice and report beats.
 - `src/main.ts` is the director: it applies cues, saves on every line, handles checkpoints, the boy/girl choice, replay, input and dialogs.

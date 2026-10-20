@@ -546,5 +546,5 @@ In the dark, somebody is still laughing. You can't tell who. It might be Mummy. 
     ~ score(4, 4, 0)
 }
 In a Ghanaian household, even the smallest decision can become everybody's business. #cam:lamp
-But some of them become family stories. #sfx:title
--> report
+On Friday, Madam gives Agric homework. You write it down. Then you forget it completely. #sfx:sting
+-> ep4

@@ -10,6 +10,7 @@
 INCLUDE ep1_kissing.ink
 INCLUDE ep2_biscuit.ink
 INCLUDE ep3_errand.ink
+INCLUDE ep4_agric.ink
 INCLUDE report.ink
 
 // ---- Household scores (0–100). Change them with ~ score(approval, smarts, trouble)
@@ -60,6 +61,13 @@ VAR pocket_outcome = "none" // confessed | rat | kojo
 VAR gossip = "none"         // told | fine | london | spy
 VAR has_remote = false
 VAR finale = "none"         // news | eyes | laugh | antenna | mummy | froze
+
+// ---- Episode 4: The Agric Homework
+VAR homework_told = "none"  // mummy | daddy | nobody
+VAR hole_by = "none"        // daddy | me | tin  (who dug in the back corner; none if nobody knew)
+VAR seedling = "none"       // pepper | auntie | stick | asked | none
+VAR auntie_caught = false   // Auntie Efua caught you at the wall with her orange tree
+VAR credit = "none"         // me | daddy | blisters | auntie  (what you told Madam)
 
 -> ep1
 
