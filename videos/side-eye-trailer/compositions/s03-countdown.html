@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/brand.css" />
+      <style>
+        /* THE COUNTDOWN (4.3s): the game's own decision, with its real timer, compressed. */
+        #root { position: absolute; inset: 0; }
+        #root .s3-room { filter: brightness(.3) saturate(.6) blur(6px); }
+        #root .s3-vig { position: absolute; inset: 0; background: radial-gradient(ellipse at 26% 50%, rgba(18, 12, 16, 0) 18%, rgba(18, 12, 16, .9) 75%); }
+        #root .s3-kid { left: 60px; bottom: -330px; height: 1180px; transform-origin: 50% 30%; }
+        #root .s3-stamp { position: absolute; left: 110px; top: 70px; padding: 12px 26px; border: 5px solid #e5583f; border-radius: 10px; color: #e5583f; font: 700 38px / 1 'Space Mono', monospace; letter-spacing: .16em; transform: rotate(-6deg); background: rgba(18, 12, 16, .6); }
+        #root .s3-col { position: absolute; right: 110px; top: 70px; width: 900px; display: flex; flex-direction: column; gap: 18px; }
+        #root .s3-head { font: 600 98px / .95 'Fraunces', serif; letter-spacing: -.025em; color: #fff7e6; margin-bottom: 8px; }
+        #root .s3-head em { color: #e5583f; }
+        #root .s3-prompt { position: relative; padding: 20px 30px; background: #f7e6c4; color: #1d1420; border: 4px solid #1d1420; border-radius: 8px; box-shadow: 7px 8px 0 rgba(20, 10, 18, .85); font: italic 400 40px / 1.25 'Fraunces', serif; }
+        #root .s3-timer { position: absolute; left: 110px; right: 110px; bottom: 54px; height: 64px; display: flex; align-items: center; gap: 26px; }
+        #root .s3-label { font: 700 30px / 1 'Space Mono', monospace; letter-spacing: .18em; color: #f2b53c; white-space: nowrap; }
+        #root .s3-num { width: 2.4ch; font: 700 56px / 1 'Space Mono', monospace; color: #fff7e6; text-align: right; font-variant-numeric: tabular-nums; }
+        #root .s3-track { position: relative; flex: 1; height: 26px; border-radius: 999px; background: rgba(255, 247, 230, .14); border: 3px solid #1d1420; overflow: hidden; }
+        #root .s3-fill { position: absolute; inset: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #e5583f, #f2b53c); transform-origin: 0 50%; }
+      </style>
+      <div data-hf-id="hf-uelb" id="root" data-composition-id="s03-countdown" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-ja2d" class="ahd">
+          <img data-hf-id="hf-ca65" class="room s3-room" src="assets/rooms/family_hall.webp" alt="" />
+          <div data-hf-id="hf-h8ob" class="s3-vig"></div>
+          <img data-hf-id="hf-4tki" class="spr s3-kid" src="assets/characters/child_girl_scared.webp" alt="" />
+          <div data-hf-id="hf-637u" class="s3-stamp">READ THE ROOM</div>
+          <div data-hf-id="hf-02br" class="s3-col">
+            <div data-hf-id="hf-lpuq" class="s3-head">You have <em data-hf-id="hf-7utl">12 seconds.</em></div>
+            <div data-hf-id="hf-33ln" class="s3-prompt">Two side-eyes. One child. Cold sweat.</div>
+            <div data-hf-id="hf-sk13" class="choice s3-c s3-c1"><kbd data-hf-id="hf-faxz">1</kbd>Comment on the scene</div>
+            <div data-hf-id="hf-l7h8" class="choice s3-c s3-c2"><kbd data-hf-id="hf-ewmy">2</kbd>Burst out laughing</div>
+            <div data-hf-id="hf-bntd" class="choice s3-c s3-c3"><kbd data-hf-id="hf-eibx">3</kbd>Immediately close your eyes</div>
+            <div data-hf-id="hf-mua0" class="choice s3-c s3-c4"><kbd data-hf-id="hf-hah4">4</kbd>Freeze</div>
+          </div>
+          <div data-hf-id="hf-rxai" class="s3-timer">
+            <span data-hf-id="hf-zhfo" class="s3-label">QUICK!</span>
+            <span data-hf-id="hf-jxbv" class="s3-num">12</span>
+            <div data-hf-id="hf-hj80" class="s3-track"><div data-hf-id="hf-elvw" class="s3-fill"></div></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        const R = "#root ";
+        tl.fromTo(R + ".s3-kid", { scale: 1.08, y: 30 }, { scale: 1, y: 0, duration: 4.3, ease: "power1.out" }, 0);
+        tl.fromTo(R + ".s3-vig", { opacity: 0.6 }, { opacity: 1, duration: 3.6, ease: "none" }, 0.2);
+        tl.fromTo(R + ".s3-stamp", { opacity: 0, scale: 2.2, rotation: -16 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.3, ease: "power4.out" }, 0.1);
+        tl.fromTo(R + ".s3-head", { opacity: 0, x: 160 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, 0.25);
+        tl.fromTo(R + ".s3-prompt", { opacity: 0, y: 30, rotation: 2 }, { opacity: 1, y: 0, rotation: -0.6, duration: 0.4, ease: "power3.out" }, 0.55);
+        [1, 2, 3, 4].forEach((n, i) => {
+          tl.fromTo(R + ".s3-c" + n, { opacity: 0, y: 26, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(1.4)" }, 0.8 + i * 0.09);
+        });
+        // The timer: the game's 12 seconds, compressed into 3.6, the number counting down with it.
+        tl.fromTo(R + ".s3-timer", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.3);
+        tl.fromTo(R + ".s3-fill", { scaleX: 1 }, { scaleX: 0.02, duration: 3.6, ease: "none" }, 0.4);
+        const n = { v: 12 };
+        tl.fromTo(n, { v: 12 }, {
+          v: 0, duration: 3.6, ease: "none",
+          onUpdate: () => { const el = document.querySelector('[data-composition-id="s03-countdown"] .s3-num'); if (el) el.textContent = String(Math.ceil(n.v)); },
+        }, 0.4);
+        // A hand hovers over 3... and takes it.
+        tl.to(R + ".s3-c3", { scale: 1.05, x: -16, backgroundColor: "#ffe6a8", duration: 0.25, ease: "power2.out" }, 3.2);
+        tl.to(R + ".s3-c3", { scale: 0.96, duration: 0.08, ease: "power1.in" }, 3.85);
+        tl.to(R + ".s3-c3", { scale: 1.03, duration: 0.22, ease: "back.out(3)" }, 3.93);
+        tl.to(R + ".s3-kid", { filter: "brightness(1.15)", duration: 0.2 }, 3.95);
+        window.__timelines["s03-countdown"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

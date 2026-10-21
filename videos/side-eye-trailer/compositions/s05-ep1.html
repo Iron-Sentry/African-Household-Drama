@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/brand.css" />
+      <style>
+        /* EPISODE 1 (8 beats): Daddy calls. You were supposed to be asleep. */
+        #root { position: absolute; inset: 0; }
+        #root .ep { position: absolute; inset: 0; transform-origin: 50% 50%; }
+        #root .ep-room { filter: brightness(.75) saturate(.95); }
+        #root .ep-tint { position: absolute; inset: 0; background: radial-gradient(ellipse at 84% 40%, rgba(242, 181, 60, .28), rgba(242, 181, 60, 0) 45%); }
+        #root .ep-kick { position: absolute; left: 90px; top: 70px; }
+        #root .ep-a { left: 330px; bottom: -170px; height: 900px; }
+        #root .ep-b { left: 1180px; bottom: -430px; height: 1300px; }
+        #root .ep-bub { left: 1040px; top: 150px; --accent: #6d4a2b; }
+        #root .ep-cap { left: 90px; bottom: 70px; max-width: 1180px; transform-origin: 0 100%; }
+        #root .ep-cap .ep-c2 { display: inline; color: #b8432c; font-weight: 600; }
+        #root .ep-st { left: 1050px; top: 330px; }
+      </style>
+      <div data-hf-id="hf-mihm" id="root" data-composition-id="s05-ep1" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-ja2d" class="ahd">
+          <div data-hf-id="hf-tyw7" class="ep">
+            <img data-hf-id="hf-51bq" class="room ep-room" src="assets/rooms/nana_bedroom_night.webp" alt="" />
+            <div data-hf-id="hf-i9l3" class="ep-tint"></div>
+            <img data-hf-id="hf-fmi3" class="spr ep-a" src="assets/characters/child_boy_eyes_closed.webp" alt="" />
+            <img data-hf-id="hf-jz30" class="spr ep-b" src="assets/characters/mother_scold.webp" alt="" />
+            <div data-hf-id="hf-q0n7" class="shade"></div>
+            <div data-hf-id="hf-jjn1" class="bubble ep-bub shout"><span data-hf-id="hf-62d8" class="tag">Daddy · off-stage</span>NANA!</div>
+            <div data-hf-id="hf-fi9q" class="caption ep-cap"><span data-hf-id="hf-c9j6" class="ep-c1">Supposed to be asleep.</span> <span data-hf-id="hf-8gx6" class="ep-c2">Fake a snore?</span></div>
+            <img data-hf-id="hf-7xl5" class="sticker ep-st" src="assets/fx/akola_bone.webp" alt="" />
+          </div>
+          <div data-hf-id="hf-wuz8" class="kicker pill ep-kick">Episode 1 · The Kissing Scene</div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        const R = "#root ";
+        const P = 0.5697; // one guitar beat; this scene is exactly 8 beats, starting on a downbeat
+        const B = (n) => n * P;
+        // Hard cut on the downbeat: the whole frame punches in from a blur.
+        tl.fromTo(R + ".ep", { scale: 1.14, filter: "blur(12px)" }, { scale: 1, filter: "blur(0px)", duration: 0.32, ease: "power4.out" }, 0);
+        tl.fromTo(R + ".ep-room", { scale: 1.0, x: 0 }, { scale: 1.1, x: -30, duration: 4.56, ease: "none" }, 0);
+        tl.fromTo(R + ".ep-kick", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, B(0.25));
+        tl.fromTo(R + ".ep-a", { opacity: 0, y: 90 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, B(0));
+        tl.fromTo(R + ".ep-bub", { opacity: 0, scale: 0.3, rotation: -5 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.34, ease: "back.out(2)" }, B(1));
+        
+        tl.fromTo(R + ".ep-cap", { opacity: 0, y: 50, rotation: 2.5 }, { opacity: 1, y: 0, rotation: -0.6, duration: 0.4, ease: "back.out(1.5)" }, B(3));
+        tl.fromTo(R + ".ep-c2", { opacity: 0 }, { opacity: 1, duration: 0.12 }, B(4.5));
+        tl.fromTo(R + ".ep-b", { opacity: 0, x: 320 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, B(5));
+        tl.fromTo(R + ".ep-st", { opacity: 0, scale: 0, rotation: -18 }, { opacity: 1, scale: 1, rotation: 5, duration: 0.4, ease: "back.out(1.8)" }, B(6));
+        tl.to(R + ".ep-st", { scale: 1.06, duration: 0.28, ease: "sine.inOut", yoyo: true, repeat: 1 }, B(6.8));
+        window.__timelines["s05-ep1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

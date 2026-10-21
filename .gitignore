@@ -6,3 +6,16 @@ test-results/
 *.log
 art_incoming/
 .claude/settings.json
+
+# HyperFrames skills, per developer (reinstall: npx skills add heygen-com/hyperframes; see skills-lock.json)
+.agents/
+.claude/skills/
+
+# HyperFrames trailer projects: renders and caches (sources in videos/ are kept)
+videos/exports/
+videos/*/renders/
+videos/*/.hyperframes/
+videos/*/.media/
+videos/*/.thumbnails/
+videos/*/.waveform-cache/
+videos/*/beats/

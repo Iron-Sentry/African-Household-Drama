@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/brand.css" />
+      <style>
+        /* GTV NEWS (8 beats): the channel changes and the whole country hears about this family. */
+        #root { position: absolute; inset: 0; }
+        #root .n-room { filter: brightness(.22) saturate(.7) blur(10px); }
+        #root .n-glow { position: absolute; left: 50%; top: 50%; width: 1700px; height: 1300px; margin: -650px 0 0 -850px; border-radius: 50%; background: radial-gradient(circle, rgba(80, 130, 230, .34), rgba(80, 130, 230, 0) 62%); }
+        #root .n-tv { position: absolute; left: 50%; top: 50%; width: 1140px; height: 850px; margin: -400px 0 0 -570px; padding: 48px 62px 86px; border-radius: 70px; background: linear-gradient(160deg, #3b3036, #1d1619 70%); border: 6px solid #0c0709; box-shadow: 0 40px 90px rgba(0, 0, 0, .7), inset 0 2px 0 rgba(255, 255, 255, .08); }
+        #root .n-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 46px / 38px; background: #05070f; }
+        #root .n-pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        #root .n-head { position: absolute; left: 0; right: 0; top: 536px; height: 126px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 10px; padding-left: 40px; background: #b3121f; border-top: 4px solid #f2b53c; font: 700 33px / 1 'Space Mono', monospace; letter-spacing: .05em; color: #fff7e6; white-space: nowrap; transform-origin: 0 50%; }
+        #root .n-head small { font: 700 22px / 1 'Space Mono', monospace; letter-spacing: .2em; color: #f7e6c4; }
+        #root .n-ticker { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; overflow: hidden; background: #0b1f5c; border-top: 3px solid #f2b53c; }
+        #root .n-run { position: absolute; inset: 0; }
+        #root .n-run span { position: absolute; left: 22px; right: 22px; top: 0; height: 44px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; font: 700 23px / 1 'Space Mono', monospace; color: #fff7e6; letter-spacing: .02em; opacity: 0; }
+        #root .n-run b { color: #f2b53c; padding-right: 16px; }
+        #root .n-knobs { position: absolute; right: 90px; bottom: 30px; display: flex; gap: 22px; }
+        #root .n-knobs i { width: 34px; height: 34px; border-radius: 50%; background: #0d090b; border: 3px solid #4a3c42; }
+        #root .n-kick { position: absolute; left: 0; right: 0; top: 34px; text-align: center; }
+      </style>
+      <div data-hf-id="hf-5n5t" id="root" data-composition-id="c09-news" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-ja2d" class="ahd">
+          <img data-hf-id="hf-44sz" class="room n-room" src="assets/rooms/family_hall.webp" alt="" />
+          <div data-hf-id="hf-vfu4" class="n-glow"></div>
+          <div data-hf-id="hf-j9ud" class="n-tv">
+            <div data-hf-id="hf-cn9n" class="n-screen yt-screen-warp3d">
+              <img data-hf-id="hf-5zxe" class="n-pic" src="assets/tv/news_desk.webp" alt="" />
+              <div data-hf-id="hf-c22f" class="n-head"><small data-hf-id="hf-a34h">GTV NEWS · LIVE FROM ACCRA</small>AFRICAN HOUSEHOLD DRAMA · NOW SHOWING</div>
+              <div data-hf-id="hf-5x15" class="n-ticker">
+                <div data-hf-id="hf-rwiu" class="n-run">
+                  <span data-hf-id="hf-7m8b" class="n-m1"><b data-hf-id="hf-rdbk">BREAKING</b>Accra child closes eyes during kissing scene. Mother "very proud".</span>
+                  <span data-hf-id="hf-cs7f" class="n-m2"><b data-hf-id="hf-xteu">LATEST</b>Biscuit shortage next door. Auntie Efua confirms everything.</span>
+                  <span data-hf-id="hf-f29u" class="n-m3"><b data-hf-id="hf-g6ya">ALSO</b>Agric homework remembered Sunday night. Father digs huge hole.</span>
+                </div>
+              </div>
+              <div data-hf-id="hf-9fck" class="yt-screen-fx n-fx"></div>
+            </div>
+            <div data-hf-id="hf-sz9u" class="n-knobs"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i></div>
+          </div>
+          <div data-hf-id="hf-x7qf" class="kicker n-kick">Meanwhile, on GTV · 9:00 PM</div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        const R = "#root ";
+        const P = 0.5697;
+        const B = (n) => n * P;
+        tl.fromTo(R + ".n-tv", { scale: 1.12 }, { scale: 1, duration: 0.5, ease: "power3.out" }, 0);
+        tl.fromTo(R + ".n-tv", { y: 0 }, { y: -6, duration: 4.0, ease: "none" }, 0.5);
+        tl.fromTo(R + ".n-glow", { opacity: 0.4 }, { opacity: 1, duration: 1.2, ease: "power2.out" }, 0);
+        tl.to(R + ".n-fx", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0); // yt-screen-warp: ytScreenOn
+        tl.fromTo(R + ".n-pic", { scale: 1.04 }, { scale: 1.1, duration: 4.56, ease: "none" }, 0);
+        tl.fromTo(R + ".n-kick", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, B(0.5));
+        tl.fromTo(R + ".n-head", { opacity: 0, scaleX: 0.3 }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "expo.out" }, B(1));
+        // The ticker flips headline by headline, on the beat.
+        [[1, 1.5], [2, 3.75], [3, 6]].forEach(([k, at]) => {
+          tl.set(R + ".n-run span", { opacity: 0 }, B(at));
+          tl.fromTo(R + ".n-m" + k, { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: 0.22, ease: "expo.out", immediateRender: false }, B(at));
+        });
+        window.__timelines["c09-news"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

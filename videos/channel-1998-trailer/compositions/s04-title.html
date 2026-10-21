@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/brand.css" />
+      <style>
+        /* TITLE (2 bars on the guitar's downbeat): the wordmark slams in beat by beat, the family lines up. */
+        #root { position: absolute; inset: 0; }
+        #root .s4-glow { position: absolute; right: -200px; top: 50%; width: 1700px; height: 1500px; margin-top: -750px; border-radius: 50%; background: radial-gradient(circle, rgba(242, 181, 60, .34), rgba(184, 67, 44, .16) 40%, rgba(18, 12, 16, 0) 68%); }
+        #root .s4-ghost { position: absolute; right: -700px; top: 50%; width: 2200px; height: 2200px; margin-top: -1100px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, rgba(255, 247, 230, .07) 0deg 7deg, rgba(255, 247, 230, 0) 7deg 18deg); -webkit-mask: radial-gradient(circle, #000 20%, transparent 70%); mask: radial-gradient(circle, #000 20%, transparent 70%); }
+        #root .s4-mark { position: absolute; left: 130px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
+        #root .s4-kick { margin-bottom: 26px; }
+        #root .s4-w { display: block; font: 600 168px / .86 'Fraunces', serif; letter-spacing: -.03em; }
+        #root .s4-w1 { color: #f2b53c; }
+        #root .s4-w3 { color: #e5583f; font-style: italic; }
+        #root .s4-tag { margin-top: 40px; max-width: 760px; font: 400 40px / 1.35 'DM Sans', sans-serif; color: #ecdccb; }
+        #root .s4-tag b { color: #fff7e6; font-weight: 700; }
+        #root .s4-line { position: absolute; right: -90px; bottom: -70px; width: 1080px; height: 860px; }
+        #root .s4-line .spr { bottom: 0; height: 720px; }
+      </style>
+      <div data-hf-id="hf-b81j" id="root" data-composition-id="s04-title" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-ja2d" class="ahd">
+          <div data-hf-id="hf-ncnt" class="s4-glow"></div>
+          <div data-hf-id="hf-1frj" class="s4-ghost" aria-hidden="true" data-layout-allow-overflow></div>
+          <div data-hf-id="hf-kmuc" class="s4-line">
+            <img data-hf-id="hf-zxnv" class="spr s4-p s4-p1" style="left: 70px; height: 660px;" src="assets/characters/auntie_efua_wave.webp" alt="" />
+            <img data-hf-id="hf-j6bi" class="spr s4-p s4-p2" style="left: 250px; height: 690px;" src="assets/characters/mother_approve.webp" alt="" />
+            <img data-hf-id="hf-3ota" class="spr s4-p s4-p5" style="left: 560px; height: 760px;" src="assets/characters/father_laugh.webp" alt="" />
+            <img data-hf-id="hf-kdp8" class="spr s4-p s4-p3" style="left: 400px; height: 540px;" src="assets/characters/child_girl_celebrate.webp" alt="" />
+            <img data-hf-id="hf-xqjp" class="spr s4-p s4-p4" style="left: 760px; height: 540px;" src="assets/characters/child_boy_happy.webp" alt="" />
+          </div>
+          <div data-hf-id="hf-sd1h" class="s4-mark">
+            <div data-hf-id="hf-r804" class="kicker s4-kick">Accra · 1998 · Volume One</div>
+            <span data-hf-id="hf-fese" class="s4-w s4-w1">African</span>
+            <span data-hf-id="hf-ahq6" class="s4-w s4-w2">Household</span>
+            <span data-hf-id="hf-u0c7" class="s4-w s4-w3">Drama</span>
+            <div data-hf-id="hf-gaol" class="s4-tag">Same home. Different rules. <b data-hf-id="hf-ky8o">Every choice is remembered by somebody.</b></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        const R = "#root ";
+        const P = 0.5697; // one beat of the guitar loop (105 BPM); scene starts on a downbeat
+        const B = (n) => n * P;
+        tl.fromTo(R + ".s4-glow", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" }, 0);
+        tl.fromTo(R + ".s4-ghost", { opacity: 0, rotation: -8 }, { opacity: 1, rotation: 10, duration: 4.56, ease: "none" }, 0);
+        // Three words, three beats, three different entrances.
+        tl.fromTo(R + ".s4-w1", { opacity: 0, scale: 1.6, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.42, ease: "power4.out" }, B(0));
+        tl.fromTo(R + ".s4-w2", { opacity: 0, x: -340 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, B(1));
+        tl.fromTo(R + ".s4-w3", { opacity: 0, y: 110, rotation: 7 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "circ.out" }, B(2));
+        tl.fromTo(R + ".s4-kick", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, B(2.5));
+        // The family pops in on the off-beats.
+        [1, 2, 3, 4, 5].forEach((k, i) => {
+          tl.fromTo(R + ".s4-p" + k, { opacity: 0, y: 120, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.5)" }, B(3 + i * 0.5));
+        });
+        tl.fromTo(R + ".s4-tag", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, B(5.5));
+        tl.fromTo(R + ".s4-mark", { scale: 1 }, { scale: 1.015, duration: 1.0, ease: "sine.inOut" }, B(6));
+        window.__timelines["s04-title"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

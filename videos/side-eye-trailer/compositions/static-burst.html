@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        /* A channel change: the game's TV snow, used as the handoff between scenes. */
+        #root { position: absolute; inset: 0; pointer-events: none; }
+        #root .sb-flash { position: absolute; inset: 0; background: #fff7e6; opacity: 0; }
+        #root .sb-n { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+        #root .sb-roll { position: absolute; left: 0; right: 0; top: 0; height: 180px; background: rgba(255, 247, 230, .22); }
+        #root .sb-lines { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(18, 12, 16, .35) 0 3px, rgba(18, 12, 16, 0) 3px 6px); }
+      </style>
+      <div data-hf-id="hf-2ig2" id="root" data-composition-id="static-burst" data-width="1920" data-height="1080">
+        <svg data-hf-id="hf-3zbx" class="sb-n sb-n0" viewBox="0 0 480 270" preserveAspectRatio="none"><filter data-hf-id="hf-e7nx" id="sbf0"><feTurbulence data-hf-id="hf-7jmi" type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" /><feColorMatrix data-hf-id="hf-skw8" type="saturate" values="0" /></filter><rect data-hf-id="hf-dpor" width="480" height="270" filter="url(#sbf0)" /></svg>
+        <svg data-hf-id="hf-jcmy" class="sb-n sb-n1" viewBox="0 0 480 270" preserveAspectRatio="none"><filter data-hf-id="hf-dg04" id="sbf1"><feTurbulence data-hf-id="hf-yo57" type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="17" /><feColorMatrix data-hf-id="hf-rry8" type="saturate" values="0" /></filter><rect data-hf-id="hf-sudu" width="480" height="270" filter="url(#sbf1)" /></svg>
+        <svg data-hf-id="hf-lcbr" class="sb-n sb-n2" viewBox="0 0 480 270" preserveAspectRatio="none"><filter data-hf-id="hf-obhr" id="sbf2"><feTurbulence data-hf-id="hf-yykh" type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="42" /><feColorMatrix data-hf-id="hf-ql15" type="saturate" values="0" /></filter><rect data-hf-id="hf-3qxh" width="480" height="270" filter="url(#sbf2)" /></svg>
+        <div data-hf-id="hf-s2r9" class="sb-roll"></div>
+        <div data-hf-id="hf-5211" class="sb-lines"></div>
+        <div data-hf-id="hf-3z8i" class="sb-flash"></div>
+      </div>
+      <script>
+        // 0.36s: flash, three noise fields stepped at 30fps (deterministic), a rolling bar.
+        const tl = gsap.timeline({ paused: true });
+        const FRAMES = 11;
+        for (let f = 0; f < FRAMES; f++) {
+          const t = f / 30;
+          [0, 1, 2].forEach((k) => tl.set(`#root .sb-n${k}`, { opacity: f % 3 === k ? 1 : 0 }, t));
+        }
+        tl.set("#root .sb-n", { opacity: 0 }, FRAMES / 30);
+        tl.fromTo("#root .sb-flash", { opacity: 0.85 }, { opacity: 0, duration: 0.12, ease: "power2.out" }, 0);
+        tl.fromTo("#root .sb-roll", { y: -200 }, { y: 1100, duration: 0.36, ease: "none" }, 0);
+        tl.fromTo("#root .sb-lines", { opacity: 1 }, { opacity: 0, duration: 0.06 }, 0.3);
+        window.__timelines["static-burst"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
