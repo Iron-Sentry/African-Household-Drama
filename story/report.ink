@@ -129,4 +129,103 @@
 - finale == "antenna":
     You sent the second kiss into the snow on purpose, and Mummy laughed until she cried. #remember
 }
+{
+- called == "first":
+    You answered the first call. Mummy has told every mother in the compound. #remember
+- called == "employee":
+    {friend} answered Mummy for you. {friend} is still waiting to be paid. #remember
+- called == "third":
+    "Coming? From where? Kumasi?" The compound still says it to anybody who is late. #remember
+- called == "fullname":
+    The day the whole junction learned your full name. #remember
+}
+{
+- washing == "shirt":
+    Daddy still says you saved his white shirt. And his career. #remember
+- washing == "all":
+    The day the washing line came down in the sand. #remember
+}
+{
+- meat == "grab":
+    "Faster than the Holy Spirit." Daddy says it before every meal now. #remember
+- meat == "prayed":
+    You prayed properly, and Mummy gave you her chicken. #remember
+- meat == "asked":
+    You negotiated chicken during prayer. Daddy is still deciding if he is proud. #remember
+- meat == "watched":
+    One eye on the pot. Daddy had the other one. Mummy ate the chicken. #remember
+}
+{meat_saved == "lost":
+    Daddy "helped you" with your meat. You eat your meat first now. Always. #remember
+}
+{
+- tv_won == "both":
+    You read the Graphic, and nobody missed anything. Mummy watched her film on Wednesday. #remember
+- tv_won == "cartoons":
+    You held the remote for four seconds and chose cartoons. It was confiscated until Easter. #remember
+- remote_truth == "blamed":
+    {friend} sat on the remote. From Kumasi. #remember
+- remote_truth == "confessed":
+    Daddy sat on the solution for ten minutes. #remember
+}
+{
+- drum == "filled" && drum_then == "sold":
+    Two o'clock water. One hundred cedis a bucket. Daddy made you carry it for free. #remember
+- drum == "filled":
+    You filled the drum at two in the morning, and Daddy called you a future minister. #remember
+- drum_then == "hid":
+    The invisible bucket. It was bigger than your back. #remember
+- drum_then == "self":
+    You took the only bucket. Daddy went to work with a dry face. #remember
+}
+{
+- home_time == "ontime":
+    You came home when the streetlight came on. {friend} did not. You heard everything. #remember
+- home_time == "messenger":
+    Auntie Akua told the whole lane you were coming. You were not coming. #remember
+- home_time == "late":
+    Five more minutes became forty. You carried {friend}'s slippers home. #remember
+}
+{
+- stain == "tie":
+    You went to church in Daddy's red tie. Daddy went without one. #remember
+- stain == "confess":
+    Cold water and salt. Only Togo remains. #remember
+- stain == "scrub":
+    Hot water on palm oil. Your church clothes are pink forever. #remember
+- stain == "hand":
+    Hand on heart, all morning. Auntie Efua thinks you were born again. #remember
+- stain == "hope":
+    You went to church with Africa on your chest. #remember
+}
+{
+- cooks_better == "both":
+    "You both cook like angels. Different angels." Auntie Efua says you will be President. #remember
+- cooks_better == "auntie":
+    You told Auntie Efua she cooks better. Mummy heard. Mummy remembers. #remember
+- cooks_better == "daddy":
+    You said Daddy cooks best. Daddy can boil an egg. #remember
+- cooks_better == "mummy":
+    "Mummy, of course." Auntie Efua moved the biscuits. #remember
+- cooks_better == "spoon":
+    The biggest spoon of soup in history. #remember
+}
+{
+- malt == "detective":
+    Two empty bottles. One with two straws. One with none. Case closed. #remember
+- malt == "admit":
+    You confessed to one malt. Mummy confessed for Daddy about the other one. #remember
+- malt == "blamed":
+    You blamed {friend} for the malt. {friend} told Daddy about the long straw. #remember
+- malt == "rat":
+    The whole family searched the kitchen for a rat that opens bottles. #remember
+}
+{
+- xmas_photo == "bunny":
+    The Christmas photo. Bunny ears. Daddy still says he didn't know. #remember
+- xmas_photo == "mummy":
+    The Christmas photo. You and Mummy, looking at each other. #remember
+- xmas_photo == "eyes":
+    The Christmas photo. Eyes closed. On purpose. #remember
+}
 -> END

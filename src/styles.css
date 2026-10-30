@@ -74,9 +74,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   filter: drop-shadow(0 .6vh .8vh rgba(20, 8, 10, .45));
 }
 .actor .body img.on { opacity: 1; }
-.actor.talking .body img { animation: talk .36s ease-in-out infinite alternate; }
+.actor.talking .body img.on { animation: talk .52s ease-in-out infinite alternate; }
+.actor.talking .body img:not(.on) { animation: none; }
 @keyframes breathe { 50% { transform: scaleY(1.008) scaleX(.997); } }
-@keyframes talk { from { transform: translateY(0); } to { transform: translateY(-.55%) scaleY(1.004); } }
+@keyframes talk { 0% { transform: translate3d(0,0,0) rotate(0deg); } 35% { transform: translate3d(0,-.18%,0) rotate(-.15deg); } 75% { transform: translate3d(0,-.38%,0) rotate(.2deg); } 100% { transform: translate3d(0,-.1%,0) rotate(0deg); } }
 
 .body.anim-bounce { animation: bounce .55s ease-out 2; }
 .body.anim-jump { animation: jump .7s var(--pop); }

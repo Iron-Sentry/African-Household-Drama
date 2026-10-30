@@ -347,4 +347,4 @@ Years later. #scene:school #light:afternoon #cast:none #cam:farm #amb:school #sf
 }
 In a Ghanaian household, even the smallest decision can become everybody's business. #cam:wide
 But some of them grow into family stories.
--> report
+-> ep5

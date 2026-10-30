@@ -55,4 +55,26 @@ describe('cross-episode callbacks', () => {
     expect(told.lines).not.toContain('Mummy: Who has kidnapped my pepper?!');
     expect(secret.lines).toContain('Mummy: Who has kidnapped my pepper?!');
   });
+
+  it('sends the twelve malts from Auntie Efua’s lounge to the Christmas door', () => {
+    const told = run('Tell her about the twelve malts');
+    const quiet = run('Look at Mummy and say nothing');
+    const ask = 'Auntie Efua: Now. Where is my malt? Twelve bottles, I heard.';
+    expect(told.lines).toContain(ask);
+    expect(quiet.lines).not.toContain(ask);
+  });
+
+  it('lets the neighbours remember the two o’clock water at Christmas', () => {
+    const gave = run('Get up and fill the drum', 'Give her two buckets');
+    const sold = run('Get up and fill the drum', 'Charge her one hundred');
+    expect(gave.lines).toContain("Adjoa's Mother: This child, Esi. Water at two o'clock in the morning. This child is a blessing.");
+    expect(sold.lines).toContain("Adjoa's Mother: Is the water seller here? I have brought one hundred cedis.");
+  });
+
+  it('only finds Daddy out when somebody counts the empty bottles or confesses', () => {
+    const counted = run('Suggest counting the empty bottles');
+    const confessed = run('Admit you drank one');
+    expect(counted.lines).toContain('Nana: Only one person in this house drinks malt straight from the bottle.');
+    expect(confessed.lines).toContain('Mummy: The other one was drunk on Sunday night. By a man who shouted "GOAL!"');
+  });
 });

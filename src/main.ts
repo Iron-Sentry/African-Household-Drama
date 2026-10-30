@@ -20,7 +20,11 @@ import { Audio } from './audio/audio.ts';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const params = new URLSearchParams(location.search);
-const EPISODE_TITLES = ['', 'The Kissing Scene', "The Neighbour's Biscuit", 'The Errand', 'The Science Homework'];
+const EPISODE_TITLES = [
+  '', 'The Kissing Scene', "The Neighbour's Biscuit", 'The Errand', 'The Science Homework', 'When Mummy Calls Your Full Name',
+  'The Meat in the Soup', 'Who Touched the Remote?', 'The Water You Forgot to Fetch', 'Five More Minutes', 'Sunday Best',
+  'The Family Gossip Trap', 'Who Finished the Malt?', 'Christmas Visitors Are Coming',
+];
 const EPISODES = EPISODE_TITLES.length - 1;
 
 const ui = new UI();
@@ -360,7 +364,7 @@ function openTitle() {
   $('new-btn').classList.toggle('ghost', hasSave);
   $('new-btn').classList.toggle('primary', !hasSave);
   const n = profile.moments.length;
-  $('title-moments').textContent = n ? `${n} of ${meta.moments.length} moments discovered · ${profile.endings.length} of 4 endings` : `${EPISODES} episodes · about 30 minutes`;
+  $('title-moments').textContent = n ? `${n} of ${meta.moments.length} moments discovered · ${profile.endings.length} of 4 endings` : `${EPISODES} episodes · about an hour`;
   audio.setTitle(true);
   if (!titleDlg.open) titleDlg.showModal();
   (hasSave ? $('continue-btn') : $('new-btn')).focus();

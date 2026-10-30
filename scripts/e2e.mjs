@@ -114,7 +114,7 @@ async function fullKeyboardRun(page) {
   await keyboardStart(page, `${origin}/?test`);
   let decisions = 0;
   let bubbles = 0;
-  for (let step = 0; step < 1200; step++) {
+  for (let step = 0; step < 4000; step++) { // thirteen episodes, every line and card
     if (await page.locator('#report-dialog[open]').count()) {
       return {
         decisions,
@@ -132,7 +132,7 @@ async function fullKeyboardRun(page) {
     }
     await page.waitForTimeout(15);
   }
-  throw new Error('Keyboard play-through did not reach the report card.');
+  throw new Error(`Keyboard play-through did not reach the report card. Stuck at "${await currentLine(page)}" in ${await page.locator('#ep-chip').textContent()}`);
 }
 
 /** Every visible dialogue box and choice must sit fully inside the viewport. */

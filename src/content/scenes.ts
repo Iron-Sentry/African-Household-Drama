@@ -89,7 +89,7 @@ SCENES.compound = {
   bg: 'rooms/compound_courtyard.webp',
   floor: [22, 78],
   lamp: [50, 60],
-  shots: { wide: [1, 50, 50], gate: [1.8, 40, 38], door: [1.7, 88, 42], tree: [1.8, 70, 25] },
+  shots: { wide: [1, 50, 50], gate: [1.8, 40, 38], door: [1.7, 88, 42], tree: [1.8, 70, 25], drum: [2, 80, 46] }, // drum: the blue water drum and tap (Episode Eight)
   hotspots: {},
 };
 SCENES.street = {

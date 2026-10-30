@@ -11,6 +11,15 @@ INCLUDE ep1_kissing.ink
 INCLUDE ep2_biscuit.ink
 INCLUDE ep3_errand.ink
 INCLUDE ep4_agric.ink
+INCLUDE ep5_fullname.ink
+INCLUDE ep6_soup.ink
+INCLUDE ep7_remote.ink
+INCLUDE ep8_water.ink
+INCLUDE ep9_minutes.ink
+INCLUDE ep10_sunday.ink
+INCLUDE ep11_gossip.ink
+INCLUDE ep12_malt.ink
+INCLUDE ep13_christmas.ink
 INCLUDE report.ink
 
 // ---- Household scores (0–100). Change them with ~ score(approval, smarts, trouble)
@@ -68,6 +77,39 @@ VAR hole_by = "none"        // daddy | me | tin  (who dug in the back corner; no
 VAR seedling = "none"       // pepper | auntie | stick | asked | none
 VAR auntie_caught = false   // Auntie Efua caught you at the wall with her orange tree
 VAR credit = "none"         // me | daddy | blisters | auntie  (what you told Madam)
+
+// ---- Episode 5: When Mummy Calls Your Full Name
+VAR called = "none"         // first | fullname | third | employee
+VAR washing = "none"        // shirt | kaba | all | none
+
+// ---- Episode 6: The Meat in the Soup
+VAR meat = "none"           // grab | prayed | asked | watched
+VAR meat_saved = "none"     // ate | lost | offered
+
+// ---- Episode 7: Who Touched the Remote?
+VAR remote_truth = "none"   // confessed | detective | blamed | silent
+VAR tv_won = "none"         // dad | mum | both | cartoons
+
+// ---- Episode 8: The Water You Forgot to Fetch
+VAR drum = "none"           // filled | bucket | slept  (what you did when the tap ran at 2 AM)
+VAR drum_then = "none"      // gave | sold | asked | dad | mum | self | hid | truth | borrowed
+
+// ---- Episode 9: Five More Minutes
+VAR home_time = "none"      // ontime | late | messenger
+
+// ---- Episode 10: Sunday Best
+VAR stain = "none"          // hand | confess | scrub | tie | hope
+
+// ---- Episode 11: The Family Gossip Trap
+VAR cooks_better = "none"   // mummy | auntie | both | daddy | spoon
+VAR told_malt = false       // you told Auntie Efua about Daddy's twelve malts
+
+// ---- Episode 12: Who Finished the Malt?
+VAR malt = "none"           // admit | blamed | detective | rat
+
+// ---- Episode 13: Christmas Visitors Are Coming
+VAR xmas_job = "none"       // hid | plates | asked | ice | froze
+VAR xmas_photo = "none"     // smile | bunny | eyes | mummy
 
 -> ep1
 
