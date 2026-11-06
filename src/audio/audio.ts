@@ -34,6 +34,10 @@ const SFX: Record<string, Shot> = {
   romance: { f: 'tv_film', g: 0.55, tv: true, dur: 6 },
   theme: { f: 'tv_film', g: 0.55, tv: true, at: 8, dur: 6 },
   title: { f: 'music_guitar', g: 0.6, dur: 7, duck: true },
+  // Episode Four. dig and splash borrow the nearest recording until their own
+  // arrive; bell and rooster stay silent (no entry) rather than sound wrong.
+  dig: { f: 'thump', g: 0.5 },
+  splash: { f: 'whoosh', g: 0.35 },
 };
 
 // Room tones per #amb. A lowpass on a layer pushes it "outside" or "through a wall".
@@ -43,6 +47,8 @@ const BEDS: Record<string, Bed> = {
   street: { layers: [['amb_street', 0.5], ['amb_birds', 0.12]], music: true },
   auntie: { layers: [['amb_clock', 0.22], ['amb_birds', 0.12, 1200]], music: true },
   clock: { layers: [['amb_clock', 0.5]] },
+  school: { layers: [['amb_kids', 0.45], ['amb_birds', 0.25]], music: true },
+  dusk: { layers: [['amb_night', 0.3], ['amb_birds', 0.1, 1200], ['amb_kids', 0.08, 700]], music: true },
   night: { layers: [['amb_night', 0.55]] },
   static: { layers: [['amb_fan', 0.2]], tv: ['tv_static', 0.25] },
   film: { layers: [['amb_fan', 0.2]], tv: ['tv_film', 0.3] },

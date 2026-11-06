@@ -65,10 +65,11 @@ describe('Session', () => {
     }
     expect(first).not.toBeNull();
     const report = session.collectReport(first!);
-    expect(report.rank).toBe('akola');
-    expect(report.title).toBe('Akola Bone!');
+    // Always taking the first choice plays the volume as the family comedian.
+    expect(report.rank).toBe('comedian');
+    expect(report.title).toBe('The Family Comedian');
     expect(report.copy.length).toBeGreaterThan(0);
-    expect(report.quote?.speaker).toBe('Mummy');
+    expect(report.quote?.speaker).toBe('Auntie Efua');
     expect(report.remember.length).toBeGreaterThan(2);
   });
 });

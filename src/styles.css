@@ -37,13 +37,23 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .stage { position: absolute; inset: 0; overflow: hidden; background: var(--night); }
 .world {
   position: absolute; left: 0; top: 0; transform-origin: 0 0;
-  transition: transform .8s cubic-bezier(.3, .75, .2, 1);
+  /* duration set per move by the stage (--cam-dur): ease in gently, land softly */
+  transition: transform var(--cam-dur, .8s) cubic-bezier(.45, .05, .2, 1);
   will-change: transform;
 }
-.world.slow { transition-duration: 2.8s; transition-timing-function: cubic-bezier(.4, 0, .2, 1); }
+.world.slow { transition-timing-function: cubic-bezier(.4, 0, .2, 1); }
 .world.instant { transition: none; }
 .room { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: filter .8s; }
 .world.read-room .room { filter: saturate(.55) brightness(.8) blur(1.5px); }
+/* a scene's night painting fades in over the day one once it is dark */
+.room.after-dark { opacity: 0; transition: opacity 1.6s ease, filter .8s; }
+.room.after-dark:not([src]) { display: none; }
+.room.after-dark.on { opacity: 1; }
+.room.after-dark.instant { transition: none; }
+/* cut-outs standing in the painting (#prop:<piece>=on), bottom-centre on their spot */
+.pieces { position: absolute; inset: 0; }
+.pieces img { position: absolute; height: auto; transform: translate(-50%, -100%) scale(.9); transform-origin: 50% 100%; opacity: 0; transition: opacity .5s, transform .5s var(--pop, ease); }
+.pieces img.on { opacity: 1; transform: translate(-50%, -100%); }
 
 .cast { position: absolute; inset: 0; }
 .actor {
@@ -64,9 +74,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   filter: drop-shadow(0 .6vh .8vh rgba(20, 8, 10, .45));
 }
 .actor .body img.on { opacity: 1; }
-.actor.talking .body img { animation: talk .36s ease-in-out infinite alternate; }
+.actor.talking .body img.on { animation: talk .52s ease-in-out infinite alternate; }
+.actor.talking .body img:not(.on) { animation: none; }
 @keyframes breathe { 50% { transform: scaleY(1.008) scaleX(.997); } }
-@keyframes talk { from { transform: translateY(0); } to { transform: translateY(-.55%) scaleY(1.004); } }
+@keyframes talk { 0% { transform: translate3d(0,0,0) rotate(0deg); } 35% { transform: translate3d(0,-.18%,0) rotate(-.15deg); } 75% { transform: translate3d(0,-.38%,0) rotate(.2deg); } 100% { transform: translate3d(0,-.1%,0) rotate(0deg); } }
 
 .body.anim-bounce { animation: bounce .55s ease-out 2; }
 .body.anim-jump { animation: jump .7s var(--pop); }
@@ -221,6 +232,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font: italic 400 calc(var(--fs-line) + 1px) / 1.42 var(--display);
 }
 .caption .text { margin: 0; }
+/* flipped to the other edge because the usual one would cover a face */
+.caption.flip { top: auto; bottom: calc(20px + var(--safe-b)); }
 .caption.pop { animation: captionIn .35s var(--pop); }
 @keyframes captionIn { from { opacity: 0; transform: translateX(-50%) translateY(-8px) rotate(-1.5deg); } }
 
@@ -229,6 +242,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   position: absolute; z-index: 7; left: 50%; bottom: calc(18px + var(--safe-b)); transform: translateX(-50%);
   width: min(580px, calc(100vw - 20px)); display: flex; flex-direction: column; gap: 8px;
 }
+/* slid aside so the stack doesn't cover a face (wide screens) */
+.choices.to-left { left: 24px; transform: none; }
+.choices.to-right { left: auto; right: 24px; transform: none; }
 body.choosing .overlay::before { content: ''; position: absolute; inset: auto 0 0 0; height: 75%; pointer-events: none; background: linear-gradient(transparent, rgba(18, 8, 14, .8) 70%); animation: pop .4s ease-out; }
 .choice-list { display: flex; flex-direction: column; gap: 9px; }
 .choice {
@@ -296,8 +312,8 @@ body.choosing .continue { display: none; }
 /* scene transitions: the curtain covers the swap, names the new place, then lifts */
 @property --r { syntax: '<percentage>'; inherits: false; initial-value: 150%; }
 .curtain { position: absolute; inset: 0; z-index: 15; display: grid; place-items: center; pointer-events: none; }
-.curtain.fade { background: #0b0709; opacity: 0; transition: opacity .5s ease-in-out; }
-.curtain.fade.closed { opacity: 1; }
+.curtain.fade { background: #0b0709; opacity: 0; transition: opacity .7s cubic-bezier(.2, .6, .3, 1); } /* lifting: eases out */
+.curtain.fade.closed { opacity: 1; transition: opacity .45s ease-in; } /* dropping: quicker */
 .curtain.iris { --r: 150%; background: radial-gradient(circle at 50% 42%, transparent var(--r), #0b0709 calc(var(--r) + .5%)); transition: --r .7s cubic-bezier(.6, 0, .4, 1); }
 .curtain.iris.closed { --r: 0%; }
 .curtain .loc { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; opacity: 0; transform: translateY(8px); transition: opacity .25s, transform .25s; }
@@ -442,6 +458,7 @@ legend { padding: 0 6px; font: 700 12px var(--mono); text-transform: uppercase; 
   /* narration sits at the bottom, under the faces, until it's choice time */
   .caption { top: auto; bottom: calc(20px + var(--safe-b)); transform: translateX(-50%) rotate(-.4deg); }
   .caption.pop { animation: captionUp .35s var(--pop); }
+  .caption.flip { top: var(--cap-top, calc(var(--hud) + 10px)); bottom: auto; }
   /* notices and stamps stay in a slim strip under the HUD, above the faces */
   .notices { left: 50%; top: calc(var(--hud) + 24px); transform: translateX(-50%); align-items: center; text-align: center; gap: 4px; width: calc(100vw - 24px); }
   .feedback { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0 8px; padding: 4px 12px; border-radius: 99px; }

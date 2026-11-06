@@ -16,6 +16,7 @@ export interface StageState {
   amb: string;
   cast: string[];
   expr: Record<string, string>;
+  outfit?: Record<string, string>; // #outfit, e.g. { child: 'uniform' }; older saves have none
   props: Record<string, string>;
 }
 

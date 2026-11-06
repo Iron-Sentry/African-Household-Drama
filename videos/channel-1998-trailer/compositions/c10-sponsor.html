@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/brand.css" />
+      <style>
+        /* SPONSOR SLATE (8 beats): colour bars, then the announcement, word group by word group, on the beat. */
+        #root { position: absolute; inset: 0; }
+        #root .p-room { filter: brightness(.22) saturate(.7) blur(10px); }
+        #root .p-tv { position: absolute; left: 50%; top: 50%; width: 1140px; height: 850px; margin: -400px 0 0 -570px; padding: 48px 62px 86px; border-radius: 70px; background: linear-gradient(160deg, #3b3036, #1d1619 70%); border: 6px solid #0c0709; box-shadow: 0 40px 90px rgba(0, 0, 0, .7), inset 0 2px 0 rgba(255, 255, 255, .08); }
+        #root .p-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 46px / 38px; background: #0c0a14; }
+        #root .p-bars { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, 1fr); }
+        #root .p-bars i { display: block; }
+        #root .p-plate { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: radial-gradient(ellipse at 50% 45%, #2a1c22, #120c10 75%); opacity: 0; }
+        #root .p-w { display: block; font: 600 104px / .95 'Fraunces', serif; letter-spacing: -.025em; color: #fff7e6; }
+        #root .p-w2 { color: #f2b53c; }
+        #root .p-w3 { color: #e5583f; font-style: italic; }
+        #root .p-kick { margin-top: 30px; }
+        #root .p-knobs { position: absolute; right: 90px; bottom: 30px; display: flex; gap: 22px; }
+        #root .p-knobs i { width: 34px; height: 34px; border-radius: 50%; background: #0d090b; border: 3px solid #4a3c42; }
+      </style>
+      <div data-hf-id="hf-d46u" id="root" data-composition-id="c10-sponsor" data-width="1920" data-height="1080">
+        <div data-hf-id="hf-ja2d" class="ahd">
+          <img data-hf-id="hf-qj0p" class="room p-room" src="assets/rooms/family_hall.webp" alt="" />
+          <div data-hf-id="hf-nziv" class="p-tv">
+            <div data-hf-id="hf-wubd" class="p-screen yt-screen-warp3d">
+              <div data-hf-id="hf-8bvf" class="p-bars"><i data-hf-id="hf-fj90" style="background:#c9c9c9"></i><i data-hf-id="hf-gf4o" style="background:#c9c62a"></i><i data-hf-id="hf-2zuv" style="background:#2ac6c6"></i><i data-hf-id="hf-jr6d" style="background:#2bc42b"></i><i data-hf-id="hf-l31k" style="background:#c52bc5"></i><i data-hf-id="hf-mt3l" style="background:#c42b2b"></i><i data-hf-id="hf-94g9" style="background:#2b2bc4"></i></div>
+              <div data-hf-id="hf-std7" class="p-plate">
+                <span data-hf-id="hf-hllj" class="p-w p-w1">And now,</span>
+                <span data-hf-id="hf-op6q" class="p-w p-w2">a word from</span>
+                <span data-hf-id="hf-ppw0" class="p-w p-w3">our sponsor.</span>
+                <div data-hf-id="hf-ol6r" class="kicker p-kick">Advertisement</div>
+              </div>
+              <div data-hf-id="hf-7dje" class="yt-screen-fx p-fx"></div>
+            </div>
+            <div data-hf-id="hf-g11s" class="p-knobs"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        const R = "#root ";
+        const P = 0.5697;
+        const B = (n) => n * P;
+        tl.to(R + ".p-fx", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0); // yt-screen-warp: ytScreenOn
+        tl.fromTo(R + ".p-tv", { scale: 1 }, { scale: 1.05, duration: 4.56, ease: "none" }, 0);
+        tl.fromTo(R + ".p-bars", { scaleY: 0.02 }, { scaleY: 1, duration: 0.18, ease: "power3.out" }, 0);
+        tl.set(R + ".p-plate", { opacity: 1 }, B(1.5));
+        tl.fromTo(R + ".p-w1", { opacity: 0, scale: 1.4, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, B(2));
+        tl.fromTo(R + ".p-w2", { opacity: 0, x: -220 }, { opacity: 1, x: 0, duration: 0.38, ease: "expo.out" }, B(3));
+        tl.fromTo(R + ".p-w3", { opacity: 0, y: 80, rotation: 5 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "circ.out" }, B(4));
+        tl.fromTo(R + ".p-kick", { opacity: 0 }, { opacity: 1, duration: 0.2 }, B(5));
+        window.__timelines["c10-sponsor"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

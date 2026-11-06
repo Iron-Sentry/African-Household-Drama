@@ -11,9 +11,15 @@ const outDir = path.join(root, 'test-results');
 const shotDir = path.join(outDir, 'screenshots');
 const port = 4173;
 const origin = `http://127.0.0.1:${port}`;
-const fullChrome = path.join(os.homedir(), 'Library/Caches/ms-playwright/chromium-1234/chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing');
-const headlessShell = path.join(os.homedir(), 'Library/Caches/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-mac-x64/chrome-headless-shell');
-const executablePath = [fullChrome, headlessShell].find((candidate) => fs.existsSync(candidate));
+// Any cached Playwright Chromium (newest first), Intel or Apple silicon.
+const cache = path.join(os.homedir(), 'Library/Caches/ms-playwright');
+const builds = fs.existsSync(cache) ? fs.readdirSync(cache).filter((d) => /^chromium(_headless_shell)?-\d+$/.test(d)).sort((a, b) => Number(b.split('-')[1]) - Number(a.split('-')[1])) : [];
+const executablePath = builds
+  .flatMap((d) => ['arm64', 'x64'].flatMap((arch) => [
+    path.join(cache, d, `chrome-mac-${arch}/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`),
+    path.join(cache, d, `chrome-headless-shell-mac-${arch}/chrome-headless-shell`),
+  ]))
+  .find((candidate) => fs.existsSync(candidate));
 
 if (!executablePath) throw new Error('No compatible cached Playwright Chromium executable was found.');
 fs.mkdirSync(shotDir, { recursive: true });
@@ -108,7 +114,7 @@ async function fullKeyboardRun(page) {
   await keyboardStart(page, `${origin}/?test`);
   let decisions = 0;
   let bubbles = 0;
-  for (let step = 0; step < 1200; step++) {
+  for (let step = 0; step < 4000; step++) { // thirteen episodes, every line and card
     if (await page.locator('#report-dialog[open]').count()) {
       return {
         decisions,
@@ -126,7 +132,7 @@ async function fullKeyboardRun(page) {
     }
     await page.waitForTimeout(15);
   }
-  throw new Error('Keyboard play-through did not reach the report card.');
+  throw new Error(`Keyboard play-through did not reach the report card. Stuck at "${await currentLine(page)}" in ${await page.locator('#ep-chip').textContent()}`);
 }
 
 /** Every visible dialogue box and choice must sit fully inside the viewport. */
