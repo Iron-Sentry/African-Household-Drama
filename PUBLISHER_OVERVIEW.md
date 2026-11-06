@@ -41,13 +41,13 @@ Age rating, localisation priorities, commercial positioning, and audience size h
 
 ## What the vertical slice demonstrates now
 
-- Three connected, complete episodes: **The Kissing Scene**, **The Neighbour's Biscuit**, and **The Errand**.
+- Thirteen connected, complete episodes, from **The Kissing Scene** to **Christmas Visitors Are Coming**.
 - A full beginning-to-report-card run with four reachable ranks: **The Golden Child**, **Akola Bone!**, **The Little Strategist**, and **The Family Comedian**.
-- Thirty-six discoverable moments and cross-episode callbacks.
+- Ninety discoverable moments and cross-episode callbacks.
 - Play as a boy or a girl; the friend next door becomes the other child (Adjoa or Kojo).
 - Responsive desktop, phone portrait, and phone landscape presentation.
-- Two painted locations (the family hall and Auntie Efua's front room) with a camera, lighting moods, a live CRT overlay and prop close-ups.
-- Local save/continue, version migration, episode checkpoints, replay, settings, opt-in synthesized sound, and untimed-choice support.
+- Seven painted locations with a camera, lighting moods, weather, a live CRT overlay, prop close-ups, and characters who turn to face whoever they are talking to.
+- Local save/continue, version migration, episode checkpoints, replay, settings, recorded sound and music, and untimed-choice support.
 - Keyboard play, native modal dialogs, a screen-reader status region, reduced-motion behavior, and 44 px minimum tested choice targets.
 - A writer-facing Ink pipeline with live compilation, tag validation, direct knot preview, editable variables, automated route simulation, unit tests, and production browser tests.
 

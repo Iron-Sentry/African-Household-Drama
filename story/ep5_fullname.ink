@@ -6,9 +6,9 @@
 // =====================================================================
 
 === ep5 ===
-#episode:5 #scene:compound #light:afternoon #cast:friend,child #cam:wide #amb:compound #prop:keyhole=off #outfit:child=none #outfit:friend=none
+#episode:5 #scene:compound #light:afternoon #cast:friend,child #cam:wide #amb:compound #prop:keyhole=off #outfit:child=none #outfit:friend=none #weather:none
 #card:Episode Five/When Mummy Calls Your Full Name/The next Saturday · 5:20 PM
-Saturday. Ampe in the compound. Clap, jump, foot out. #expr:child=delight #expr:friend=laugh #anim:child=jump #sfx:pop
+Saturday. Ampe in the compound. Clap, jump, foot out. #expr:child=ampe #expr:friend=ampe #anim:child=jump #sfx:pop
 Eleven to four. You are winning. #anim:friend=jump #sfx:cheer
 {friend}: Again! One more! #expr:friend=comment #focus:friend
 Mummy, from the house: Nana! #sfx:sting #focus:none
@@ -19,13 +19,13 @@ The first call is free. Everybody knows the first call is free. #expr:child=worr
     -> first_call
 * [Pretend you didn't hear #flavour:The wind is very loud today.]
     ~ score(-3, 0, 2)
-    You jump. You clap. You hear nothing. #expr:child=happy #anim:child=jump #sfx:pop
+    You jump. You clap. You hear nothing. #expr:child=ampe #anim:child=jump #sfx:pop
     -> full_name
 * [Ask your friend to answer for you #flavour:A terrible plan.]
     -> employee
 * [Just one more round #timeout #flavour:Eleven to four. She can wait.]
     ~ score(-3, 0, 2)
-    One more round. Clap, jump... #anim:child=jump #sfx:pop
+    One more round. Clap, jump... #expr:child=ampe #anim:child=jump #sfx:pop
     -> full_name
 
 = first_call
@@ -82,7 +82,7 @@ Mummy: Then, volunteer, you can help with the washing. You too, Managing Directo
 // ---- The washing line ---------------------------------------------------
 
 = rain
-A dark cloud rolls over the compound like a trotro. #light:tension #cam:tree #sfx:thump #fx:flash #focus:none
+A dark cloud rolls over the compound like a trotro. #light:tension #cam:tree #sfx:thunder #fx:lightning #focus:none
 {called == "employee":
     The washing line flaps. Two of you. One line. No time. #cast:friend@44,child@62,mum@84 #expr:mum=stern
 - else:
@@ -90,7 +90,7 @@ A dark cloud rolls over the compound like a trotro. #light:tension #cam:tree #sf
 }
 Mummy: Bring it in! Quick, quick! #focus:mum #anim:mum=bounce
 Mummy's good kaba. Daddy's white work shirt. Your school uniform. #cam:tree #expr:child=panic #focus:none
-The first drop lands on your nose. #sfx:splash #emote:child=sweat #readroom #timer:10
+The first drop lands on your nose. #weather:drizzle #emote:child=sweat #readroom #timer:10
 #hint:Daddy wears that white shirt on Monday. Mummy washed it by hand. Twice.
 * [Daddy's white shirt first #flavour:Monday is serious.]
     ~ washing = "shirt"
@@ -108,7 +108,7 @@ The first drop lands on your nose. #sfx:splash #emote:child=sweat #readroom #tim
     ~ washing = "all"
     ~ score(-3, 0, 3)
     You grab everything. Everything grabs back. #expr:child=strain #anim:child=shake #cam:wide
-    The whole line comes down in the sand. #fx:impact #sfx:thump #expr:mum=wail #emote:mum=shock
+    The whole line comes down in the sand. #insert:washing_in_sand #fx:impact #sfx:thump #expr:mum=wail #emote:mum=shock
     Mummy: My kaba! #focus:mum #fx:shake
     #moment:sand_collection/The Sand Collection
     #focus:none
@@ -118,7 +118,7 @@ The first drop lands on your nose. #sfx:splash #emote:child=sweat #readroom #tim
     The sky does not change its mind. #sfx:splash #emote:child=dots #cam:wide
     Mummy runs past you with both arms full. She says nothing. That is worse. #expr:mum=stern #focus:mum
     #focus:none
-- The rain arrives. Everybody runs. #sfx:splash #anim:child=bounce
+- The rain arrives. Everybody runs. #weather:rain #sfx:thunder #fx:lightning #anim:child=bounce
 -> indoors
 
 = indoors

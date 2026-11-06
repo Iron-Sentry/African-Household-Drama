@@ -34,10 +34,15 @@ const SFX: Record<string, Shot> = {
   romance: { f: 'tv_film', g: 0.55, tv: true, dur: 6 },
   theme: { f: 'tv_film', g: 0.55, tv: true, at: 8, dur: 6 },
   title: { f: 'music_guitar', g: 0.6, dur: 7, duck: true },
-  // Episode Four. dig and splash borrow the nearest recording until their own
-  // arrive; bell and rooster stay silent (no entry) rather than sound wrong.
-  dig: { f: 'thump', g: 0.5 },
-  splash: { f: 'whoosh', g: 0.35 },
+  dig: { f: 'dig', g: 1 },
+  splash: { f: 'splash', g: 0.6 },
+  bell: { f: 'bell', g: 0.55 },
+  rooster: { f: 'rooster', g: 0.6 },
+  thunder: { f: 'thunder', g: 0.8, duck: true },
+  tap: { f: 'tap_water', g: 0.55 },
+  bottle: { f: 'bottle_open', g: 1 },
+  goal: { f: 'crowd_goal', g: 0.3, tv: true },
+  camera: { f: 'camera', g: 1 },
 };
 
 // Room tones per #amb. A lowpass on a layer pushes it "outside" or "through a wall".
@@ -70,15 +75,47 @@ export class Audio {
   private song: { stop: () => void } | null = null;
   private songName = '';
   private titleScreen = false;
+  private rainWhere = ''; // '', 'out', or 'in': muffled, on the zinc overhead
+  private rainVoice: { stop: (f?: number) => void } | null = null;
+  private rainPlaying = '';
 
   setEnabled(on: boolean) {
     this.enabled = on;
     if (!on) {
       this.bed?.stop();
       this.song?.stop();
-      this.bed = this.song = null;
+      this.rainVoice?.stop();
+      this.bed = this.song = this.rainVoice = null;
+      this.rainPlaying = '';
       this.ctx?.suspend();
     } else if (this.ctx) this.unlock();
+  }
+
+  /** Rain over whatever the room already sounds like. */
+  rain(where: '' | 'out' | 'in') {
+    this.rainWhere = where;
+    this.refreshRain();
+  }
+
+  private refreshRain() {
+    if (!this.enabled || !this.ctx || this.rainPlaying === this.rainWhere) return;
+    this.rainPlaying = this.rainWhere;
+    this.rainVoice?.stop(1.5);
+    this.rainVoice = null;
+    if (!this.rainWhere) return;
+    const where = this.rainWhere;
+    this.load('amb_rain').then((buf) => {
+      if (!buf || this.rainPlaying !== where) return;
+      let out: AudioNode = this.ambBus;
+      if (where === 'in') {
+        const lp = this.ctx!.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 1400;
+        lp.connect(this.ambBus);
+        out = lp;
+      }
+      this.rainVoice = this.voice(buf, out, where === 'in' ? 0.45 : 0.75, { loop: true, fadeIn: 1.5 });
+    });
   }
 
   setMusic(on: boolean) {
@@ -93,6 +130,7 @@ export class Audio {
       this.ensure();
       this.ctx!.resume();
       if (!this.bed) this.startBed(this.bedName);
+      this.refreshRain();
       this.refreshMusic();
     } catch {
       this.enabled = false; // no Web Audio: play silently

@@ -4,7 +4,8 @@
 // screen (anchor) to hang speech bubbles off it.
 import { SCENES, type Scene } from '../content/scenes.ts';
 import { assetUrl } from '../content/assets.ts';
-import { CHARACTERS, allPoseUrls, castEntry, headHeight, poseUrl, type Player } from '../content/characters.ts';
+import { CHARACTERS, allPoseUrls, castEntry, facingOf, headHeight, poseUrl, type Player } from '../content/characters.ts';
+import { Atmos, type Air } from './atmos.ts';
 
 const BASE = import.meta.env.BASE_URL;
 const ASPECT = 16 / 9;
@@ -91,6 +92,8 @@ interface Actor {
   url: string;
   pose: string; // the mood or pose ink asked for, kept so a re-skin can ask again
   x: number;
+  dir: number; // which way they are looking: 1 right, -1 left
+  turn: HTMLElement;
   emote: HTMLElement;
   sticker: HTMLImageElement;
 }
@@ -147,10 +150,18 @@ export class Stage {
   private landsAt = 0; // performance.now() when the camera finishes its current move
   private snowRaf = 0;
   private preloaded = new Set<string>();
+  private atmos: Atmos;
+  private weather = '';
+  private glows: HTMLElement;
+  private fan: HTMLElement;
+  private sceneAt = 0; // when the scene last changed: a new room is already lit, it doesn't fade to night
+  private talker: string | null = null; // who everybody is paying attention to
+  private hearer: string | null = null; // who the talker is talking to
+  private pins: Record<string, string> = {}; // #face: somebody looking at one thing, whoever talks
 
   constructor(root: HTMLElement) {
     this.root = root;
-    root.innerHTML = `<div class="world" id="world"><img class="room" alt="" draggable="false"><img class="room after-dark" alt="" draggable="false"><div class="pieces" aria-hidden="true"></div><div class="tv" aria-hidden="true"><img class="tv-film" src="${BASE}assets/tv/film_two_shot.webp" alt=""><img class="tv-kiss" src="${BASE}assets/tv/film_kiss.webp" alt=""><div class="tv-news"><img src="${BASE}assets/tv/news_desk.webp" alt=""><b><span>AKOSOMBO WATER LEVEL LOW · LIGHTS OFF TUESDAY AND THURSDAY · BLACK STARS SQUAD NAMED · </span></b></div><canvas width="96" height="72"></canvas><i class="glass"></i></div><div class="antenna" aria-hidden="true">${ANTENNA}</div><div class="lamp" aria-hidden="true"><i></i></div><div class="cast" aria-hidden="true"></div><div class="light" aria-hidden="true"></div><div class="spots"></div></div>`;
+    root.innerHTML = `<div class="world" id="world"><img class="room" alt="" draggable="false"><img class="room after-dark" alt="" draggable="false"><div class="pieces" aria-hidden="true"></div><i class="fan" aria-hidden="true"></i><div class="tv" aria-hidden="true"><img class="tv-film" src="${BASE}assets/tv/film_two_shot.webp" alt=""><img class="tv-kiss" src="${BASE}assets/tv/film_kiss.webp" alt=""><img class="tv-ball" src="${BASE}assets/tv/football_match.webp" alt=""><img class="tv-toon" src="${BASE}assets/tv/cartoon.webp" alt=""><div class="tv-news"><img src="${BASE}assets/tv/news_desk.webp" alt=""><b><span>AKOSOMBO WATER LEVEL LOW · LIGHTS OFF TUESDAY AND THURSDAY · BLACK STARS SQUAD NAMED · </span></b></div><canvas width="96" height="72"></canvas><i class="glass"></i></div><div class="antenna" aria-hidden="true">${ANTENNA}</div><div class="lamp" aria-hidden="true"><i></i></div><div class="cast" aria-hidden="true"></div><div class="light" aria-hidden="true"></div><div class="rays" aria-hidden="true"></div><div class="glows" aria-hidden="true"></div><div class="spots"></div></div>`;
     this.world = root.querySelector('.world')!;
     this.bg = root.querySelector('.room')!;
     this.dark = root.querySelector('.room.after-dark')!;
@@ -161,7 +172,18 @@ export class Stage {
     this.antenna = root.querySelector('.antenna')!;
     this.lamp = root.querySelector('.lamp')!;
     this.snow = this.tv.querySelector('canvas')!;
+    this.glows = root.querySelector('.glows')!;
+    this.fan = root.querySelector('.fan')!;
+    this.atmos = new Atmos(root);
     new ResizeObserver(() => this.layout(true)).observe(root);
+    // the cast sits nearer than the painting: they shift a little as the pointer moves
+    if (matchMedia('(hover: hover)').matches) {
+      root.parentElement!.addEventListener('pointermove', (e) => {
+        if (this.reduced) return;
+        this.cast.style.setProperty('--px', ((e.clientX / innerWidth - 0.5) * 2).toFixed(3));
+        this.cast.style.setProperty('--py', ((e.clientY / innerHeight - 0.5) * 2).toFixed(3));
+      });
+    }
   }
 
   /** Narrow screens show a slice of the room, so the camera follows whoever speaks. */
@@ -172,6 +194,7 @@ export class Stage {
   // ---------------------------------------------------------------- scene
   setScene(id: string) {
     this.scene = SCENES[id] || SCENES.hall;
+    this.sceneAt = performance.now();
     const s = this.scene;
     this.bg.src = assetUrl(s.bg);
     this.dark.removeAttribute('src');
@@ -183,7 +206,26 @@ export class Stage {
         Object.assign(img.style, { left: `${p.at[0]}%`, top: `${p.at[1]}%`, width: `${p.w}%` });
         return img;
       }),
+      ...Object.entries(s.pieces || {}).filter(([, p]) => p.steam).map(([name, p]) => {
+        const steam = document.createElement('div');
+        steam.className = 'steam';
+        steam.dataset.piece = name;
+        steam.innerHTML = '<i></i><i></i><i></i>';
+        Object.assign(steam.style, { left: `${p.steam![0]}%`, top: `${p.steam![1]}%` });
+        return steam;
+      }),
     );
+    this.glows.replaceChildren(
+      ...Object.entries(s.glows || {}).map(([name, g]) => {
+        const el = document.createElement('i');
+        el.dataset.glow = name;
+        Object.assign(el.style, { left: `${g.at[0]}%`, top: `${g.at[1]}%`, width: `${g.r * 2}%` });
+        el.style.setProperty('--c', g.color);
+        return el;
+      }),
+    );
+    this.fan.style.display = s.fan ? '' : 'none';
+    if (s.fan) Object.assign(this.fan.style, { left: `${s.fan[0]}%`, top: `${s.fan[1]}%`, width: `${s.fan[2]}%` });
     this.renderPieces();
     this.renderNight(true);
     const [l, t, w, h] = s.tv || [0, 0, 0, 0];
@@ -200,12 +242,13 @@ export class Stage {
     this.followId = null;
     this.clearHotspots();
     this.renderTv();
+    this.renderAir();
     this.frame(true);
   }
 
   /** Resolves once the painting and every pose on stage can draw (or after `ms`). */
   ready(ms = 1500): Promise<void> {
-    const imgs = [this.bg, ...[...this.actors.values()].map((a) => a.imgs[a.front])];
+    const imgs = [this.bg, ...(this.dark.classList.contains('on') ? [this.dark] : []), ...[...this.actors.values()].map((a) => a.imgs[a.front])];
     const all = Promise.all(imgs.map((i) => (i.src ? i.decode().catch(() => {}) : null)));
     return Promise.race([all.then(() => {}), new Promise<void>((r) => setTimeout(r, ms))]);
   }
@@ -222,7 +265,27 @@ export class Stage {
   setLight(id: string) {
     this.world.dataset.light = id;
     this.light = id;
-    this.renderNight();
+    this.renderNight(performance.now() - this.sceneAt < 120);
+    this.renderAir();
+  }
+
+  /** Rain outdoors; indoors it is only heard. */
+  setWeather(kind: string) {
+    this.weather = kind === 'none' ? '' : kind;
+    this.renderAir();
+  }
+
+  burst() {
+    this.atmos.confetti();
+  }
+
+  /** What is hanging in the air here, given the place, the light and the weather. */
+  renderAir() {
+    this.atmos.reduced = this.reduced;
+    const out = !!this.scene.outdoors;
+    const air: Air = out && this.weather ? (this.weather as Air) : out && this.light === 'moon' ? 'fireflies' : ['day', 'afternoon'].includes(this.light) ? 'dust' : 'none';
+    this.atmos.set(air);
+    this.world.dataset.weather = out ? this.weather : '';
   }
 
   /** Scenes with a night painting swap to it once it is dark. */
@@ -233,7 +296,8 @@ export class Stage {
   }
 
   private renderPieces() {
-    for (const img of this.pieces.querySelectorAll<HTMLImageElement>('img')) img.classList.toggle('on', this.props[img.dataset.piece!] === 'on');
+    for (const el of this.pieces.querySelectorAll<HTMLElement>('[data-piece]')) el.classList.toggle('on', this.props[el.dataset.piece!] === 'on');
+    for (const el of this.glows.querySelectorAll<HTMLElement>('[data-glow]')) el.dataset.state = this.props[el.dataset.glow!] || 'off';
   }
 
   /** Dress a character in another sheet (#outfit:child=uniform), or back in their own ('none'). */
@@ -288,7 +352,7 @@ export class Stage {
         }
         ctx.putImageData(img, 0, 0);
       }
-      if (!this.reduced && (this.tv.dataset.state === 'snow' || this.tv.classList.contains('flick'))) this.snowRaf = requestAnimationFrame(draw);
+      if (!this.reduced && (this.tv.dataset.state === 'snow' || this.tv.dataset.state === 'fuzzy' || this.tv.classList.contains('flick'))) this.snowRaf = requestAnimationFrame(draw);
     };
     this.snowRaf = requestAnimationFrame(draw);
   }
@@ -301,24 +365,46 @@ export class Stage {
       if (ids.includes(id)) continue;
       this.actors.delete(id);
       a.el.style.setProperty('--enter', a.x < 50 ? '-45%' : '45%'); // walk off the nearer side
-      a.el.classList.add('leaving');
+      this.turnTo(a, a.x < 50 ? -1 : 1, true);
+      a.el.classList.add('leaving', 'walking');
       setTimeout(() => a.el.remove(), this.reduced ? 0 : 450);
     }
     const entries = tokens.map(castEntry).filter((e) => CHARACTERS[e.id]?.sprite);
     this.order = entries.map((e) => e.id);
     const [a0, a1] = this.scene.floor;
+    const arrived: Actor[] = [];
     entries.forEach(({ id, at }, i) => {
       const x = at ?? (entries.length === 1 ? (a0 + a1) / 2 : a0 + ((a1 - a0) * (i + 0.5)) / entries.length);
       let a = this.actors.get(id);
       if (!a) {
         a = this.makeActor(id, expr[id] || 'neutral', x);
         this.actors.set(id, a);
+        arrived.push(a);
+      }
+      // crossing the room: face the way they are going, then turn back to the conversation
+      if (Math.abs(x - a.x) > 3 && !this.reduced) {
+        this.turnTo(a, x > a.x ? 1 : -1);
+        a.el.classList.add('walking');
+        const mover = a;
+        clearTimeout(Number(mover.el.dataset.walk));
+        mover.el.dataset.walk = String(setTimeout(() => {
+          mover.el.classList.remove('walking');
+          this.look();
+        }, 720));
       }
       a.x = x;
       a.el.style.left = `${x}%`;
     });
+    // newcomers arrive looking at whoever is closest, so a pair face each other from the start
+    for (const a of arrived) {
+      const others = [...this.actors.values()].filter((o) => o !== a);
+      const near = others.sort((p, q) => Math.abs(p.x - a.x) - Math.abs(q.x - a.x))[0];
+      if (near && near.x !== a.x) this.turnTo(a, near.x > a.x ? 1 : -1, true);
+    }
+    for (const id of Object.keys(this.pins)) if (!this.actors.has(id)) delete this.pins[id];
     if (this.followId && !this.actors.has(this.followId)) this.followId = null;
     if (!this.actors.has(this.focused)) this.focused = 'none';
+    this.look();
     this.frame();
   }
 
@@ -332,23 +418,112 @@ export class Stage {
     el.style.setProperty('--d', `${(Math.random() * -4).toFixed(2)}s`);
     el.style.setProperty('--enter', x < 50 ? '-45%' : '45%'); // walk in from the nearer side
     el.style.left = `${x}%`;
-    el.innerHTML = `<div class="body"><img alt="" draggable="false" class="on"><img alt="" draggable="false"></div><div class="emote"></div><img class="sticker" alt="">`;
+    el.innerHTML = `<div class="turn"><div class="body"><img alt="" draggable="false" class="on"><img alt="" draggable="false"></div></div><div class="emote"></div><img class="sticker" alt="">`;
     this.cast.append(el);
     const url = poseUrl(id, expr, this.player, this.outfits[id])!;
     const imgs = [...el.querySelectorAll<HTMLImageElement>('.body img')];
     imgs[0].src = url;
+    const a: Actor = { id, el, imgs, front: 0, url, pose: expr, x, dir: x < 50 ? 1 : -1, turn: el.querySelector('.turn')!, emote: el.querySelector('.emote')!, sticker: el.querySelector('.sticker')! };
+    el.style.setProperty('--lean', String(a.dir)); // walks in facing the room
+    this.dress(a, imgs[0], url);
+    if (!this.reduced) {
+      el.classList.add('walking');
+      setTimeout(() => el.classList.remove('walking'), 650);
+    }
     this.placeHead(el, id, url);
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('entering')));
     this.preload(id);
-    return { id, el, imgs, front: 0, url, pose: expr, x, emote: el.querySelector('.emote')!, sticker: el.querySelector('.sticker')! };
+    return a;
+  }
+
+  // ---------------------------------------------------------------- who looks at whom
+  /** Mirror this image if its pose looks the other way from its owner. */
+  private dress(a: Actor, img: HTMLImageElement, url: string) {
+    const n = facingOf(url);
+    img.dataset.n = String(n);
+    const flip = n !== 0 && n !== a.dir;
+    img.style.scale = flip ? '-1 1' : '';
+    if (img === a.imgs[a.front] || url === a.url) a.el.dataset.mirror = flip ? '1' : '';
+  }
+
+  /** Turn to face a direction: edge-on, like a paper puppet, with any mirroring hidden at the thin moment. */
+  private turnTo(a: Actor, dir: number, instant = false) {
+    if (!dir || a.dir === dir) return;
+    a.dir = dir;
+    a.el.style.setProperty('--lean', String(dir));
+    const n = Number(a.imgs[a.front].dataset.n || 0);
+    const swap = () => {
+      for (const img of a.imgs) {
+        const ni = Number(img.dataset.n || 0);
+        img.style.scale = ni !== 0 && ni !== a.dir ? '-1 1' : '';
+      }
+      a.el.dataset.mirror = n !== 0 && n !== a.dir ? '1' : '';
+      this.placeHead(a.el, a.id, a.url);
+    };
+    if (instant || this.reduced) return swap();
+    a.turn.classList.remove('turning');
+    void a.turn.offsetWidth; // restart the animation
+    a.turn.classList.add('turning');
+    setTimeout(swap, 110); // at the edge-on moment of the turn
+    setTimeout(() => a.turn.classList.remove('turning'), 260);
+  }
+
+  /** Where an actor should be looking (% of the painting), or null to stay as they are. */
+  private gazeX(a: Actor): number | null {
+    const tvX = this.scene.tv ? this.scene.tv[0] + this.scene.tv[2] / 2 : null;
+    const pin = this.pins[a.id];
+    if (pin === 'tv') return tvX;
+    if (pin === 'left') return -1000;
+    if (pin === 'right') return 1000;
+    if (pin) return this.actors.get(pin)?.x ?? null;
+    if (this.talker === 'tv') return tvX;
+    if (this.talker === a.id) return (this.hearer ? this.actors.get(this.hearer)?.x : undefined) ?? null;
+    const talker = this.talker && this.actors.get(this.talker);
+    if (talker) return talker.x;
+    return this.tv.dataset.state !== 'off' ? tvX : null; // nobody is talking and the set is on
+  }
+
+  /** Everybody turns towards whoever matters right now. */
+  private look() {
+    for (const a of this.actors.values()) {
+      if (a.el.classList.contains('walking')) continue;
+      const x = this.gazeX(a);
+      if (x !== null && Math.abs(x - a.x) > 0.5) this.turnTo(a, x > a.x ? 1 : -1);
+    }
+  }
+
+  /** The line now being said: the talker turns to their hearer, everyone else to the talker. */
+  attend(talker: string | null, hearer: string | null = null) {
+    this.talker = talker;
+    this.hearer = hearer;
+    this.look();
+  }
+
+  /** #face: keep looking at something (a person, the tv, left, right) until 'none'. */
+  setFace(id: string, target: string) {
+    if (target === 'none') delete this.pins[id];
+    else this.pins[id] = target;
+    this.look();
+  }
+
+  /** Somebody shouts: everyone near them flinches away. */
+  flinch(from: string) {
+    const src = this.actors.get(from);
+    if (!src || this.reduced) return;
+    for (const a of this.actors.values()) {
+      if (a === src) continue;
+      a.el.style.setProperty('--away', a.x < src.x ? '-1' : '1');
+      this.anim(a.id, 'flinch');
+    }
   }
 
   private placeHead(el: HTMLElement, id: string, url: string) {
     return measureHead(url, headHeight(id, this.player, this.outfits[id])).then((h) => {
-      el.style.setProperty('--hx', `${h.x}%`);
+      const hx = el.dataset.mirror ? 100 - h.x : h.x; // a mirrored pose has its face on the other side
+      el.style.setProperty('--hx', `${hx}%`);
       el.style.setProperty('--hy', `${h.y}%`);
       el.style.setProperty('--hw', `${h.w}%`);
-      el.dataset.hx = String(h.x);
+      el.dataset.hx = String(hx);
       el.dataset.hy = String(h.y);
       el.dataset.hc = String(h.chin);
       el.dataset.hw = String(h.w);
@@ -386,6 +561,7 @@ export class Stage {
       a.imgs[a.front].classList.remove('on');
       a.front = 1 - a.front;
     };
+    this.dress(a, back, url);
     this.placeHead(a.el, id, url);
     back.src = url;
     back.decode().then(swap, swap);
@@ -428,7 +604,7 @@ export class Stage {
     // burst on the side away from where the speech bubble will hang
     // near a screen edge there's no room beside the head, so burst above it
     const sx = this.project(a.x, 0).x / this.root.clientWidth;
-    const side = sx < 0.22 || sx > 0.78 ? 'over' : sx < 0.5 ? 'west' : 'east';
+    const side = this.portrait || sx < 0.22 || sx > 0.78 ? 'over' : sx < 0.5 ? 'west' : 'east';
     a.sticker.className = 'sticker';
     void a.sticker.offsetWidth;
     a.sticker.className = `sticker show ${side}`;
@@ -472,6 +648,7 @@ export class Stage {
   setReadRoom(on: boolean) {
     this.readRoom = on;
     this.world.classList.toggle('read-room', on);
+    this.root.classList.toggle('cine', on);
     this.frame();
   }
 
@@ -601,6 +778,12 @@ export class Stage {
       const r = this.project(this.faceX(a) + half, this.headY(a, 1));
       if (r.x < 0 || l.x > vw || r.y < 0 || l.y > vh) continue;
       out.push({ id: a.id, left: l.x, right: r.x, top: l.y, bottom: r.y });
+    }
+    // a lamp that has just come on is the point of the shot: captions keep off it too
+    for (const [name, g] of Object.entries(this.scene.glows || {})) {
+      if ((this.props[name] || 'off') === 'off') continue;
+      const c = this.project(g.at[0], g.at[1]);
+      out.push({ id: name, left: c.x - 70, right: c.x + 70, top: c.y - 50, bottom: c.y + 90 });
     }
     return out;
   }

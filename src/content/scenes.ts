@@ -16,6 +16,9 @@ export interface Scene {
   keyhole?: [number, number]; // what a child peeping through the door looks at (#prop:keyhole=on)
   night?: string; // the same view after dark: cross-fades in under #light:moon, blackout or lamp
   pieces?: Record<string, Piece>; // cut-out images in the room, shown with #prop:<name>=on
+  glows?: Record<string, Glow>; // lights in the painting, switched with #prop:<name>=on, off or flicker
+  fan?: [x: number, y: number, size: number]; // the painted fan: its blades turn unless the power is off
+  outdoors?: boolean; // weather falls here; indoors it is only heard
   shots: Record<string, Shot>;
   hotspots: Record<string, { label: string; at: [number, number] }>;
 }
@@ -25,6 +28,14 @@ export interface Piece {
   src: string; // public/assets/...
   at: [number, number];
   w: number;
+  steam?: [x: number, y: number]; // steam rises from here while the piece is on
+}
+
+/** A light in the painting: centre (x%, y%), radius in % of the painting's width. */
+export interface Glow {
+  at: [number, number];
+  r: number;
+  color: string;
 }
 
 export const SCENES: Record<string, Scene> = {
@@ -37,6 +48,10 @@ export const SCENES: Record<string, Scene> = {
     tv: [79.5, 29.8, 7.9, 14.9],
     lamp: [51, 60],
     keyhole: [78, 35], // Daddy (#cast:…,dad@72) wrestling the antenna beside the TV
+    fan: [70.9, 32.8, 8.6],
+    pieces: {
+      soup: { src: 'props/table_soup_spread.webp', at: [51, 68.5], w: 23, steam: [50.5, 55] }, // on the coffee table (Episode Six)
+    },
     shots: {
       wide: [1, 50, 50],
       keyhole: [1.3, 78, 51],
@@ -87,6 +102,8 @@ SCENES.compound = {
   title: 'The Compound',
   location: 'Outside · Accra',
   bg: 'rooms/compound_courtyard.webp',
+  night: 'rooms/compound_courtyard_night.webp',
+  outdoors: true,
   floor: [22, 78],
   lamp: [50, 60],
   shots: { wide: [1, 50, 50], gate: [1.8, 40, 38], door: [1.7, 88, 42], tree: [1.8, 70, 25], drum: [2, 80, 46] }, // drum: the blue water drum and tap (Episode Eight)
@@ -97,16 +114,20 @@ SCENES.street = {
   title: 'The Lane',
   location: 'Outside the gate',
   bg: 'rooms/bofrot_street.webp',
+  night: 'rooms/bofrot_street_night.webp',
+  outdoors: true,
+  glows: { streetlight: { at: [73.6, 2.8], r: 9, color: '255, 214, 140' } }, // the lamp on its pole (Episode Nine)
   floor: [32, 84],
   lamp: [14, 46],
-  shots: { wide: [1, 50, 50], stall: [1.9, 17, 45], sign: [2.8, 31, 24], gate: [1.8, 57, 40] },
+  shots: { wide: [1, 50, 50], stall: [1.9, 17, 45], sign: [2.8, 31, 24], gate: [1.8, 57, 40], streetlight: [1.35, 70, 26] },
   hotspots: {},
 };
 SCENES.bedroom = {
   id: 'bedroom',
   title: "Nana's Room",
   location: 'Home · Night',
-  bg: 'rooms/nana_bedroom_night.webp',
+  bg: 'rooms/nana_bedroom_day.webp',
+  night: 'rooms/nana_bedroom_night.webp',
   floor: [34, 74],
   lamp: [2, 56],
   shots: { wide: [1, 50, 50], bed: [1.8, 18, 62], door: [1.9, 84, 42], window: [2, 44, 24] },
@@ -122,6 +143,7 @@ SCENES.garden = {
   location: 'Home · Sunday evening',
   bg: 'rooms/compound_corner_dusk.webp',
   night: 'rooms/compound_corner_night.webp',
+  outdoors: true,
   floor: [24, 76],
   lamp: [46, 64],
   shots: { wide: [1, 50, 50], hole: [1.6, 24, 68], peppers: [2, 46, 44], wall: [1.8, 16, 42] },
@@ -138,14 +160,19 @@ SCENES.school = {
   title: 'The School Yard',
   location: 'Monday morning',
   bg: 'rooms/school_yard_morning.webp',
+  outdoors: true,
   floor: [14, 86],
   lamp: [50, 60],
   shots: { wide: [1, 50, 50], line: [1.3, 50, 58], farm: [1.9, 88, 42] },
   hotspots: {},
 };
 
+// Episode Thirteen: the same hall dressed for Christmas Eve, on the hall's own coordinates.
+SCENES.hall_xmas = { ...SCENES.hall, id: 'hall_xmas', location: 'Home · Christmas Eve', bg: 'rooms/family_hall_christmas.webp', pieces: {} };
+
 /** Every #prop name the scene pieces add (each takes on/off). */
 export const PIECES = new Set(Object.values(SCENES).flatMap((s) => Object.keys(s.pieces || {})));
+export const GLOWS = new Set(Object.values(SCENES).flatMap((s) => Object.keys(s.glows || {})));
 
 export const LIGHTS = ['day', 'afternoon', 'evening', 'dusk', 'moon', 'film', 'tension', 'snow', 'lamp', 'blackout', 'doorway'] as const;
 

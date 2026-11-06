@@ -37,5 +37,15 @@ Every sound in `public/assets/audio/` is a trimmed, loudness-normalised copy of 
 | `snore.mp3` | [MaleSnore_Raw_bip.wav](https://freesound.org/people/passAirmangrace/sounds/340893/) | passAirmangrace | CC BY 3.0 |
 | `yawn.mp3` | [Yawn/Yawning](https://freesound.org/people/njjjjjjjjjjjjjjjjjjjjjjjj/sounds/564231/) | njjjjjjjjjjjjjjjjjjjjjjjj | CC0 1.0 |
 | `tv_blips.mp3` | [tv channel change static blips (scanner CB radio tuning static blips +static sharp +scanner CB radio blips on+off good2).flac](https://freesound.org/people/kyles/sounds/454259/) | kyles | CC0 1.0 |
+| `rooster.mp3` | [Morning rooster crow](https://freesound.org/people/JoMungus/sounds/719773/) | JoMungus | CC0 1.0 |
+| `bell.mp3` | [farm hand bell.wav](https://freesound.org/people/Mead815/sounds/535507/) | Mead815 | CC0 1.0 |
+| `thunder.mp3` | [Thunder clap & Blackbird singing & traffic in background](https://freesound.org/people/Simon%20Spiers/sounds/437244/) | Simon Spiers | CC0 1.0 |
+| `amb_rain.mp3` | [FloridaRainUnderTinRoofPorch20170828.mp3](https://freesound.org/people/LonnieWest/sounds/400825/) | LonnieWest | CC0 1.0 |
+| `tap_water.mp3` | [water_into_plastic_bucket_faster.wav](https://freesound.org/people/elonen/sounds/21069/) | elonen | CC0 1.0 |
+| `splash.mp3` | [Water splash, emptying a bucket 9](https://freesound.org/people/wormer2/sounds/418417/) | wormer2 | CC0 1.0 |
+| `dig.mp3` | [ZAPPA FANGO.WAV](https://freesound.org/people/lollosound/sounds/124916/) | lollosound | CC0 1.0 |
+| `bottle_open.mp3` | [Open bottle cap](https://freesound.org/people/Kinoton/sounds/347007/) | Kinoton | CC0 1.0 |
+| `crowd_goal.mp3` | [CRWDReac-SOCCER_Millerntor Stadium Crowd Reaction Goal 01_PHILIPP FEIT_FCSP 29.546_Sound Of Sankt Pauli](https://freesound.org/people/itmightgetloud/sounds/829455/) | itmightgetloud | CC0 1.0 |
+| `camera.mp3` | [Canon A-1 Shutter and Film Advance](https://freesound.org/people/lisaisanut/sounds/734819/) | lisaisanut | CC0 1.0 |
 
 The power-cut wind-down is synthesised in code. No sound in the game is required to follow the story.

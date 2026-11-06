@@ -10,8 +10,9 @@ import '@fontsource/fraunces/600.css';
 import '@fontsource/fraunces/400-italic.css';
 import './styles.css';
 import { storyJson, meta } from 'virtual:story';
-import { CHARACTERS, castEntry, poseUrl, type Player } from './content/characters.ts';
+import { CHARACTERS, castEntry, hearerOf, poseUrl, type Player } from './content/characters.ts';
 import { SCENES } from './content/scenes.ts';
+import { DRESS_INSERTS } from './content/validate.ts';
 import { Session, type Cue, type LineBeat, type Report } from './narrative/session.ts';
 import { clearSave, loadProfile, loadSave, writeProfile, writeSave, type Checkpoint, type Settings, type StageState } from './game/save.ts';
 import { UI } from './ui/ui.ts';
@@ -26,6 +27,8 @@ const EPISODE_TITLES = [
   'The Family Gossip Trap', 'Who Finished the Malt?', 'Christmas Visitors Are Coming',
 ];
 const EPISODES = EPISODE_TITLES.length - 1;
+// The prop on each episode's title card.
+const EPISODE_ART = ['', 'tv/film_two_shot', 'props/biscuit_tray', 'props/hurricane_lantern', 'props/seedling_tin', 'props/washing_in_sand', 'props/soup_pot_thigh', 'props/tv_remote', 'props/water_drum_empty', 'props/chaskele_tin_stick', 'props/church_clothes_stain', 'props/soup_bowl_groundnut', 'props/malt_crate', 'props/film_camera'];
 
 const ui = new UI();
 const stage = new Stage($('stage'));
@@ -40,6 +43,7 @@ let episode = 1;
 let checkpoint: Checkpoint = { episode: 1, vars: {} };
 let pendingTimer = 0;
 let pendingHint = '';
+let lastSpeaker: string | null = null;
 
 const freshState = (): StageState => ({
   player: profile.player,
@@ -51,6 +55,9 @@ const freshState = (): StageState => ({
   expr: {},
   outfit: {},
   props: { tv: 'off', auntie_tv: 'off', foil: 'off', lamp: 'off', keyhole: 'off' },
+  weather: 'none',
+  face: {},
+  reveal: 'none',
 });
 let state = freshState();
 
@@ -64,6 +71,7 @@ function applySettings() {
   document.documentElement.dataset.motion = reduced() ? 'reduced' : 'full';
   document.documentElement.dataset.text = settings.bigText ? 'big' : 'normal';
   stage.reduced = reduced();
+  stage.renderAir(); // asking for less motion stops the rain now, not at the next scene
   audio.setEnabled(settings.sound);
   audio.setMusic(settings.music);
   $('mute-btn').setAttribute('aria-pressed', String(!settings.sound));
@@ -87,9 +95,18 @@ function applyState(s: StageState) {
   for (const [id, o] of Object.entries(state.outfit || {})) stage.setOutfit(id, o);
   stage.setCast(state.cast, state.expr);
   for (const { id } of state.cast.map(castEntry)) stage.setExpr(id, state.expr[id] || 'neutral');
+  for (const [id, target] of Object.entries(state.face || {})) stage.setFace(id, target);
   stage.setShot(state.cam, true);
   aimKeyhole();
   audio.ambience(state.amb);
+  stage.setWeather(state.weather || 'none');
+  syncRain();
+}
+
+/** Rain is loud outside and a drum on the zinc roof indoors. */
+function syncRain() {
+  const on = !!state.weather && state.weather !== 'none';
+  audio.rain(on ? (SCENES[state.scene]?.outdoors ? 'out' : 'in') : '');
 }
 
 /** Peeping through the door: the hole follows what the scene says the child is looking at. */
@@ -105,7 +122,19 @@ function applyCue(c: Cue) {
     case 'scene':
       state.scene = c.value;
       state.cam = 'wide';
-      return stage.setScene(c.value);
+      stage.setScene(c.value);
+      return syncRain();
+    case 'weather':
+      state.weather = c.value;
+      stage.setWeather(c.value);
+      return syncRain();
+    case 'burst': return stage.burst();
+    case 'reveal':
+      state.reveal = c.value;
+      return;
+    case 'face':
+      state.face = { ...state.face, [c.who!]: c.value };
+      return stage.setFace(c.who!, c.value);
     case 'light':
       state.light = c.value;
       return stage.setLight(c.value);
@@ -180,6 +209,7 @@ async function play(id: number) {
       pendingTimer = 0;
       pendingHint = '';
       stage.speaking('child');
+      stage.attend('child', lastSpeaker);
       stage.setChoosing(true);
       const index = await ui.showChoices(beat.choices, {
         timer,
@@ -187,6 +217,7 @@ async function play(id: number) {
         hintOpen: session.stats.smarts >= 50,
         hotspots: (list) => (list.length ? stage.showHotspots(list) : stage.clearHotspots()),
         faces: stage.faces(),
+        urgent: () => audio.sfx('heartbeat'),
       });
       if (id !== runId) return;
       audio.sfx('click');
@@ -207,9 +238,9 @@ async function stageLine(beat: LineBeat, id: number) {
   // A new location (or an episode card) changes behind a curtain, never in a single frame.
   const sceneCue = beat.cues.find((c) => c.key === 'scene' && c.value !== state.scene);
   const hasCard = beat.cues.some((c) => c.key === 'card');
-  const kind = beat.cues.find((c) => c.key === 'transition')?.value || 'fade';
-  const covered = (!!sceneCue || hasCard) && kind !== 'cut';
   const place = sceneCue && !hasCard ? SCENES[sceneCue.value] : null;
+  const kind = beat.cues.find((c) => c.key === 'transition')?.value || (place ? 'wipe' : 'fade');
+  const covered = (!!sceneCue || hasCard) && kind !== 'cut';
   if (covered) {
     if (kind === 'iris') audio.sfx('whoosh');
     await ui.cover(kind, place && { title: place.title, location: place.location }, reduced());
@@ -223,7 +254,7 @@ async function stageLine(beat: LineBeat, id: number) {
     if (c.key === 'card') card = c.value.split('/');
     else if (c.key === 'note') note = c.value;
     else if (c.key === 'auto') auto = Number(c.value);
-    else if (c.key === 'insert') insert = c.value;
+    else if (c.key === 'insert') insert = state.player === 'girl' && DRESS_INSERTS.includes(c.value) ? `${c.value}_girl` : c.value;
     else applyCue(c);
   }
   if (state.props.keyhole === 'on') aimKeyhole();
@@ -234,8 +265,8 @@ async function stageLine(beat: LineBeat, id: number) {
     if (id !== runId) return;
   }
   if (card) {
-    if (episode === 1 && card[0] === 'Episode One') audio.sfx('title');
-    await ui.card(card[0], card[1], card[2], reduced() ? 2400 : 3400);
+    audio.sfx(episode === 1 && card[0] === 'Episode One' ? 'title' : 'radiooff'); // the set clicks on
+    await ui.card(card[0], card[1], card[2], reduced() ? 2400 : 3400, EPISODE_ART[episode]);
     if (id !== runId) return;
   }
   if (covered) {
@@ -246,13 +277,20 @@ async function stageLine(beat: LineBeat, id: number) {
   ui.setStats(session.stats, note);
   if (!beat.text) return;
   const who = beat.speaker?.id ?? null;
+  const onStage = state.cast.map((t) => castEntry(t).id);
   stage.speaking(who && CHARACTERS[who].sprite ? who : null);
+  stage.attend(who === 'tv' || (who && onStage.includes(who)) ? who : null, who ? hearerOf(who, beat.text, onStage, lastSpeaker) : null);
+  if (who && onStage.includes(who)) {
+    lastSpeaker = who;
+    if (/\b[A-Z]{3,}\b/.test(beat.text)) stage.flinch(who);
+  }
   if (who) await stage.measured(who);
   await stage.landing(); // a long pan finishes before the bubble hangs off its face
   if (id !== runId) return;
   const anchor = who ? stage.anchor(who) : null;
   const stopTalking = setTimeout(() => stage.speaking(null), Math.min(4200, 400 + beat.text.length * 22));
-  await ui.showLine(beat.speaker, beat.name, beat.text, { auto, speed: settings.textSpeed, anchor, faces: stage.faces(), insert });
+  const big = state.reveal && state.reveal !== 'none' ? `${state.reveal}_${state.player}` : undefined;
+  await ui.showLine(beat.speaker, beat.name, beat.text, { auto, speed: settings.textSpeed, anchor, faces: stage.faces(), insert, reveal: big });
   clearTimeout(stopTalking);
 }
 
@@ -265,6 +303,7 @@ function start(kind: 'new' | 'continue' | { episode: number }) {
   episode = 1;
   pendingTimer = 0;
   pendingHint = '';
+  lastSpeaker = null;
   checkpoint = { episode: 1, vars: {} };
   const save = kind === 'continue' ? loadSave() : null;
   let resumed = false;
@@ -314,6 +353,7 @@ function showReport(r: Report) {
   writeProfile(profile);
   const dlg = $<HTMLDialogElement>('report-dialog');
   dlg.dataset.rank = r.rank;
+  if (r.rank !== 'akola') setTimeout(() => stage.burst(), reduced() ? 300 : 1500);
   $('report-title').textContent = r.title;
   $('report-copy').replaceChildren(...r.copy.map((t) => Object.assign(document.createElement('p'), { textContent: t })));
   if (r.quote) {

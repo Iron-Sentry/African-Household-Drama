@@ -20,7 +20,7 @@ Mummy: Listen to me. Greet properly. Sit nicely. And do not embarrass me. #focus
     Mummy: And today, nobody is going to any kitchen. You will sit where I can see you. #expr:mum=sideeye
 }
 Mummy marches you across the compound, past the washing line and the water drum, to Auntie Efua's door. #scene:compound #light:afternoon #cast:mum,child #cam:wide #amb:compound #prop:auntie_tv=snow #focus:none
-Mummy: Agoo! #sfx:knock #expr:mum=neutral #cam:door
+Mummy: Agoo! #sfx:knock #expr:mum=neutral #cast:child@58,mum@74 #cam:door
 Auntie Efua: Amee! Come in, come in!
 "Agoo" is how you announce yourself at somebody's door. "Amee" is how they tell you to come in.
 The door flies open. Auntie Efua, in a dress so bright it makes the sun look tired. #scene:auntie #amb:auntie #cast:mum,child,auntie #cam:door #expr:auntie=delight #anim:auntie=bounce

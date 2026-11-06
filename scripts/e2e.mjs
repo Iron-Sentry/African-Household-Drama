@@ -19,9 +19,10 @@ const executablePath = builds
     path.join(cache, d, `chrome-mac-${arch}/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`),
     path.join(cache, d, `chrome-headless-shell-mac-${arch}/chrome-headless-shell`),
   ]))
+  .concat('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome') // no cached Playwright browser: use the installed one
   .find((candidate) => fs.existsSync(candidate));
 
-if (!executablePath) throw new Error('No compatible cached Playwright Chromium executable was found.');
+if (!executablePath) throw new Error('No Playwright Chromium or Google Chrome was found.');
 fs.mkdirSync(shotDir, { recursive: true });
 
 const build = spawnSync('npm', ['run', 'build'], { cwd: root, stdio: 'inherit' });
@@ -259,6 +260,25 @@ try {
   if (!sprites.some((s) => s?.includes('child_girl_')) || !sprites.some((s) => s?.includes('child_boy_'))) throw new Error(`Girl player sprites wrong: ${sprites.join(', ')}`);
   await girl.page.screenshot({ path: path.join(shotDir, 'girl-player-kojo.png') });
   await girl.context.close();
+
+  // Everybody turns to the speaker, and a pose that looks the wrong way is mirrored.
+  const facing = await makePage(browser, 'facing', { width: 1280, height: 800 }, { ...defaults, motion: 'reduced' });
+  await keyboardStart(facing.page, `${origin}/?test&knot=ep7`);
+  const looks = () => facing.page.evaluate(() => Object.fromEntries([...document.querySelectorAll('.actor:not(.leaving)')].map((a) => [a.dataset.id, { dir: a.style.getPropertyValue('--lean'), mirror: !!a.dataset.mirror }])));
+  const untilSpeaker = async (name) => {
+    for (let step = 0; step < 40; step++) {
+      if (await facing.page.evaluate(() => document.querySelector('#bubble:not([hidden]) .tag')?.textContent) === name) return looks();
+      await facing.page.keyboard.press('Enter');
+      await facing.page.waitForTimeout(120);
+    }
+    throw new Error(`Never heard from ${name} in Episode 7.`);
+  };
+  const daddyTalks = await untilSpeaker('Daddy'); // mum, child, dad stand left to right
+  if (daddyTalks.child.dir !== '1' || daddyTalks.mum.dir !== '1') throw new Error(`Nobody turned to Daddy: ${JSON.stringify(daddyTalks)}`);
+  if (daddyTalks.dad.dir !== '-1') throw new Error(`Daddy looked away from the room: ${JSON.stringify(daddyTalks)}`);
+  const mummyTalks = await untilSpeaker('Mummy');
+  if (mummyTalks.child.dir !== '-1' || mummyTalks.dad.dir !== '-1') throw new Error(`Nobody turned to Mummy: ${JSON.stringify(mummyTalks)}`);
+  await facing.context.close();
 
   const reducedPage = await makePage(browser, 'reduced-motion', { width: 390, height: 844 }, { ...defaults, motion: 'reduced' });
   await keyboardStart(reducedPage.page, `${origin}/?test`);

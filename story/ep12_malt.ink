@@ -8,8 +8,8 @@
 === ep12 ===
 #episode:12 #scene:hall #light:evening #cast:mum,child,dad #cam:wide #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none
 #card:Episode Twelve/Who Finished the Malt?/That evening · 8:00 PM
-Daddy comes out of the bedroom carrying the crate like a coffin. #expr:dad=stern #anim:dad=slump #focus:dad #sfx:thump
-He puts it on the table. Everybody gathers. Like a funeral. #cam:table #insert:malt_bottle #focus:none
+Daddy comes out of the bedroom carrying the crate like a coffin. #expr:dad=carry_crate #anim:dad=slump #focus:dad #sfx:thump
+He puts it on the table. Everybody gathers. Like a funeral. #cam:table #insert:malt_crate #focus:none
 Daddy: Twelve. I bought twelve. #expr:dad=lecture #focus:dad
 Daddy counts. One. Two. Three... #auto:1600 #sfx:click
 Daddy: Ten. #fx:impact #expr:dad=scold #sticker:dad=hmmm
@@ -64,7 +64,7 @@ Daddy sends {friend} home very quickly. #cast:mum,child,dad #expr:dad=shocked #f
 ~ score(2, 4, -2)
 Nana: Daddy. Let us count the empty bottles. #expr:child=focused #focus:child
 Mummy: Under the kitchen sink. #expr:mum=approve #focus:mum
-You bring them out. Two empty malt bottles. #insert:malt_bottle #sfx:click #focus:none #cam:table
+You bring them out. Two empty malt bottles. #insert:empty_bottles_straws #sfx:click #focus:none #cam:table
 One has two straws in it. #emote:child=dots
 One has no straw at all. #sfx:sting #cam:push
 Nana: Only one person in this house drinks malt straight from the bottle. #expr:child=smug #focus:child
@@ -85,7 +85,7 @@ Nana: Daddy... maybe a rat. #expr:child=worried #focus:child
 }
 Daddy: Show me this rat. #expr:dad=stern #focus:dad
 You lead the whole family to the kitchen to look for a rat that does not exist. #focus:none #sfx:whoosh
-Under the sink, you find no rat. You find two empty bottles. One with two straws. One with none. #insert:malt_bottle #sfx:sting
+Under the sink, you find no rat. You find two empty bottles. One with two straws. One with none. #insert:empty_bottles_straws #sfx:sting
 Daddy decides the investigation is now closed. #expr:dad=flat #focus:dad #emote:dad=sweat
 #moment:thirsty_rat/The Thirsty Rat
 -> verdict

@@ -28,27 +28,30 @@ export const MOOD_NAMES = ['neutral', 'happy', 'delight', 'laugh', 'proud', 'smi
 // head: top of the hair (or head tie) to the chin, in % of the 640 px canvas height.
 // Poses of one sheet share a scale, so this is measured once on the idle pose and
 // lets the stage find the chin in every pose (bubbles hang below it on phones).
+const ONE_POSE = Array<string>(18).fill('idle');
+const CHURCH_MOODS = ['idle', 'proud', 'proud', 'proud', 'proud', 'idle', 'proud', 'idle', 'idle', 'idle', 'worried', 'worried', 'worried', 'worried', 'idle', 'idle', 'worried', 'worried'];
+const STAIN_MOODS = ['idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'panic', 'panic', 'panic', 'panic', 'idle', 'idle', 'panic', 'panic'];
 const SHEETS: Record<string, { poses: string[]; moods: string[]; head: number }> = {
   mother: {
     head: 21,
-    poses: ['idle', 'approve', 'arms_crossed', 'offer_food', 'scold', 'shocked', 'side_eye', 'stern', 'think', 'lantern', 'wail'],
-    moods: ['idle', 'approve', 'approve', 'approve', 'approve', 'idle', 'arms_crossed', 'stern', 'side_eye', 'scold', 'shocked', 'think', 'think', 'think', 'approve', 'think', 'stern', 'stern'],
+    poses: ['idle', 'approve', 'arms_crossed', 'offer_food', 'scold', 'shocked', 'side_eye', 'stern', 'think', 'lantern', 'wail', 'laugh', 'eyes_closed'],
+    moods: ['idle', 'approve', 'approve', 'laugh', 'approve', 'idle', 'arms_crossed', 'stern', 'side_eye', 'scold', 'shocked', 'think', 'think', 'think', 'eyes_closed', 'think', 'stern', 'stern'],
   },
   father: {
     head: 15.5,
-    poses: ['idle', 'approve', 'hands_on_hips', 'laugh', 'read_paper', 'scold', 'shocked', 'stern', 'think', 'dig', 'lecture'],
-    moods: ['idle', 'approve', 'laugh', 'laugh', 'approve', 'idle', 'hands_on_hips', 'stern', 'think', 'scold', 'shocked', 'think', 'think', 'think', 'think', 'idle', 'stern', 'hands_on_hips'],
+    poses: ['idle', 'approve', 'hands_on_hips', 'laugh', 'read_paper', 'scold', 'shocked', 'stern', 'think', 'dig', 'lecture', 'pray', 'side_eye', 'carry_crate'],
+    moods: ['idle', 'approve', 'laugh', 'laugh', 'approve', 'idle', 'hands_on_hips', 'stern', 'side_eye', 'scold', 'shocked', 'think', 'think', 'think', 'pray', 'idle', 'stern', 'hands_on_hips'],
   },
   child_boy: {
     head: 22.5,
     // "think" is seated (knees up), so no standing mood maps to it; use #expr:child=think deliberately
-    poses: ['idle', 'ashamed', 'comment', 'eyes_closed', 'happy', 'laugh', 'plead', 'proud', 'run', 'startled', 'think', 'panic', 'dig', 'sneak'],
+    poses: ['idle', 'ashamed', 'comment', 'eyes_closed', 'happy', 'laugh', 'plead', 'proud', 'run', 'startled', 'think', 'panic', 'dig', 'sneak', 'ampe', 'swing', 'throw', 'bucket'],
     moods: ['idle', 'happy', 'happy', 'laugh', 'proud', 'happy', 'proud', 'idle', 'idle', 'comment', 'startled', 'plead', 'ashamed', 'ashamed', 'eyes_closed', 'idle', 'startled', 'plead'],
   },
   child_girl: {
     head: 26, // includes the hair puffs
-    poses: ['idle', 'arms_crossed', 'celebrate', 'comment', 'eyes_closed', 'run', 'scared', 'shy', 'think', 'panic', 'dig', 'sneak'],
-    moods: ['idle', 'celebrate', 'celebrate', 'celebrate', 'idle', 'idle', 'arms_crossed', 'arms_crossed', 'think', 'arms_crossed', 'scared', 'shy', 'shy', 'shy', 'eyes_closed', 'think', 'scared', 'shy'],
+    poses: ['idle', 'arms_crossed', 'celebrate', 'comment', 'eyes_closed', 'run', 'scared', 'shy', 'think', 'panic', 'dig', 'sneak', 'proud', 'ashamed', 'ampe', 'swing', 'throw', 'bucket'],
+    moods: ['idle', 'celebrate', 'celebrate', 'celebrate', 'proud', 'idle', 'arms_crossed', 'arms_crossed', 'think', 'arms_crossed', 'scared', 'shy', 'ashamed', 'ashamed', 'eyes_closed', 'think', 'scared', 'shy'],
   },
   friend_mother: {
     head: 19,
@@ -86,6 +89,26 @@ const SHEETS: Record<string, { poses: string[]; moods: string[]; head: number }>
     poses: ['idle', 'show_off', 'laugh'],
     moods: ['idle', 'show_off', 'show_off', 'laugh', 'show_off', 'idle', 'show_off', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'idle', 'laugh', 'idle', 'idle', 'idle'],
   },
+  // ---- Episode Eight: 5:40 AM, no shirt yet
+  father_towel: {
+    head: 15.5,
+    poses: ['idle', 'laugh', 'shocked', 'stern'],
+    moods: ['idle', 'laugh', 'laugh', 'laugh', 'idle', 'idle', 'idle', 'stern', 'stern', 'stern', 'shocked', 'shocked', 'stern', 'stern', 'idle', 'idle', 'shocked', 'stern'],
+  },
+  // ---- Episode Ten: the white clothes, and what happens to them
+  child_boy_church: { head: 22.5, poses: ['idle', 'proud', 'worried'], moods: CHURCH_MOODS },
+  child_girl_church: { head: 26, poses: ['idle', 'proud', 'worried'], moods: CHURCH_MOODS },
+  child_boy_church_stain: { head: 22.5, poses: ['idle', 'panic'], moods: STAIN_MOODS },
+  child_girl_church_stain: { head: 26, poses: ['idle', 'panic'], moods: STAIN_MOODS },
+  child_boy_church_tie: { head: 22.5, poses: ['idle'], moods: ONE_POSE },
+  child_girl_church_tie: { head: 26, poses: ['idle'], moods: ONE_POSE },
+  child_boy_church_hanky: { head: 22.5, poses: ['idle'], moods: ONE_POSE },
+  child_girl_church_hanky: { head: 26, poses: ['idle'], moods: ONE_POSE },
+  child_boy_church_pink: { head: 22.5, poses: ['idle'], moods: ONE_POSE },
+  child_girl_church_pink: { head: 26, poses: ['idle'], moods: ONE_POSE },
+  mother_sunday: { head: 21, poses: ['idle'], moods: ONE_POSE },
+  father_sunday: { head: 15.5, poses: ['idle'], moods: ONE_POSE },
+  auntie_efua_sunday: { head: 30, poses: ['idle'], moods: ONE_POSE }, // the headwrap is the joke
 };
 
 const kid = (p: Player) => `child_${p}`;
@@ -156,6 +179,40 @@ export function headHeight(id: string, player: Player, outfit = ''): number {
 /** Every pose file a sheet needs, as asset paths (the asset test checks them). */
 export function allPosePaths(): string[] {
   return Object.entries(SHEETS).flatMap(([sheet, { poses }]) => poses.map((p) => `characters/${sheet}_${p}.webp`));
+}
+
+/**
+ * Which way a pose looks on screen: 1 right, -1 left. Unlisted poses look straight out.
+ * A pose that looks the wrong way for the moment is mirrored, so somebody pointing
+ * at Nana points at Nana whichever side of her they stand on.
+ */
+export const POSE_FACING: Record<string, 1 | -1> = {
+  mother_offer_food: 1, mother_scold: 1, mother_side_eye: 1, mother_think: 1,
+  father_idle: 1, father_laugh: 1, father_read_paper: 1, father_scold: 1, father_think: 1, father_dig: 1, father_lecture: 1, father_carry_crate: -1,
+  father_towel_idle: 1, father_towel_laugh: 1, father_towel_shocked: 1,
+  child_boy_comment: 1, child_boy_laugh: 1, child_boy_run: 1, child_boy_think: 1, child_boy_sneak: 1, child_boy_ampe: 1, child_boy_swing: 1, child_boy_throw: 1,
+  child_girl_comment: 1, child_girl_run: 1, child_girl_sneak: 1, child_girl_ampe: 1, child_girl_swing: 1, child_girl_throw: 1,
+  auntie_efua_gossip: 1, auntie_efua_point: 1,
+  friend_mother_point: 1,
+  bofrot_seller_call: 1, bofrot_seller_offer: -1,
+  teacher_inspect: -1,
+  classmate_laugh: -1,
+};
+
+export const facingOf = (url: string): number => POSE_FACING[url.split('/').pop()!.replace('.webp', '')] ?? 0;
+
+const CALLED: Record<string, string> = {
+  child: 'Nana', mum: 'Mummy|Esi', dad: 'Daddy', auntie: 'Auntie Efua|Auntie|Efua', friend: 'Kojo|Adjoa', teacher: 'Madam', classmate: 'Kwame',
+  friendmum: "Kojo's Mother|Adjoa's Mother|Auntie", bofrot: 'Auntie Akua|Akua|Auntie',
+};
+
+/** Who a line is said to: anybody called by name ("Nana!", "Yes, Mummy."), else whoever spoke last, else Nana. */
+export function hearerOf(speaker: string, text: string, onStage: string[], last: string | null): string | null {
+  const others = onStage.filter((id) => id !== speaker);
+  const named = others.find((id) => CALLED[id] && new RegExp(`(?:^|[.!?,…]\\s+)(?:${CALLED[id]})(?=[,.!?…]|\\s*$)`, 'i').test(text));
+  if (named) return named;
+  if (last && others.includes(last)) return last;
+  return others.includes('child') ? 'child' : (others[0] ?? null);
 }
 
 /** "dad@73" stands Daddy at x = 73% of the painting; plain "dad" is spread along the floor. */

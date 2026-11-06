@@ -6,21 +6,21 @@
 // =====================================================================
 
 === ep9 ===
-#episode:9 #scene:street #light:afternoon #cast:bofrot@16,friend,child #cam:wide #amb:street #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none
+#episode:9 #scene:street #light:afternoon #cast:bofrot@16,friend,child #cam:wide #amb:street #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none #prop:streetlight=off
 #card:Episode Nine/Five More Minutes/Wednesday · 5:50 PM
-Chaskele in the lane. A milk tin. A stick. You. #expr:child=focused #expr:friend=comment #expr:bofrot=idle
+Chaskele in the lane. A milk tin. A stick. You. #insert:chaskele_tin_stick #expr:child=swing #expr:friend=throw #expr:bofrot=idle
 {friend} throws. You swing. #anim:friend=lean #sfx:whoosh
-CLANG! The tin flies past the gutter. #sfx:thump #fx:impact #anim:child=jump #expr:child=delight
+CLANG! The tin flies past the gutter. #sfx:thump #fx:impact #anim:child=jump #expr:child=delight #expr:friend=happy
 Twenty-three runs. A world record. In this lane. #sfx:cheer #emote:child=sparkle
 Auntie Akua: Eiii, small Abedi Pele! #expr:bofrot=laugh #focus:bofrot
 The sky turns orange. Then pink. #light:dusk #focus:none #cam:gate
-The streetlight flickers. Once. Twice. #light:evening #fx:flash #sfx:click
-{friend}: It's not fully on. That one doesn't count. #expr:friend=comment #focus:friend
+The streetlight flickers. Once. Twice. #light:evening #prop:streetlight=flicker #cam:streetlight #sfx:click
+{friend}: It's not fully on. That one doesn't count. #expr:friend=comment #cam:wide #focus:friend
 {friend}: Five more minutes. #expr:friend=happy #anim:friend=bounce
 {called == "fullname" || called == "third":
     The last time you didn't come, the whole junction learned your full name. #emote:child=sweat #focus:none
 }
-The rule is the rule. When the streetlight comes on, you come home. #focus:none #expr:child=worried #readroom #timer:10
+The rule is the rule. When the streetlight comes on, you come home. #prop:streetlight=on #focus:none #expr:child=worried #readroom #timer:10
 #hint:Mummy can see the streetlight from the kitchen window. Mummy can also see the clock.
 * [Go home now #flavour:Twenty-three runs is enough history.]
     -> on_time
@@ -49,8 +49,8 @@ You eat your dinner very peacefully. #expr:child=happy #emote:child=heart
 ~ home_time = "late"
 ~ score(-3, 0, 2)
 Five more minutes. #expr:child=delight #anim:child=jump #focus:none
-{friend} throws. You swing. CLANG! #sfx:thump #anim:friend=lean
-Five more minutes. #sfx:whoosh #auto:1200
+{friend} throws. You swing. CLANG! #sfx:thump #expr:child=swing #expr:friend=throw #anim:friend=lean
+Five more minutes. #sfx:whoosh #auto:1200 #expr:child=delight #expr:friend=happy
 Five more minutes. #anim:child=jump #auto:1200
 Auntie Akua lights her lantern. That is the second clock. #prop:lamp=on #light:moon #expr:bofrot=call #focus:bofrot
 Auntie Akua: Children! It is night! Your mothers have eyes! #expr:bofrot=call
@@ -94,7 +94,7 @@ You run. Auntie Akua laughs for the rest of the evening. #expr:child=run #sfx:wh
 -> ep9_end
 
 = ep9_end
-That night, through your window, Mummy is talking to {friend}'s Mother over the wall. #scene:bedroom #light:moon #cast:child #cam:bed #amb:night #expr:child=eyesclosed
+That night, through your window, Mummy is talking to {friend}'s Mother over the wall. #scene:bedroom #light:moon #cast:child@36 #cam:bed #amb:night #expr:child=eyesclosed
 {
 - home_time == "ontime":
     Mummy, over the wall: Mine came home on time. I don't know what you are feeding yours.

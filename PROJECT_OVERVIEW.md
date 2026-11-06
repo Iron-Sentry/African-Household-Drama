@@ -300,6 +300,10 @@ The original prototype has been expanded into a build-backed, three-episode vert
 
 “The Visitor From Abroad” is a proposed next episode teased by the report card; it is not implemented in this vertical slice.
 
+## Implementation update, 6 November 2026
+
+The sections above are a record of earlier stages. The current game is **Volume One: thirteen episodes, 90 discoverable moments and four report-card ranks**, from *The Kissing Scene* to *Christmas Visitors Are Coming*, played in a CSS-camera stage with seven painted locations, weather, characters who turn to face whoever is speaking, and recorded sound. The 3D stage described above has been removed. See `README.md` for the architecture and `docs/TEST_RESULTS.md` for current evidence.
+
 ## Original review validation performed
 
 - Read every project source file and all SVG assets.

@@ -52,6 +52,7 @@ Review the provisions total, the accidental extra ₵1,000 change, the amount of
 - Check the relationships and forms of address among Mummy/Esi, Daddy, Auntie Efua, the friend next door (**Kojo** for a girl player, **Adjoa** for a boy player; both are Monday-born day names) and the friend's mother.
 - Nana's pose art exists as a boy and a girl; the script is written in the second person so both read naturally. Confirm the friend's lines read naturally for both genders.
 - Review Mummy's side-eye, Daddy's authority, Auntie Efua's hospitality, and the report-card labels to ensure the humour comes from recognisable people rather than flattening adult characters into tropes.
+- **New in the presentation (November 2026), please check:** scene changes sweep bands of colour inspired by woven kente cloth across the screen, and the Daddy-at-5:40-AM sprites wrap him in a kente-like patterned cloth with a towel on his shoulder. Is kente-style patterning appropriate on a household wrap and in a transition, given what the cloth means? The TV cartoon is an original spider in a hat, inspired by Ananse folk tales. Confirm that, and the artificial Christmas tree, paper chains and balloons in the Christmas hall, feel right for a Ghanaian family in 1998.
 - Verify that consequences feel affectionate and socially credible, especially the “Akola Bone!” path and references to slippers or public embarrassment. The Episode 1 knuckle-to-the-head beat was rewritten as a pointed finger sending Nana to bed; the game shows no physical discipline.
 
 ## Review method

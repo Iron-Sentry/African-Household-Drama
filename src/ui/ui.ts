@@ -17,6 +17,7 @@ export interface LineOpts {
   anchor: Anchor | null; // where the speaker's face is, if on screen
   faces?: FaceBox[]; // every face on screen: narration steers clear of them
   insert?: string; // prop close-up panel for this line
+  reveal?: string; // a big panel over the scene, kept up by the director until it says otherwise
 }
 
 export interface ChoiceOpts {
@@ -25,6 +26,7 @@ export interface ChoiceOpts {
   hintOpen?: boolean; // street-smart players notice without asking
   hotspots?: (ids: { id: string; label: string; pick: () => void }[]) => void;
   faces?: FaceBox[]; // the answer stack stops below these on phones
+  urgent?: () => void; // the last three seconds of a timer
 }
 
 const overlap = (r: DOMRect, f: FaceBox) =>
@@ -77,7 +79,9 @@ export class UI {
   // ---------------------------------------------------------------- lines
   showLine(speaker: Character | null, name: string, text: string, o: LineOpts): Promise<void> {
     this.clearChoices();
-    this.showInsert(o.insert);
+    const panel = this.showInsert(o.insert, o.faces);
+    if (panel) o = { ...o, faces: [...(o.faces || []), panel] }; // the words keep off the close-up too
+    this.showReveal(o.reveal);
     this.log.push({ who: speaker ? name : '', text });
     if (this.log.length > 120) this.log.shift();
     this.announce(speaker ? `${name}: ${text}` : text);
@@ -230,21 +234,51 @@ export class UI {
     raf = requestAnimationFrame(tick);
   }
 
-  private showInsert(name?: string) {
+  /** The close-up panel: top right, or top left if that would cover a face. Returns where it landed. */
+  private showInsert(name?: string, faces: FaceBox[] = []): FaceBox | null {
+    const el = this.insertEl;
     if (!name) {
-      this.insertEl.classList.remove('show');
+      el.classList.remove('show');
+      return null;
+    }
+    el.querySelector('img')!.src = assetUrl(`props/${name}.webp`);
+    el.classList.remove('show', 'left');
+    const box = (): FaceBox => ({ id: 'insert', left: el.offsetLeft, right: el.offsetLeft + el.offsetWidth, top: el.offsetTop, bottom: el.offsetTop + el.offsetHeight });
+    const cover = () => {
+      const b = box();
+      return faces.reduce((sum, f) => sum + overlap(new DOMRect(b.left, b.top, b.right - b.left, b.bottom - b.top), f), 0);
+    };
+    const right = cover();
+    if (right > 0) {
+      el.classList.add('left');
+      if (cover() >= right) el.classList.remove('left');
+    }
+    void el.offsetWidth;
+    el.classList.add('show');
+    return box();
+  }
+
+  private showReveal(name?: string) {
+    const el = $('reveal');
+    const img = el.querySelector('img')!;
+    if (!name) {
+      el.classList.remove('show');
+      delete el.dataset.name;
       return;
     }
-    this.insertEl.querySelector('img')!.src = assetUrl(`props/${name}.webp`);
-    this.insertEl.classList.remove('show');
-    void this.insertEl.offsetWidth;
-    this.insertEl.classList.add('show');
+    if (el.dataset.name === name) return; // already up: only a change plays the flash
+    el.dataset.name = name;
+    img.src = assetUrl(`props/${name}.webp`);
+    el.classList.remove('show');
+    void el.offsetWidth;
+    el.classList.add('show');
   }
 
   hideDialogue() {
     this.bubble.hidden = true;
     this.caption.hidden = true;
     this.showInsert();
+    this.showReveal();
   }
 
   // ---------------------------------------------------------------- choices
@@ -252,7 +286,7 @@ export class UI {
     this.list.replaceChildren();
     this.choicesEl.hidden = true;
     this.timerEl.hidden = true;
-    document.body.classList.remove('choosing');
+    document.body.classList.remove('choosing', 'urgent');
   }
 
   private openHint() {
@@ -281,12 +315,25 @@ export class UI {
     document.body.classList.add('choosing');
     return new Promise((resolve) => {
       let timer = 0;
-      const pick = (i: number) => {
+      let urgent = 0;
+      let picked = false;
+      const pick = (i: number, btn?: HTMLElement) => {
+        if (picked) return;
+        picked = true;
         clearTimeout(timer);
+        clearTimeout(urgent);
         document.removeEventListener('visibilitychange', onHidden);
         o.hotspots?.([]);
-        this.clearChoices();
-        resolve(i);
+        const finish = () => {
+          this.clearChoices();
+          resolve(i);
+        };
+        if (!btn || document.documentElement.dataset.motion === 'reduced') return finish();
+        // the answer you chose lands; the others fall away
+        document.body.classList.remove('urgent');
+        this.timerEl.hidden = true;
+        for (const b of this.list.children) b.classList.add(b === btn ? 'picked' : 'gone');
+        setTimeout(finish, 240);
       };
       const timed = !!o.timer && choices.some((c) => c.timeout);
       const shown = choices.filter((c) => !(timed && c.timeout));
@@ -300,7 +347,7 @@ export class UI {
         btn.querySelector('.label')!.textContent = c.hotspot ? `Look: ${c.text}` : c.text;
         btn.querySelector('.flavour')!.textContent = c.flavour || '';
         btn.style.setProperty('--i', String(n));
-        btn.addEventListener('click', () => pick(c.index));
+        btn.addEventListener('click', () => pick(c.index, btn));
         this.list.append(btn);
       });
       o.hotspots?.(choices.filter((c) => c.hotspot).map((c) => ({ id: c.hotspot!, label: c.text, pick: () => pick(c.index) })));
@@ -315,7 +362,9 @@ export class UI {
         // never let a timer run out while the player is away
         if (document.hidden && timer) {
           clearTimeout(timer);
+          clearTimeout(urgent);
           timer = 0;
+          document.body.classList.remove('urgent');
           this.timerEl.hidden = true;
         }
       };
@@ -329,6 +378,10 @@ export class UI {
         this.timerEl.dataset.label = `QUICK! ${o.timer} SECONDS`;
         this.announce(`Choose quickly: you have ${o.timer} seconds. If you do nothing, you will ${fallback.text.toLowerCase()}.`);
         timer = window.setTimeout(() => pick(fallback.index), o.timer! * 1000);
+        urgent = window.setTimeout(() => {
+          document.body.classList.add('urgent');
+          o.urgent?.();
+        }, Math.max(0, o.timer! - 3) * 1000);
         document.addEventListener('visibilitychange', onHidden);
       } else {
         this.announce(`${shown.length} choices.`);
@@ -385,6 +438,9 @@ export class UI {
       if (d) {
         badge.textContent = d > 0 ? `+${d}` : String(d);
         badge.className = `delta show ${(k === 'trouble' ? d < 0 : d > 0) ? 'good' : 'bad'}`;
+        li.classList.remove('bump');
+        void li.offsetWidth;
+        li.classList.add('bump');
         clearTimeout(Number(badge.dataset.t));
         badge.dataset.t = String(setTimeout(() => (badge.className = 'delta'), 2200));
       }
@@ -416,8 +472,11 @@ export class UI {
   }
 
   // ---------------------------------------------------------------- overlays
-  card(kicker: string, title: string, meta: string, hold: number): Promise<void> {
+  card(kicker: string, title: string, meta: string, hold: number, art?: string): Promise<void> {
     const card = $('card');
+    const artEl = $<HTMLImageElement>('card-art');
+    artEl.hidden = !art;
+    if (art) artEl.src = assetUrl(`${art}.webp`);
     $('card-kicker').textContent = kicker;
     $('card-title').textContent = title;
     $('card-meta').textContent = meta;
@@ -437,16 +496,18 @@ export class UI {
   }
 
   /**
-   * Cover the stage before a scene change. `fade` dips to black, `iris` closes
-   * like a cartoon, `cut` doesn't cover at all. With a location, its name shows
-   * while the stage is covered.
+   * Cover the stage before a scene change. `wipe` sweeps bands of cloth across,
+   * `fade` dips to black, `iris` closes like a cartoon, `cut` doesn't cover at
+   * all. With a location, its name shows while the stage is covered.
    */
   async cover(kind: string, loc: { title: string; location: string } | null, reduced: boolean) {
     this.hideDialogue();
     const c = $('curtain');
     if (kind === 'cut') return;
     const iris = kind === 'iris' && !reduced;
-    c.className = `curtain ${iris ? 'iris' : 'fade'}`;
+    const sweep = kind === 'wipe' && !reduced;
+    c.className = `curtain ${iris ? 'iris' : sweep ? 'wipe' : 'fade'}`;
+    if (sweep) c.style.setProperty('--wipe', Math.random() < 0.5 ? '1' : '-1');
     const label = c.querySelector('.loc')!;
     label.classList.toggle('on', !!loc);
     if (loc) {
@@ -457,7 +518,7 @@ export class UI {
     c.hidden = false;
     void c.offsetWidth;
     c.classList.add('closed');
-    await wait(reduced ? 120 : iris ? 720 : 520);
+    await wait(reduced ? 120 : iris ? 720 : sweep ? 680 : 520);
   }
 
   /** Lift the curtain (fade out, or open the iris). Resolves as the scene is mostly visible. */
@@ -465,6 +526,7 @@ export class UI {
     const c = $('curtain');
     if (c.hidden) return;
     c.classList.remove('closed');
+    c.classList.add('lift'); // the wipe carries on across, it doesn't go back the way it came
     await wait(reduced ? 120 : 420);
     setTimeout(() => !c.classList.contains('closed') && (c.hidden = true), 400);
   }
@@ -482,6 +544,14 @@ export class UI {
 
   fx(name: string, reduced: boolean) {
     const layer = $('fx');
+    if (name === 'lightning') {
+      if (reduced) return; // no strobing for anybody who asked for less motion
+      const f = document.createElement('div');
+      f.className = 'fx-lightning';
+      layer.append(f);
+      setTimeout(() => f.remove(), 900);
+      return;
+    }
     if (name === 'flash' || name === 'impact') {
       if (reduced && name === 'impact') return;
       const f = document.createElement('div');

@@ -3,7 +3,7 @@ import { assetExists as exists } from '../scripts/assets.mjs';
 import { PLACEHOLDERS } from '../src/content/assets.ts';
 import { allPosePaths } from '../src/content/characters.ts';
 import { SCENES } from '../src/content/scenes.ts';
-import { INSERTS, STICKERS } from '../src/content/validate.ts';
+import { DRESS_INSERTS, INSERTS, REVEALS, STICKERS } from '../src/content/validate.ts';
 
 /** Every image the registries can ask for. */
 const used = [
@@ -11,6 +11,8 @@ const used = [
   ...allPosePaths(),
   ...INSERTS.map((n) => `props/${n}.webp`),
   ...STICKERS.map((n) => `fx/${n}.webp`),
+  ...DRESS_INSERTS.map((n) => `props/${n}_girl.webp`),
+  ...REVEALS.flatMap((n) => [`props/${n}_boy.webp`, `props/${n}_girl.webp`]),
 ];
 
 describe('art and placeholders', () => {

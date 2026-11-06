@@ -18,6 +18,9 @@ export interface StageState {
   expr: Record<string, string>;
   outfit?: Record<string, string>; // #outfit, e.g. { child: 'uniform' }; older saves have none
   props: Record<string, string>;
+  weather?: string; // #weather; older saves have none
+  reveal?: string; // #reveal: the big panel still up; older saves have none
+  face?: Record<string, string>; // #face, e.g. { dad: 'tv' }; older saves have none
 }
 
 export interface Checkpoint {

@@ -6,7 +6,7 @@
 // =====================================================================
 
 === ep7 ===
-#episode:7 #scene:hall #light:afternoon #cast:mum,child,dad #cam:wide #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none
+#episode:7 #scene:hall #light:afternoon #cast:mum,child,dad #cam:wide #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none #weather:none #prop:soup=off
 #card:Episode Seven/Who Touched the Remote?/Sunday · 2:55 PM
 Sunday. After church. After jollof. The most powerful hour of the week. #expr:dad=hands_on_hips #expr:mum=idle #expr:child=happy
 Daddy: Black Stars. Three o'clock. Nobody move. #expr:dad=lecture #focus:dad #emote:dad=sparkle
@@ -118,7 +118,7 @@ The remote is very heavy. #focus:none #readroom #timer:10
 * [Change it to cartoons #flavour:Power corrupts.]
     ~ tv_won = "cartoons"
     ~ score(-6, 0, 7)
-    Click. Cartoons. #sfx:click #prop:tv=snow #cam:tv
+    Click. Cartoons. #sfx:click #prop:tv=cartoon #cam:tv
     Two parents turn to you, very slowly. #cam:wide #expr:dad=shocked #expr:mum=shocked #sfx:heartbeat
     The remote is confiscated until further notice. #sticker:child=oops #expr:child=ashamed
     #moment:power_corrupts/Power Corrupts
@@ -137,12 +137,12 @@ Mummy: Thank you. #expr:mum=approve #focus:mum
 -> film
 
 = football
-Click. The Black Stars run out. In the snow. #sfx:click #prop:tv=snow #sfx:static #cam:tv #amb:static #focus:none
+Click. The Black Stars run out. In the snow. #sfx:click #prop:tv=fuzzy #sfx:static #cam:tv #amb:static #focus:none #face:dad=tv #face:child=tv #face:mum=tv
 {antenna == "foil":
-    Mummy's Christmas foil does its work. The snow clears. Daddy salutes it. #prop:foil=on #sfx:tvclear #expr:dad=delight #emote:dad=heart
+    Mummy's Christmas foil does its work. The snow clears. Daddy salutes it. #prop:foil=on #prop:tv=football #sfx:tvclear #expr:dad=delight #emote:dad=heart
 }
 Daddy: Pass! Pass it! PASS IT! #expr:dad=hands_on_hips #focus:dad #anim:dad=bounce
-GOAL! #sfx:cheer #fx:flash #anim:dad=jump #anim:child=jump #expr:child=delight #focus:none #cam:wide
+GOAL! #sfx:goal #sticker:dad=goal #fx:flash #anim:dad=jump #anim:child=jump #expr:child=delight #focus:none #cam:wide
 Daddy lifts you up to the ceiling fan. Mummy screams. Not about the goal. #expr:mum=shock #fx:shake
 {tv_won == "dad":
     ~ score(-2, 0, -1)
@@ -159,7 +159,7 @@ Mummy turns the film up. #expr:mum=smug #focus:mum
 -> ep7_end
 
 = ep7_end
-Evening comes. The house is calm again. #light:evening #cam:wide #amb:hall #prop:tv=off #prop:foil=off #cast:mum,child,dad #focus:none #expr:dad=idle #expr:mum=idle #expr:child=neutral
+Evening comes. The house is calm again. #light:evening #cam:wide #amb:hall #prop:tv=off #prop:foil=off #cast:mum,child,dad #focus:none #expr:dad=idle #expr:mum=idle #expr:child=neutral #face:dad=none #face:child=none #face:mum=none
 Mummy: The water comes tonight. When it comes, Nana, fill the drum. #expr:mum=stern #focus:mum
 Nana: Yes, Mummy. #expr:child=happy #focus:child
 You will remember. Definitely. #focus:none #emote:child=dots

@@ -6,13 +6,13 @@
 // =====================================================================
 
 === ep13 ===
-#episode:13 #scene:hall #light:afternoon #cast:mum,child,dad #cam:wide #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #prop:foil=off #outfit:child=none #outfit:friend=none
+#episode:13 #scene:hall_xmas #light:afternoon #cast:mum,child,dad #cam:wide #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #prop:foil=off #outfit:child=none #outfit:friend=none
 #card:Episode Thirteen/Christmas Visitors Are Coming/Christmas Eve · 4:00 PM
 Christmas Eve. The radio is playing carols. Mummy is not. #sfx:radio #expr:mum=stern #expr:dad=read_paper #expr:child=happy
 Mummy: Visitors at six. SIX. #focus:mum #anim:mum=bounce
 Mummy: The floor. The plates. The ice for the malt. The chairs. Your father's newspapers. #expr:mum=scold
 Daddy lowers his newspaper. Daddy raises his newspaper. #expr:dad=read_paper #focus:dad
-The good plates are coming out of the showcase. The ones that only come out for visitors. And funerals. #focus:none #cam:wide #sfx:crinkle
+The good plates are coming out of the showcase. The ones that only come out for visitors. And funerals. #insert:good_plate #focus:none #cam:wide #sfx:crinkle
 Mummy turns to you. Two hours. Twenty jobs. One child. #expr:mum=stern #focus:mum #cam:push #readroom #timer:12
 #hint:The plates are older than you, and Mummy loves them more. The ice-seller closes at five. Mummy decides the most urgent thing by what visitors see first.
 * [Disappear into the bedroom #flavour:A Christmas miracle: invisibility.]
@@ -29,7 +29,7 @@ Mummy turns to you. Two hours. Twenty jobs. One child. #expr:mum=stern #focus:mu
 = hide
 ~ xmas_job = "hid"
 ~ score(-6, 0, 5)
-You tiptoe into the bedroom and lie under the bed. #expr:child=sneak #scene:bedroom #light:afternoon #cast:child #cam:bed #transition:iris
+You tiptoe into the bedroom and lie under the bed. #expr:child=sneak #scene:bedroom #light:afternoon #cast:child@36 #cam:bed #transition:iris
 Peace. Quiet. Christmas. #expr:child=eyesclosed #emote:child=dots #auto:1600
 Mummy, from the doorway: I can see your feet. #sfx:sting #fx:impact #cast:child,mum@84 #cam:door #light:doorway #expr:mum=scold
 Mummy: Since you like small spaces, you will clean the toilet. #expr:mum=stern #focus:mum #sticker:child=oops
@@ -40,7 +40,7 @@ Mummy: Since you like small spaces, you will clean the toilet. #expr:mum=stern #
 ~ xmas_job = "plates"
 ~ score(6, 0, -3)
 Nana: Mummy, I'll do the plates. #expr:child=proud #focus:child
-Mummy hands you the first plate like a newborn baby. #expr:mum=offer_food #focus:mum #sfx:crinkle
+Mummy hands you the first plate like a newborn baby. #insert:good_plate #expr:mum=offer_food #focus:mum #sfx:crinkle
 Mummy: If you break it, don't come back. Go to Kumasi. #expr:mum=stern
 One plate. Two plates. Twelve plates. Not one crack. #sfx:pop #expr:child=strain #focus:child #cam:table
 Mummy inspects the table. Mummy approves the table. #expr:mum=approve #focus:mum #sticker:mum=good_child #sfx:good
@@ -62,10 +62,10 @@ Mummy sits down for the first time today. #expr:mum=idle #focus:mum #emote:mum=h
 ~ xmas_job = "ice"
 ~ score(2, 3, -1)
 You run. #expr:child=run #sfx:whoosh #focus:none
-The lane. The ice-seller is closing. #scene:street #light:dusk #cast:bofrot@16,child #cam:stall #amb:street #transition:iris
+The lane. The ice-seller is closing. #scene:street #light:dusk #cast:bofrot@16,child #cam:stall #amb:street #transition:iris #prop:streetlight=off
 Auntie Akua: Last block! Because it's Christmas! #expr:bofrot=offer #focus:bofrot
-You carry a block of ice home against your chest. Your chest will never forget. #expr:child=strain #anim:child=shake #emote:child=sweat #focus:child
-Home. The malt goes into a bucket of ice. Daddy salutes you. #scene:hall #light:dusk #cast:mum,child,dad #cam:wide #amb:hall #expr:dad=delight #transition:cut
+You carry a block of ice home against your chest. Your chest will never forget. #insert:ice_block #expr:child=strain #anim:child=shake #emote:child=sweat #focus:child
+Home. The malt goes into a bucket of ice. Daddy salutes you. #insert:malt_ice_bucket #scene:hall_xmas #light:dusk #cast:mum,child,dad #cam:wide #amb:hall #expr:dad=delight #transition:cut
 #moment:last_ice/The Last Block of Ice
 Mummy: And the floor? #expr:mum=side_eye #focus:mum
 Nana: ...The floor is next, Mummy. #expr:child=worried #focus:child
@@ -82,8 +82,8 @@ Everything. #anim:child=slump #sfx:whoosh #focus:none
 // ---- Six o'clock ----------------------------------------------------------
 
 = six_oclock
-Six o'clock. The door. #scene:hall #light:evening #cast:mum,child,dad #cam:wide #amb:hall #sfx:knock #expr:mum=delight #expr:dad=approve #expr:child=happy
-Merry Christmas! #sfx:cheer #cast:auntie,mum,child,dad,friendmum,friend #expr:auntie=wave #expr:friendmum=wave #expr:friend=happy
+Six o'clock. The door. #scene:hall_xmas #light:evening #cast:mum,child,dad #cam:wide #amb:hall #sfx:knock #expr:mum=delight #expr:dad=approve #expr:child=happy
+Merry Christmas! #sfx:cheer #burst:confetti #cast:auntie,mum,child,dad,friendmum,friend #sticker:auntie=merry_christmas #expr:auntie=wave #expr:friendmum=wave #expr:friend=happy
 Auntie Efua comes in first. Auntie Efua always comes in first. #focus:auntie #expr:auntie=welcome
 {
 - biscuit == "one":
@@ -125,7 +125,7 @@ Auntie Efua comes in first. Auntie Efua always comes in first. #focus:auntie #ex
 - else:
     {friend}: Merry Christmas! Is there jollof? #expr:friend=delight
 }
-Daddy opens the malt. #focus:dad #expr:dad=delight #insert:malt_bottle #sfx:pop
+Daddy opens the malt. #focus:dad #expr:dad=delight #insert:malt_bottle #sfx:bottle
 {
 - malt == "admit" || malt == "detective":
     Daddy hands you a malt. In front of everybody. Like a medal. #emote:child=sparkle #sfx:good
@@ -144,7 +144,7 @@ Jollof. Chicken. Laughter. Auntie Efua tells every story about this year. Every 
 
 = photo
 Daddy: Photo! Everybody! Christmas photo! #expr:dad=lecture #focus:dad #anim:dad=bounce
-Daddy sets the camera on the showcase. Ten seconds. #insert:framed_family_photo #focus:none
+Daddy sets the camera on the showcase. Ten seconds. #insert:film_camera #focus:none
 Everybody squeezes in. Auntie Efua takes the middle. Of course. #cam:wide #expr:auntie=welcome #expr:mum=approve #expr:friendmum=laugh #expr:friend=happy
 Ten. Nine. Eight... #sfx:click #cam:push #readroom #timer:8
 #hint:This photo will hang in the hall for thirty years. Every visitor will see it. Every visitor will ask.
@@ -167,21 +167,21 @@ Ten. Nine. Eight... #sfx:click #cam:push #readroom #timer:8
     ~ xmas_photo = "mummy"
     ~ score(3, 0, -1)
     You look at Mummy. Mummy is fixing your collar. You are both looking at each other when... #expr:mum=approve #expr:child=happy #focus:mum
-- FLASH. #fx:flash #sfx:click #focus:none #cam:wide #insert:framed_family_photo
+- FLASH. #fx:flash #sfx:camera #focus:none #cam:wide
 -> years_later
 
 = years_later
-Years later. #light:evening #cast:none #cam:photo #amb:hall #sfx:title
-The Christmas photo hangs in the hall. Every visitor stops in front of it. #insert:framed_family_photo
+Years later. #scene:hall #transition:fade #light:evening #cast:none #cam:photo #amb:hall #sfx:title
+The Christmas photo hangs in the hall. Every visitor stops in front of it.
 {
 - xmas_photo == "bunny":
-    Every visitor asks about the bunny ears. Daddy still says he didn't know.
+    Every visitor asks about the bunny ears. Daddy still says he didn't know. #reveal:christmas_photo_bunny
 - xmas_photo == "eyes":
-    Every visitor asks why Nana's eyes are closed. Mummy says, "That one? That one is a long story."
+    Every visitor asks why Nana's eyes are closed. Mummy says, "That one? That one is a long story." #reveal:christmas_photo_eyes
 - xmas_photo == "mummy":
-    In the photo, everybody is looking at the camera. Except you and Mummy. You are looking at each other.
+    In the photo, everybody is looking at the camera. Except you and Mummy. You are looking at each other. #reveal:christmas_photo_mummy
 - else:
-    In the photo, everybody is smiling. Even Daddy. Especially Auntie Efua.
+    In the photo, everybody is smiling. Even Daddy. Especially Auntie Efua. #reveal:christmas_photo_smile
 }
 In a Ghanaian household, even the smallest decision can become everybody's business. #cam:wide
 This year, all of them did.

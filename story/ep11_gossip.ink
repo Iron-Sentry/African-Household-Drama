@@ -9,7 +9,7 @@
 === ep11 ===
 #episode:11 #scene:auntie #light:afternoon #cast:auntie,child,mum #cam:wide #amb:auntie #prop:auntie_tv=off #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none
 #card:Episode Eleven/The Family Gossip Trap/Saturday · 11:00 AM
-Auntie Efua's soup bowl goes back today. Never empty. Mummy has filled it with her own groundnut soup. #expr:mum=offer_food #expr:auntie=welcome #expr:child=happy #focus:mum
+Auntie Efua's soup bowl goes back today. Never empty. Mummy has filled it with her own groundnut soup. #insert:soup_bowl_groundnut #expr:mum=offer_food #expr:auntie=welcome #expr:child=happy #focus:mum
 This is not a bowl. This is diplomacy. #focus:none #emote:child=dots
 Auntie Efua: Esi! Come, come! #expr:auntie=wave #focus:auntie #sfx:door
 {auntie_tv_fixed:
@@ -20,7 +20,7 @@ Auntie Efua: Esi. Go and taste MY soup in the kitchen. Tell me if the salt is co
 Mummy goes to the kitchen. The kitchen is behind a very thin curtain. #cast:auntie,child #expr:mum=idle #sfx:door #focus:none
 Auntie Efua pulls you close. #expr:auntie=gossip #focus:auntie #cam:tray
 Auntie Efua: Nana. Tell me the truth. Who cooks better? Me? Or your mother? #light:tension #sfx:heartbeat
-The curtain does not move. The curtain is listening. #focus:none #expr:child=panic #emote:child=sweat #readroom #timer:12
+The curtain does not move. The curtain is listening. #cam:door #focus:none #expr:child=panic #emote:child=sweat #readroom #timer:12
 #hint:Mummy can hear everything through that curtain. Auntie Efua can tell everybody everything. Both of them can cook.
 * [Mummy, of course #flavour:Blood is thicker than soup.]
     -> mummy

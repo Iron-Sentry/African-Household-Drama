@@ -6,14 +6,14 @@
 // =====================================================================
 
 === ep10 ===
-#episode:10 #scene:bedroom #light:dusk #cast:child #cam:wide #amb:hall #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none
+#episode:10 #scene:bedroom #light:dusk #cast:child #cam:wide #amb:hall #prop:lamp=off #prop:keyhole=off #outfit:child=church #outfit:friend=none
 #card:Episode Ten/Sunday Best/Sunday · 6:05 AM
 Sunday. Your white church clothes. Ironed. Starched. They could go to church without you. #expr:child=proud #emote:child=sparkle #focus:child
 Mummy, from the hall: First service is at six-thirty! Nobody will make me late for the Lord! #sfx:sting
 You eat one last bite of Daddy's bread and stew. Just one. #expr:child=delight #sfx:crunch #focus:none
 One red drop falls. #auto:1400 #cam:push #sfx:heartbeat
-Right on your chest. On the white. #expr:child=panic #fx:impact #sticker:child=ewurade #emote:child=shock
-It is the shape of Africa. #emote:child=dots #focus:child
+Right on your chest. On the white. #outfit:child=church_stain #expr:child=panic #fx:impact #sticker:child=ewurade #emote:child=shock
+It is the shape of Africa. #insert:church_clothes_stain #emote:child=dots #focus:child
 Mummy, from the hall: Nana! Inspection in five minutes! #sfx:sting #focus:none
 Palm oil does not forgive. Palm oil does not forget. #expr:child=worried #readroom #timer:12
 #hint:Cold water and salt can save palm oil, if you are quick. Hot water and soap make it worse. Mummy knows this. You don't.
@@ -31,7 +31,7 @@ Palm oil does not forgive. Palm oil does not forget. #expr:child=worried #readro
 = hand
 ~ stain = "hand"
 ~ score(-1, 1, 0)
-You put your hand on your chest. Like a national anthem. #expr:child=proud #focus:child
+You put your hand on your chest. Like a national anthem. #outfit:child=church #expr:child=worried #focus:child
 -> inspection
 
 = confess
@@ -40,8 +40,8 @@ You put your hand on your chest. Like a national anthem. #expr:child=proud #focu
 Nana: Mummy... palm oil. #expr:child=worried #focus:child
 Mummy appears in the doorway. One look. #cast:child,mum@84 #cam:door #light:doorway #expr:mum=shocked #emote:mum=shock
 Mummy: Take it off. Quick. Cold water. Salt. #expr:mum=stern #focus:mum
-Two minutes. Cold water, salt, Mummy's thumbs, and a prayer. #insert:watering_can_tin #sfx:splash #focus:none #cam:wide
-Africa disappears. A faint Togo remains. Nobody will see Togo. #expr:child=delight #emote:child=sparkle #sfx:good
+Two minutes. Cold water, salt, Mummy's thumbs, and a prayer. #insert:salt_water_basin #sfx:splash #focus:none #cam:wide
+Africa disappears. A faint Togo remains. Nobody will see Togo. #outfit:child=church #insert:church_clothes_clean #expr:child=proud #emote:child=sparkle #sfx:good
 Mummy: Next time, you tell me in one minute, not five. #expr:mum=approve #focus:mum
 #moment:cold_water/Cold Water and Salt
 -> inspection
@@ -51,7 +51,7 @@ Mummy: Next time, you tell me in one minute, not five. #expr:mum=approve #focus:
 ~ score(-3, 0, 3)
 Hot water. Soap. Scrub, scrub, scrub. #expr:child=strain #anim:child=shake #sfx:splash
 Africa becomes pink. Then bigger. Then wet. #emote:child=sweat #focus:child
-Now it is the shape of Africa and Europe. #fx:impact #expr:child=panic
+Now it is the shape of Africa and Europe. #outfit:child=church_pink #insert:church_clothes_pink #fx:impact
 #moment:pink_africa/Pink Africa
 -> inspection
 
@@ -59,7 +59,7 @@ Now it is the shape of Africa and Europe. #fx:impact #expr:child=panic
 ~ stain = "tie"
 ~ score(-1, 3, 1)
 You tiptoe into Daddy's room. Daddy's red tie. The long one. #expr:child=sneak #focus:child #sfx:door
-You tie it like Daddy does. Badly. But it covers Africa completely. #expr:child=proud #emote:child=sparkle
+You tie it like Daddy does. Badly. But it covers Africa completely. #outfit:child=church_tie #insert:red_tie #emote:child=sparkle
 Daddy, from his room: Esi! Where is my red tie? #sfx:sting #focus:none
 #moment:small_lawyer/The Small Lawyer
 -> inspection
@@ -77,7 +77,7 @@ The hall. Mummy's inspection line. #scene:hall #light:dusk #cast:mum,child,dad #
 Mummy: Turn around. #focus:mum
 {
 - stain == "hand":
-    You turn around. Hand on chest. #expr:child=proud #focus:child
+    You turn around. Hand on chest. #expr:child=worried #focus:child
     Mummy: Why is your hand there? #expr:mum=side_eye #focus:mum
     Nana: I'm... grateful, Mummy. #expr:child=worried #focus:child
     Daddy: Leave the child. The child is grateful. #expr:dad=laugh #focus:dad
@@ -90,7 +90,7 @@ Mummy: Turn around. #focus:mum
     Mummy: Nana. Did you use HOT water? #expr:mum=wail #focus:mum #fx:shake #sticker:mum=ei
     Mummy: Hot water! On palm oil! Who raised you?! #expr:mum=scold
     Daddy: You did. #expr:dad=laugh #focus:dad
-    Mummy pins her own handkerchief over it. It is pink too now. #expr:mum=stern #focus:mum
+    Mummy pins her own handkerchief over it. It is pink too now. #outfit:child=church_hanky #expr:mum=stern #focus:mum
 - stain == "tie":
     You turn around. Daddy's red tie hangs down to your knees. #expr:child=proud #focus:child
     Daddy sees his tie. Daddy opens his mouth. #expr:dad=shocked #focus:dad
@@ -101,12 +101,12 @@ Mummy: Turn around. #focus:mum
     Mummy: Turn again. #expr:mum=side_eye #focus:mum
     Mummy: What is this map on your chest? #expr:mum=scold #fx:shake #sticker:mum=hmmm
     Nana: ...Africa, Mummy. #expr:child=worried #focus:child
-    It is 6:29. There is no time. Mummy pins her handkerchief over Africa and pushes you out of the door. #expr:mum=stern #focus:none
+    It is 6:29. There is no time. Mummy pins her handkerchief over Africa and pushes you out of the door. #outfit:child=church_hanky #expr:mum=stern #focus:none
 }
 -> church_yard
 
 = church_yard
-The compound. Auntie Efua, in a headwrap taller than the gate. #scene:compound #light:dusk #cast:auntie@40,child,mum@70,dad@84 #cam:wide #amb:compound #expr:auntie=wave #sfx:door
+The compound. Auntie Efua, in a headwrap taller than the gate. #scene:compound #light:dusk #cast:auntie@40,child,mum@70,dad@84 #cam:wide #amb:compound #outfit:auntie=sunday #outfit:mum=sunday #outfit:dad=sunday #sfx:door
 Auntie Efua: Ah! Look at Nana! So smart for the Lord! #expr:auntie=welcome #focus:auntie
 {
 - stain == "tie":
@@ -134,14 +134,14 @@ After church. The sermon was about honesty. Mummy looked at you the whole time. 
 -> ep10_end
 
 = ep10_end
-That evening, the white clothes hang on the line in the moonlight. #light:moon #amb:night #cast:child #cam:tree
+That evening, the white clothes hang on the line in the moonlight. #light:moon #amb:night #cast:child #cam:tree #outfit:child=none #outfit:auntie=none #outfit:mum=none #outfit:dad=none
 {
 - stain == "confess":
-    Clean. White. Faint Togo, only if you know where to look.
+    Clean. White. Faint Togo, only if you know where to look. #insert:church_clothes_clean
 - stain == "scrub":
-    Pink. Forever. Next Sunday, they will be your "special" clothes.
+    Pink. Forever. Next Sunday, they will be your "special" clothes. #insert:church_clothes_pink
 - else:
-    Africa is still there, faintly. Mummy will fight it again on Saturday.
+    Africa is still there, faintly. Mummy will fight it again on Saturday. #insert:church_clothes_stain
 }
 Next Saturday, Mummy has a bowl for you to return. To Auntie Efua. #expr:child=worried #emote:child=dots
 -> ep11

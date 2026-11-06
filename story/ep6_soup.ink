@@ -6,13 +6,13 @@
 // =====================================================================
 
 === ep6 ===
-#episode:6 #scene:hall #light:evening #cast:mum,child,dad #cam:table #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none
+#episode:6 #scene:hall #light:evening #cast:mum,child,dad #cam:table #amb:hall #prop:tv=off #prop:lamp=off #prop:keyhole=off #outfit:child=none #outfit:friend=none #weather:rain #prop:soup=on
 #card:Episode Six/The Meat in the Soup/That evening · 7:40 PM
 Light soup. Fufu. Steam you can see from the door. #expr:child=delight #emote:child=heart #expr:dad=read_paper #expr:mum=offer_food #sfx:pop
 Mummy dishes. Daddy's bowl first. The gizzard goes in. #focus:mum
 The gizzard is Daddy's. This is the law. Nobody wrote it down. Nobody needed to. #focus:none #emote:dad=sparkle
-Your bowl. A neck. A wing. A lot of soup. #expr:child=flat #emote:child=dots #focus:child
-And in the pot... one fat chicken thigh. Alone. #focus:none #cam:push #sfx:sting
+Your bowl. A neck. A wing. A lot of soup. #insert:fufu_bowl #expr:child=flat #emote:child=dots #focus:child
+And in the pot... one fat chicken thigh. Alone. #insert:soup_pot_thigh #focus:none #cam:push #sfx:sting
 Mummy: Let me bring the pepper. Nobody touch anything. #expr:mum=stern #focus:mum
 Mummy goes to the kitchen. #cast:child,dad #focus:none #sfx:door
 Daddy: Let us pray. #expr:dad=eyesclosed #focus:dad
@@ -45,8 +45,8 @@ Mummy comes back. She takes the thigh out of your bowl and gives it to Daddy. Da
 ~ score(6, 0, -5)
 You close your eyes. Properly. Both of them. #expr:child=eyesclosed #focus:child
 Daddy: ...and we thank you for this food. Amen. #focus:dad
-Nana: Amen! #expr:child=happy #focus:child #light:evening
-You open your eyes. The pot is empty. #cam:table #sfx:sting #emote:child=shock #focus:none
+Nana: Amen! #sticker:child=amen #expr:child=happy #focus:child #light:evening
+You open your eyes. The pot is empty. #insert:soup_pot_empty #cam:table #sfx:sting #emote:child=shock #focus:none
 The thigh is in Daddy's bowl. Daddy prays with his eyes closed. Daddy's spoon does not. #expr:dad=smug #focus:dad
 Mummy comes back. She sees your face. She sees Daddy's bowl. #cast:mum,child,dad #expr:mum=side_eye #focus:mum
 Without a word, Mummy puts her own piece of chicken in your bowl. #expr:mum=approve #emote:child=heart #sfx:good
@@ -87,7 +87,7 @@ Mummy comes back, takes the thigh, and eats it herself. Peace has been restored.
 // ---- Amen. Now eat. ----------------------------------------------------
 
 = amen
-Amen. Everybody eats. #light:evening #cam:wide #focus:none #expr:mum=idle #expr:dad=idle #sfx:crunch
+Amen. Everybody eats. #sticker:dad=amen #light:evening #cam:wide #focus:none #expr:mum=idle #expr:dad=idle #sfx:crunch
 You saved your meat at the side of the bowl, under the fufu. The way everybody does. #expr:child=happy #focus:child
 Daddy's bowl is empty. Daddy's eyes are not. #expr:dad=sideeye #focus:dad #sfx:heartbeat #readroom #timer:8
 #hint:The best meat is saved for last. Everybody knows. That is the problem.

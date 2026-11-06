@@ -1,21 +1,29 @@
 // Story tag validation, shared by the tests, `npm run story:check` and the Vite plugin.
 import { ON_STAGE, castEntry, validExpr, validOutfit } from './characters.ts';
-import { SCENES, LIGHTS, ALL_SHOTS, ALL_HOTSPOTS, PIECES } from './scenes.ts';
+import { SCENES, LIGHTS, ALL_SHOTS, ALL_HOTSPOTS, PIECES, GLOWS } from './scenes.ts';
 
 export const EMOTES = ['sweat', 'shock', 'question', 'anger', 'sparkle', 'heart', 'dots'];
 export const ANIMS = ['bounce', 'shake', 'jump', 'lean', 'slump'];
-export const FX = ['shake', 'impact', 'flash'];
-export const STICKERS = ['akola_bone', 'ei', 'good_child', 'hmmm', 'trouble', 'chale', 'shh', 'oops', 'ewurade', 'see_me', 'very_good', 'my_pepper'];
-export const INSERTS = ['tv_remote', 'biscuit_tray', 'malt_bottle', 'boombox', 'wall_clock', 'framed_family_photo', 'rotary_phone_padlock', 'agric_exercise_book', 'seedling_tin', 'pepper_plant_tin', 'mango_stick_tin', 'hurricane_lantern', 'watering_can_tin'];
-export const SFX = ['good', 'bad', 'click', 'sting', 'kiss', 'romance', 'tvclear', 'static', 'thump', 'whoosh', 'powercut', 'powerup', 'knock', 'crinkle', 'crunch', 'coin', 'pop', 'radio', 'radiooff', 'cheer', 'title', 'theme', 'door', 'throat', 'heartbeat', 'snore', 'yawn', 'dig', 'splash', 'bell', 'rooster'];
+export const FX = ['shake', 'impact', 'flash', 'lightning'];
+export const WEATHER = ['none', 'drizzle', 'rain'];
+export const FACE_TARGETS = ['none', 'tv', 'left', 'right'];
+export const STICKERS = ['akola_bone', 'ei', 'good_child', 'hmmm', 'trouble', 'chale', 'shh', 'oops', 'ewurade', 'see_me', 'very_good', 'my_pepper', 'goal', 'amen', 'merry_christmas'];
+export const INSERTS = ['tv_remote', 'biscuit_tray', 'malt_bottle', 'boombox', 'wall_clock', 'framed_family_photo', 'rotary_phone_padlock', 'agric_exercise_book', 'seedling_tin', 'pepper_plant_tin', 'mango_stick_tin', 'hurricane_lantern', 'watering_can_tin',
+  'soup_pot_thigh', 'soup_pot_empty', 'fufu_bowl', 'church_clothes_stain', 'church_clothes_pink', 'church_clothes_clean', 'red_tie', 'salt_water_basin', 'malt_crate', 'empty_bottles_straws', 'ice_block', 'malt_ice_bucket', 'good_plate', 'film_camera', 'chaskele_tin_stick', 'empty_bucket', 'water_drum_full', 'water_drum_empty', 'washing_in_sand', 'soup_bowl_groundnut'];
+/** Inserts of Nana's own clothes: a girl player wears a dress, so these also come as props/<name>_girl.webp. */
+export const DRESS_INSERTS = ['church_clothes_stain', 'church_clothes_pink', 'church_clothes_clean'];
+/** Big panels that stay up until #reveal:none. Each comes as props/<name>_boy.webp and _girl.webp, for whoever Nana is. */
+export const REVEALS = ['christmas_photo_smile', 'christmas_photo_bunny', 'christmas_photo_eyes', 'christmas_photo_mummy'];
+export const SFX = ['good', 'bad', 'click', 'sting', 'kiss', 'romance', 'tvclear', 'static', 'thump', 'whoosh', 'powercut', 'powerup', 'knock', 'crinkle', 'crunch', 'coin', 'pop', 'radio', 'radiooff', 'cheer', 'title', 'theme', 'door', 'throat', 'heartbeat', 'snore', 'yawn', 'dig', 'splash', 'bell', 'rooster', 'thunder', 'tap', 'bottle', 'goal', 'camera'];
 export const AMBIENCE = ['static', 'film', 'night', 'hall', 'auntie', 'clock', 'compound', 'street', 'school', 'dusk'];
 export const PROPS: Record<string, RegExp> = {
-  tv: /^(snow|film|kiss|news|off)$/,
+  tv: /^(snow|film|kiss|news|off|football|fuzzy|cartoon)$/,
   auntie_tv: /^(snow|fixed|off)$/,
   foil: /^(on|off)$/,
   lamp: /^(on|off)$/,
   keyhole: /^(on|off)$/,
   ...Object.fromEntries([...PIECES].map((name) => [name, /^(on|off)$/])),
+  ...Object.fromEntries([...GLOWS].map((name) => [name, /^(on|off|flicker)$/])),
 };
 
 const FLAGS = ['report', 'rankcopy', 'remember', 'timeout', 'readroom'];
@@ -48,8 +56,12 @@ export function validateTag(tag: string): string | null {
     case 'anim': return pair(ANIMS.includes(what));
     case 'sticker': return pair(STICKERS.includes(what));
     case 'focus': return val === 'none' || ON_STAGE.includes(val) ? null : `unknown focus "${val}"`;
-    case 'transition': return /^(fade|iris|cut)$/.test(val) ? null : `unknown transition "${val}"`;
+    case 'transition': return /^(fade|iris|cut|wipe)$/.test(val) ? null : `unknown transition "${val}"`;
     case 'insert': return INSERTS.includes(val) ? null : `unknown insert "${val}"`;
+    case 'reveal': return val === 'none' || REVEALS.includes(val) ? null : `unknown reveal "${val}"`;
+    case 'weather': return WEATHER.includes(val) ? null : `unknown weather "${val}"`;
+    case 'burst': return val === 'confetti' ? null : `unknown burst "${val}"`;
+    case 'face': return pair(ON_STAGE.includes(what) || FACE_TARGETS.includes(what));
     case 'fx': return FX.includes(val) ? null : `unknown fx "${val}"`;
     case 'sfx': return SFX.includes(val) ? null : `unknown sfx "${val}"`;
     case 'amb': return AMBIENCE.includes(val) ? null : `unknown ambience "${val}"`;

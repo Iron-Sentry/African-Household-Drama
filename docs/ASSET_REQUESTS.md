@@ -2,13 +2,13 @@
 
 **Status (30 October 2026):**
 
-- **Batch 3, Episodes Five to Thirteen: open.** The episodes already play with existing art only; nothing here blocks testing or release. These files replace moments that are currently only described in text. The brief is below.
+- **Batch 3, Episodes Five to Thirteen: delivered and integrated, 6 November 2026.** All 37 recommended and 39 nice-to-have files, plus girl-player versions of the three stain close-ups (`church_clothes_*_girl.png`), which the review of the delivered art found were needed. Generated through `codex exec` with the repo's art as references; sources are in `art_incoming/`, the record in `art_incoming/MANIFEST.md`. Its brief is kept below for the record.
 - Batch 2, Episode Four "The Science Homework": delivered to `art_incoming/` on 20 October 2026 and integrated (all 37 required and 6 nice-to-have files). Auntie Efua's seedling was painted out of both `compound_corner_*` paintings (sources kept as `*_patched.png`) so the game's `auntie_seedling` piece can be uprooted; `auntie_efua_over_wall` is drawn as a garden piece, not an actor pose. The episode was later renamed "The Science Homework"; the exercise book was re-lettered "SCIENCE H/W" (source: `agric_exercise_book_science.png`). Its brief is kept further down for the record.
 - Batch 1 (Episodes 1–3 top-up) was delivered to `art_incoming/` on 17 October 2026 and integrated. Its list is kept at the end of this file for the record.
 
 Source PNGs stay in `art_incoming/`. The game uses WebP copies in `public/assets/`. Wiring the art into the game happens separately, after delivery.
 
-Copy everything between the two lines into Codex or ChatGPT. It asks for art only.
+The brief below is the one used for Batch 3. Copy everything between the two lines into Codex or ChatGPT to reuse it. It asks for art only.
 
 ---
 
@@ -53,73 +53,110 @@ Everything must be original. Copy no TV shows, brands, logos, real people or exi
    - Hands and anything held stay fully inside the canvas.
    - Same scale as that character's existing `*_idle.webp`: standing head height within ±2%.
 3. No stray fragments, halos, text or watermarks. Edges are clean against light and dark backgrounds.
-4. **Backgrounds:** **1672×941 px opaque PNG**. A variant of an existing room must line up with it exactly: the same camera, and every piece of furniture, the TV and the doorways in the same place, so the game's characters and camera shots still fit.
+4. **Backgrounds:** **1672×941 px opaque PNG**, except `family_hall_christmas.png`, which is **1600×901 px** because that is the size of its only source, `public/assets/rooms/family_hall.webp`. A variant of an existing room must line up with it exactly: the same camera, and every piece of furniture, the TV and the doorways in the same place, so the game's characters and camera shots still fit.
 5. **Props:** transparent PNG, tightly cropped with about 16 px of clear margin, about 360 px tall unless the item says otherwise. They are shown as close-up panels.
 6. **Stickers:** 650×650 transparent PNG, in exactly the style of `public/assets/fx/*.webp`: a spiky burst, a thick dark outline, and bold cream lettering.
+7. **TV stills:** **640×480 px opaque PNG**, like `public/assets/tv/*.webp`: a picture as a 1990s CRT would show it, with no scoreboard, channel logo or text.
 
 ## What to make
 
 Priority: **R** = recommended for this round, **N** = nice to have. Draw every R item first.
 
-### A. Background (`art_incoming/rooms/`)
+### A. Backgrounds (`art_incoming/rooms/`)
 
-1. **R** `family_hall_christmas.png`: `family_hall.webp` on Christmas Eve, lined up exactly with the original.
+1. **R** `family_hall_christmas.png`: `family_hall.webp` on Christmas Eve, lined up exactly with the original. (Episode Thirteen.)
    - Add: paper chains and tinsel across the ceiling and window, a small artificial Christmas tree with tinsel and a few baubles in the corner by the window, Christmas cards standing on the showcase and the TV cabinet, a few balloons, and the good plates stacked on the dining table through the arch.
-   - Keep the sofa, coffee table, TV, fan, doorways and floor exactly where they are. Keep the centre floor clear.
+   - Keep the sofa, coffee table, TV, fan, doorways, the framed photographs on the wall and the floor exactly where they are. Keep the centre floor clear.
    - Late-afternoon light, as in the original.
+2. **R** `nana_bedroom_day.png`: `nana_bedroom_night.webp` by day, lined up exactly with the original. Daylight through the louvres, no moon, no stars, walls and floor in morning colours. The game uses it at 6 AM and 4 PM; the moonlit painting stays for night. (Episodes Ten and Thirteen.)
+3. **R** `bofrot_street_night.png`: `bofrot_street.webp` at nightfall, lined up exactly with the original. Deep indigo sky, **the streetlight on its pole is lit** with a warm pool of light on the road below it, the stall in shadow. (Episode Nine turns on this light.)
+4. **N** `compound_courtyard_night.png`: `compound_courtyard.webp` by moonlight, lined up exactly with the original, including the washing line, the blue drum and the tap. (Episodes Eight and Ten.)
 
-### B. Props (`art_incoming/props/`)
+### B. TV stills (`art_incoming/tv/`)
 
-2. **R** `soup_pot_thigh.png`: a dented aluminium cooking pot of orange-red light soup, steaming, with one fat chicken thigh floating alone in it. Seen from slightly above. (Episode Six.)
-3. **N** `fufu_bowl.png`: an enamel bowl with a smooth ball of fufu sitting in light soup, with a chicken neck and a wing. (Episode Six.)
-4. **R** `church_clothes_stain.png`: Nana's white, starched Sunday clothes on a wooden hanger, with one red-orange palm-oil stain on the chest, roughly the shape of Africa. (Episode Ten.)
-5. **N** `red_tie.png`: Daddy's long red necktie, slightly crumpled, about 420 px tall. (Episode Ten.)
-6. **R** `malt_crate.png`: a 1990s plastic drinks crate of twelve short brown glass bottles with plain metal caps and blank labels. **Two slots are empty.** (Episode Twelve.)
-7. **N** `empty_bottles_straws.png`: two empty brown glass bottles side by side. One has two drinking straws in it; the other has none. (Episode Twelve.)
-8. **R** `ice_block.png`: a block of ice wrapped in a damp jute sack, dripping, the sack folded back to show the ice. (Episode Thirteen.)
-9. **N** `chaskele_tin_stick.png`: a dented empty milk tin and a short wooden bat-stick, lying on red earth. (Episode Nine.)
-10. **N** `empty_bucket.png`: an empty plastic bucket with a wire handle, a little water at the bottom. (Episode Eight.)
+5. **R** `football_match.png`: a wide broadcast view of a football match on a green pitch in 1990s colour, two teams in plain shirts with no crests or numbers, a blurred crowd. No real players. (Episode Seven.)
+6. **N** `cartoon.png`: a frame from an original hand-drawn 1990s children's cartoon: a cheeky spider in a little hat, in the spirit of the Ananse folk tales. Original design, no existing characters. (Episode Seven.)
 
-### C. New poses for existing characters (`art_incoming/characters/`)
+### C. Props (`art_incoming/props/`)
+
+The malt bottles in items 9 and 11 must match `public/assets/props/malt_bottle.webp`: short brown glass with its red-and-gold label and no lettering, because Episode Thirteen still shows that bottle.
+
+7. **R** `soup_pot_thigh.png`: a dented aluminium cooking pot of orange-red light soup, steaming, with one fat chicken thigh floating alone in it. Seen from slightly above. (Episode Six.)
+8. **R** `church_clothes_stain.png`: Nana's white, starched Sunday clothes on a wooden hanger, with one red-orange palm-oil stain on the chest, roughly the shape of Africa. (Episode Ten.)
+9. **R** `malt_crate.png`: a 1990s plastic drinks crate of twelve bottles matching `malt_bottle.webp`, metal caps on. **Two slots are empty.** (Episode Twelve.)
+10. **R** `ice_block.png`: a block of ice wrapped in a damp jute sack, dripping, the sack folded back to show the ice. (Episode Thirteen.)
+11. **R** `empty_bottles_straws.png`: two empty bottles matching `malt_bottle.webp`, caps off, side by side. One has two drinking straws in it; the other has none. This is the reveal of Episode Twelve.
+12. **R** `table_soup_spread.png`: a family meal laid out to stand on the coffee table in the hall, about 700 px wide, at the same eye-level angle as `family_hall.webp`: the dented soup pot steaming in the middle, three enamel bowls, a covered dish of fufu. It stands on the table as a cut-out, so nothing below the food. (Episode Six.)
+13. **R** The Christmas photo, the last image of the volume (8 files). A printed family photograph in a simple wooden frame, about 900 px tall, in the same painted style as `framed_family_photo.webp`, taken indoors with a flash in `family_hall_christmas`. Everybody in their best clothes, squeezed together, with Auntie Efua in the middle: Mummy, Daddy, Auntie Efua, Kojo's mother, and the two children.
+    - `christmas_photo_smile_{boy,girl}.png`: everybody smiling properly.
+    - `christmas_photo_bunny_{boy,girl}.png`: as above, with Nana holding up two fingers behind Daddy's head. Daddy has not noticed. Auntie Efua has.
+    - `christmas_photo_eyes_{boy,girl}.png`: as above, with Nana's eyes tightly shut.
+    - `christmas_photo_mummy_{boy,girl}.png`: everybody looks at the camera except Nana and Mummy, who look at each other while Mummy fixes Nana's collar.
+    - In the `_boy` files Nana is the boy (`child_boy_idle`) and the other child is the girl (`child_girl_idle`). In the `_girl` files the two swap roles.
+14. **N** `fufu_bowl.png`: an enamel bowl with a smooth ball of fufu sitting in light soup, with a chicken neck and a wing. (Episode Six.)
+15. **N** `soup_pot_empty.png`: the same pot as item 7, with only a little orange soup left and no meat. (Episode Six.)
+16. **N** `red_tie.png`: Daddy's long red necktie, slightly crumpled, about 420 px tall. (Episode Ten.)
+17. **N** `church_clothes_pink.png`: the clothes from item 8 after hot water and soap: a huge wet pink blotch the shape of Africa and Europe. (Episode Ten.)
+18. **N** `church_clothes_clean.png`: the clothes from item 8, clean, with the faintest stain the shape of Togo. (Episode Ten.)
+19. **N** `salt_water_basin.png`: an enamel basin of cold water with a small mound of salt on its rim. (Episode Ten.)
+20. **N** `chaskele_tin_stick.png`: a dented empty milk tin and a short wooden bat-stick, lying on red earth. (Episode Nine.)
+21. **N** `empty_bucket.png`: an empty plastic bucket with a wire handle, a little water at the bottom. (Episode Eight.)
+22. **N** `water_drum_full.png`: looking down into the courtyard's blue water drum with its lid off, full to the top, a little moonlight on the water. (Episode Eight.)
+23. **N** `water_drum_empty.png`: the same view, dry to the bottom. (Episode Eight.)
+24. **N** `washing_in_sand.png`: a heap of washing and a fallen line in the sand: a good kaba, a white shirt and a school uniform. (Episode Five.)
+25. **N** `soup_bowl_groundnut.png`: a covered enamel bowl with the lid lifted to show groundnut soup. (Episode Eleven.)
+26. **N** `good_plate.png`: one good china plate with a gold rim and small flowers, seen at a slight angle. (Episode Thirteen.)
+27. **N** `malt_ice_bucket.png`: a bucket of ice with bottles matching `malt_bottle.webp` standing in it, wet and cold. (Episode Thirteen.)
+28. **N** `film_camera.png`: a 1990s compact film camera with a flash and no brand name, on a small tripod, its self-timer light on. (Episode Thirteen.)
+
+### D. New poses for existing characters (`art_incoming/characters/`)
 
 Each must match that character's existing scale, face and clothes exactly.
 
-11. **N** **Nana in white church clothes**, for **both** the boy and the girl (6 files). The player picks one child, and the friend uses the other's sprites.
-    - Boy: a white starched short-sleeved shirt and dark trousers. Girl: a white dress with a frilled collar. Both: polished black shoes. **No stain** (the stain is the prop in item 4).
-    - Hair and face identical to the home sprites.
-    - Poses: `*_church_idle.png` (standing neatly), `*_church_proud.png` (chin up, hands at the sides), `*_church_worried.png` (one hand pressed flat over the chest, hiding something).
-12. **N** **Daddy:** `father_pray.png`: standing upright, eyes closed, hands clasped in front of his chest, praying very sincerely. (Episode Six.)
+29. **R** **Mummy:** `mother_laugh.png`: laughing out loud with her head back and one hand on her stomach. Every other adult has a laugh pose; Mummy has five laugh cues and none.
+30. **R** **Home clothes, girl only** (the boy already has these): `child_girl_proud.png`, chin up and beaming, and `child_girl_ashamed.png`, head down and shoulders dropped.
+31. **R** **Daddy:** `father_pray.png`: standing upright, **eyes closed**, hands clasped in front of his chest, praying very sincerely. The story relies on his eyes being shut. (Episode Six.)
+32. **R** **Daddy at 5:40 AM:** bare-chested, a cloth towel wrapped from waist to knee, a second towel on one shoulder, a plastic bucket in one hand (4 files). `father_towel_idle.png`, `father_towel_laugh.png`, `father_towel_shocked.png`, `father_towel_stern.png`. Same face, moustache and build as `father_idle`; modest and comic. (Episode Eight.)
+33. **R** **Nana in white church clothes**, for **both** the boy and the girl (6 files). The player picks one child, and the friend uses the other's sprites.
+    - Boy: a white starched short-sleeved shirt and dark trousers. Girl: a white dress with a frilled collar. Both: polished black shoes. Hair and face identical to the home sprites.
+    - No stain on these. Poses: `*_church_idle.png` (standing neatly), `*_church_proud.png` (chin up, hands at the sides), `*_church_worried.png` (one hand pressed flat over the chest, hiding something).
+34. **R** **The same clothes with the stain**, one red-orange palm-oil stain on the chest, the shape of Africa (4 files): `*_church_stain_idle.png` and `*_church_stain_panic.png` (both hands on the head, eyes wide, mouth open).
+35. **N** **The same clothes after each attempt to hide it** (6 files), one standing pose each: `*_church_tie_idle.png` (Daddy's long red tie hanging down to the knees), `*_church_hanky_idle.png` (Mummy's handkerchief pinned over the chest), `*_church_pink_idle.png` (a giant wet pink blotch).
+36. **N** **Sunday best for the adults** (3 files): `mother_sunday_idle.png` (a fine church kaba), `father_sunday_idle.png` (a white shirt, buttoned, and dark trousers, with no tie), `auntie_efua_sunday_idle.png` (a grand print dress and **a headwrap comically taller than her head**).
+37. **N** **More adult poses** (3 files): `mother_eyes_closed.png` (eyes shut, a very short prayer), `father_side_eye.png` (one eye open, watching sideways), `father_carry_crate.png` (carrying a drinks crate in both arms, grave as a pallbearer).
+38. **N** **Children at play**, for **both** the boy and the girl, in home clothes (8 files): `*_ampe.png` (mid-jump, clapping, one foot out, as in the ampe game), `*_swing.png` (swinging a short wooden stick like a bat), `*_throw.png` (underarm throw of a milk tin), `*_bucket.png` (carrying a full bucket with both hands, straining).
 
-### D. Stickers (`art_incoming/fx/`)
+### E. Stickers (`art_incoming/fx/`)
 
-13. **R** `fx/goal.png`: "GOAL!" (Episode Seven.)
-14. **N** `fx/amen.png`: "AMEN!" (Episode Six.)
-15. **N** `fx/merry_christmas.png`: "MERRY CHRISTMAS!" (Episode Thirteen.)
+39. **R** `goal.png`: "GOAL!" (Episode Seven.)
+40. **N** `amen.png`: "AMEN!" (Episode Six.)
+41. **N** `merry_christmas.png`: "MERRY CHRISTMAS!" (Episode Thirteen.)
 
 ### Totals
 
 | Group | Recommended | Nice to have |
-| --- | --- | --- |
-| Backgrounds | 1 | 0 |
-| Props | 4 | 5 |
-| New poses for existing characters | 0 | 7 (6 church child, 1 Daddy) |
+| --- | ---: | ---: |
+| Backgrounds | 3 | 1 |
+| TV stills | 1 | 1 |
+| Props | 14 (8 are the Christmas photo) | 15 |
+| Poses | 18 | 20 |
 | Stickers | 1 | 2 |
-| **Total** | **6** | **14** |
+| **Total** | **37** | **39** |
 
 ## Deliver
 
 - Exact filenames and folders as above.
-- `art_incoming/MANIFEST.md` listing every file, its size, its priority (R or N), and any rule you could not meet.
+- Add a **Batch 3** section at the top of `art_incoming/MANIFEST.md`, listing every file, its size, its priority (R or N), and any rule you could not meet. Do not remove the Batch 1 and Batch 2 records already in that file: the folder is ignored by Git, so they cannot be recovered.
 - Before finishing:
   - Check each sprite on a magenta background: head and hands fully inside, feet on the bottom edge, no fragments, scale matching the character's `*_idle` pose.
-  - Lay `family_hall_christmas.png` over `public/assets/rooms/family_hall.webp` and check that the furniture, TV and doorways line up.
+  - Lay each variant background over the painting it comes from (`family_hall_christmas` on `family_hall`, `nana_bedroom_day` on `nana_bedroom_night`, `bofrot_street_night` on `bofrot_street`, `compound_courtyard_night` on `compound_courtyard`) and check that the furniture, TV and doorways line up.
 
 ---
 
 ### Batch 3: not covered by the brief
 
-- **Sound.** `rooster` (Episodes Four and Eight) and `bell` (Episode Four) are still silent until recordings arrive; see the cue map in `src/audio/audio.ts` and `docs/AUDIO_CREDITS.md`. Useful new recordings for these episodes: thunder, a tap running, rain on a zinc roof, a bottle being opened, and a football crowd on a small radio.
-- **Wiring.** Each delivered file needs a code change before the story can use it: props join `INSERTS` and stickers join `STICKERS` in `src/content/validate.ts`; the church clothes become an outfit sheet (`child_boy_church`, `child_girl_church`) in `src/content/characters.ts`; the Christmas hall becomes a scene in `src/content/scenes.ts` with the hall's coordinates. Then the `#insert`, `#sticker`, `#outfit` and `#scene` cues go into the episode files.
+- **Sound.** Handled separately: `rooster`, `bell`, `dig`, `splash`, thunder, rain, a tap, a bottle, a goal crowd and a camera were added on 6 November 2026; see `docs/AUDIO_CREDITS.md`.
+- **Wiring.** Each delivered file needs a code change before the story can use it: props join `INSERTS` and stickers join `STICKERS` in `src/content/validate.ts`; TV stills join the `tv` prop in `validate.ts` and the set in `src/stage/stage.ts`; outfits become sheets (`child_boy_church`, `child_boy_church_stain`, `father_towel`…) in `src/content/characters.ts`; new poses join their sheet there too, and a new pose must be mapped to the moods that should use it, or the old pose keeps showing (`mother_laugh` to `laugh`, `father_pray` to `eyesclosed`, `child_girl_proud` to `proud`); the Christmas hall becomes a scene in `src/content/scenes.ts` with the hall's coordinates, and "Years later" in Episode Thirteen goes back to the plain hall; the day bedroom becomes the `bedroom` scene's `bg` with the moonlit painting as its `night`, and the street and courtyard get their `night` paintings the same way. Then the `#insert`, `#sticker`, `#outfit` and `#scene` cues go into the episode files.
 
 ---
 
